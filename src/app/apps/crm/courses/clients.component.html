@@ -1,0 +1,286 @@
+<ng-template #addCourseModal let-modal>
+  <div class="modal-body">
+    <form
+      class="ps-3 pe-3"
+      [formGroup]="addCourseForm"
+      (ngSubmit)="onSubmitCreateCourse()"
+    >
+      <div class="mb-2">
+        <label for="username" class="form-label">Course Name</label>
+        <input
+          class="form-control"
+          type="email"
+          id="name"
+          required
+          formControlName="name"
+          placeholder="Course Name"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="username" class="form-label">Course Description</label>
+        <input
+          class="form-control"
+          type="email"
+          id="desc"
+          required
+          formControlName="description"
+          placeholder="Course Description"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Status</label>
+
+        <select class="form-control" formControlName="status">
+          <option value="" disabled selected>Select Status</option>
+          <option value="true">Active</option>
+          <option value="false">Inactive</option>
+        </select>
+      </div>
+
+      <div formArrayName="course_objective">
+        <div
+          *ngFor="let objective of courseObjectives.controls; let i = index"
+          [formGroupName]="i"
+          class="mb-3 border p-2 rounded"
+        >
+          <label class="form-label">Objective Name</label>
+          <input
+            class="form-control mb-2"
+            type="text"
+            formControlName="name"
+            placeholder="Objective Name"
+          />
+
+          <label class="form-label">Objective Description</label>
+          <textarea
+            class="form-control mb-2"
+            formControlName="description"
+            placeholder="Objective Description"
+          ></textarea>
+
+          <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            (click)="removeObjective(i)"
+          >
+            Remove Objective
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-info btn-sm"
+          (click)="addObjective()"
+        >
+          Add New Objective
+        </button>
+      </div>
+      <br /><br />
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title m-t-0">Upload course image</h4>
+
+              <form #fileUpload="ngForm">
+                <ngx-dropzone
+                [multiple]="false"
+                  (change)="onSelectImage($event)"
+                  class="dropzone"
+                  accept="image/jpeg,image/jpg,image/png,image/gif"
+                >
+                  <ngx-dropzone-label>
+                    <i class="h1 text-muted dripicons-cloud-upload"></i>
+                    <h3>Drop files here or click to upload.</h3>
+                  </ngx-dropzone-label>
+                </ngx-dropzone>
+
+                <!-- Preview -->
+                <div class="dropzone-previews mt-3" id="file-previews">
+                  <!-- file preview template -->
+                  <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
+                    <div id="uploadPreviewTemplate" *ngIf="files">
+
+                    <div class="card mt-1 mb-0 shadow-none border">
+                      <div class="p-2">
+                        <div class="row align-items-center">
+                          <div class="col-auto">
+                            <img
+                              class="avatar-sm rounded bg-light"
+                              [alt]="files.name"
+                              [src]="getPreviewUrlImg(files)"
+                            />
+                          </div>
+                          <div class="col ps-0">
+                            <a
+                              href="javascript:void(0);"
+                              class="text-muted fw-bold"
+                              >{{ files.name }}</a
+                            >
+                            <p class="mb-0">{{ getSize(files) }}</p>
+                          </div>
+                          <div class="col-auto">
+                            <!-- Button -->
+                            <a
+                              href="javascript:void(0)"
+                              class="btn btn-link btn-lg text-muted"
+                              (click)="onRemoveFile($event)"
+                            >
+                              <i class="dripicons-cross"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end file preview template -->
+                </div>
+              </form>
+            </div>
+            <!-- end card-body -->
+          </div>
+          <!-- end card-->
+        </div>
+        <!-- end col-->
+      </div>
+
+
+      <br /><br />
+
+
+      <!-- Course doc upload -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title m-t-0">Upload course document</h4>
+
+              <form #fileUpload="ngForm">
+                <ngx-dropzone
+                  (change)="onSelectDoc($event)"
+                  class="dropzone"
+                  accept=".pdf, .doc, .docx, .ppt, .txt" 
+                  >
+                  <ngx-dropzone-label>
+                    <i class="h1 text-muted dripicons-cloud-upload"></i>
+                    <h3>Drop files here or click to upload.</h3>
+                  </ngx-dropzone-label>
+                </ngx-dropzone>
+
+                <!-- Preview -->
+                <div class="dropzone-previews mt-3" id="file-previews">
+                  <!-- file preview template -->
+                  <div id="uploadPreviewTemplate" *ngIf="docs">
+                    <div class="card mt-1 mb-0 shadow-none border">
+                      <div class="p-2">
+                        <div class="row align-items-center">
+                          <div class="col-auto">
+                           
+                          </div>
+                          <div class="col ps-0">
+                            <a
+                              href="javascript:void(0);"
+                              class="text-muted fw-bold"
+                              >{{ docs.name }}</a
+                            >
+                            <p class="mb-0">{{ getSize(docs) }}</p>
+                          </div>
+                          <div class="col-auto">
+                            <!-- Button -->
+                            <a
+                              href="javascript:void(0)"
+                              class="btn btn-link btn-lg text-muted"
+                              (click)="onRemoveDoc($event)"
+                            >
+                              <i class="dripicons-cross"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end file preview template -->
+                </div>
+              </form>
+            </div>
+            <!-- end card-body -->
+          </div>
+          <!-- end card-->
+        </div>
+        <!-- end col-->
+      </div>
+
+      <div class="mb-3 text-center">
+        <button class="btn btn-primary" type="submit">Create Course</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+  
+<!-- page title -->
+<h4>Courses List</h4>
+<!-- end page title -->
+<div class="col-xl-12">
+  <div class="text-xl-end mt-xl-0 mt-2">
+    <button
+      type="button"
+      class="btn btn-danger mb-2 me-2"
+      (click)="open(addCourseModal)"
+    >
+      Add New Course
+    </button>
+    <!-- <button type="button" class="btn btn-light mb-2">Export</button> -->
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6 col-xxl-3" *ngFor="let course of courses">
+    <div class="card h-100 d-flex flex-column border border-dark mb-3" >
+      <div class="card-body d-flex flex-column">
+        <div class="text-center">
+          <!-- Image Container -->
+          <div class="image-container">
+            <img
+              [src]="course?.img || 'assets/images/other/upload_photo.jpg'"
+              class="rounded-circle avatar-md img-thumbnail"
+              alt="course image"
+            />
+          </div>
+
+          <!-- Course Name (Fixed Height) -->
+          <h4 class="course-title mt-3 my-1">
+            {{ course.name || 'No Title' }}
+          </h4>
+
+          <!-- Course Description (Fixed Height) -->
+          <p class="course-description mb-0 text-muted" [title]="course.description">
+            {{ course.description ? (course.description | slice:0:50) + '...' : 'No description available' }}
+          </p>
+
+          <hr class="bg-dark-lighten my-3" />
+
+          <!-- Button Section (Pushed to Bottom) -->
+          <div class="mt-auto">
+            <button
+              class="btn w-100 btn-light"
+              placement="top"
+              (click)="goToCourseDetails(course)"
+            >
+              <p class="mb-0 text-muted">Course details</p>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="row py-4">
+  <div class="col-12 text-center">
+    <i class="mdi mdi-dots-circle mdi-spin font-24 text-muted"></i>
+  </div>
+</div>

@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/*"
+  to = "/account/login"
+  status = 200

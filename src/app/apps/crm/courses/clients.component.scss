@@ -1,0 +1,35 @@
+.card {
+    min-height: 400px; /* Ensures uniform card height */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .image-container {
+    height: 80px; /* Ensures all images have the same space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .image-container img {
+    max-height: 80px;
+    object-fit: cover;
+  }
+  
+  .course-title {
+    min-height: 40px; /* Ensures title alignment */
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .course-description {
+    min-height: 60px; /* Prevents alignment issues */
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .mt-auto {
+    margin-top: auto; /* Ensures the button is always at the bottom */
+  }
+  

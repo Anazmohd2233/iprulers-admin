@@ -1,0 +1,153 @@
+<ng-template #addQuizModal let-modal>
+  <div class="modal-body">
+    <form
+      class="ps-3 pe-3"
+      [formGroup]="addCourseForm"
+      (ngSubmit)="onSubmitCreateQuiz()"
+    >
+      <div class="mb-2">
+        <label for="username" class="form-label">Quiz Name</label>
+        <input
+          class="form-control"
+          type="email"
+          id="name"
+          required
+          formControlName="name"
+          placeholder="Quiz Name"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="username" class="form-label">Description</label>
+        <input
+          class="form-control"
+          type="email"
+          id="desc"
+          required
+          formControlName="description"
+          placeholder="Quiz Description"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Course</label>
+
+        <select class="form-control" formControlName="course">
+          <option value="" disabled selected>Select Course</option>
+          <!-- <option value="true">Active</option>
+            <option value="false">Inactive</option> -->
+          <option *ngFor="let course of courses" [value]="course.id">
+            {{ course.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="mb-3 text-center">
+        <button class="btn btn-primary" type="submit">Save Quiz</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<!-- page title -->
+<h4>Quiz</h4>
+<!-- end page title -->
+<div class="row">
+  <div class="col-xl-12">
+    <div class="d-flex justify-content-between align-items-center mt-2">
+      <!-- Dropdown (Aligned to Start) -->
+      <div class="text-start">
+        <form [formGroup]="courseForm">
+          <select
+            class="form-control"
+            formControlName="course"
+            (change)="fetchCourseDetails($event)"
+          >
+            <option value="" disabled>Select Course</option>
+            <option *ngFor="let course of courses" [value]="course.id">
+              {{ course.name }}
+            </option>
+          </select>
+        </form>
+      </div>
+
+      <!-- Button (Aligned to End) -->
+      <div class="text-end">
+        <button
+          type="button"
+          class="btn btn-danger mb-2 me-2"
+          (click)="open(addQuizModal)"
+        >
+          Add Quiz
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <!-- If quizData has quizzes, display the list -->
+  <ng-container *ngIf="quizData && quizData.length > 0; else noQuizMessage">
+    <div class="col-md-6 col-xxl-3 mt-3" *ngFor="let quiz of quizData">
+      <div
+        class="card d-flex flex-column border border-dark mb-3"
+        style="height: 100%; min-height: 300px"
+      >
+        <div class="card-body d-flex flex-column flex-grow-1">
+          <div class="text-center">
+            <!-- Image Container -->
+            <div class="image-container">
+              <img
+                [src]="'assets/images/other/upload_photo.jpg'"
+                class="rounded-circle avatar-md img-thumbnail"
+                alt="course image"
+              />
+            </div>
+
+            <!-- Course Name (Fixed Height) -->
+            <h4 class="course-title mt-3 my-1">
+              {{ quiz.title || "No Title" }}
+            </h4>
+
+            <!-- Course Description (Fixed Height) -->
+            <p
+              class="course-description mb-0 text-muted"
+              style="
+                max-height: 40px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              "
+            >
+              {{
+                quiz.description
+                  ? (quiz.description | slice : 0 : 50) + "..."
+                  : "No description available"
+              }}
+            </p>
+
+            <hr class="bg-dark-lighten my-3" />
+
+            <!-- Button Section (Pushed to Bottom) -->
+            <div class="mt-auto">
+              <button
+                type="button"
+                class="btn btn-danger mb-2 me-2"
+                (click)="goToQuestions(quiz)"
+              >
+                Add/View Questions
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- If quizData is empty, display this message -->
+  <ng-template #noQuizMessage>
+    <div class="col-12 text-center mt-3">
+      <p class="text-muted">No quiz assigned for this selected course.</p>
+    </div>
+  </ng-template>
+</div>
