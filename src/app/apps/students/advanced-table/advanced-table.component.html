@@ -1,0 +1,436 @@
+
+<ng-template #addStudentModal let-modal>
+    <div class="modal-body">
+      <form
+        class="ps-3 pe-3"
+        [formGroup]="addStudentForm"
+        (ngSubmit)="onSubmitCreateCourse()"
+      >
+        <div class="mb-2">
+          <label for="username" class="form-label">Name</label>
+          <input
+            class="form-control"
+            type="email"
+            id="name"
+            required
+            formControlName="name"
+            placeholder="Student Name"
+          />
+        </div>
+  
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input
+            class="form-control"
+            type="email"
+            id="username"
+            required
+            formControlName="username"
+            placeholder="Username"
+          />
+        </div>
+  
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            class="form-control"
+            type="email"
+            id="email"
+            required
+            formControlName="email"
+            placeholder="Student Email"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="Password" class="form-label">Password</label>
+          <input
+            class="form-control"
+            type="email"
+            id="Password"
+            required
+            formControlName="pwd"
+            placeholder="Password"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="username" class="form-label">Confirm Password</label>
+          <input
+            class="form-control"
+            type="email"
+            id="confirm"
+            required
+            formControlName="confirm"
+            placeholder="Confirm password"
+          />
+        </div>
+  
+        <br />
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="header-title m-t-0">Image</h4>
+  
+                <form #fileUpload="ngForm">
+                  <ngx-dropzone
+                    [multiple]="false"
+                    (change)="onSelectImage($event)"
+                    class="dropzone"
+                    accept="image/jpeg,image/jpg,image/png,image/gif"
+                  >
+                    <ngx-dropzone-label>
+                      <i class="h1 text-muted dripicons-cloud-upload"></i>
+                      <h3>Drop files here or click to upload.</h3>
+                    </ngx-dropzone-label>
+                  </ngx-dropzone>
+  
+                  <!-- Preview -->
+                  <div class="dropzone-previews mt-3" id="file-previews">
+                    <!-- file preview template -->
+                    <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
+                    <div id="uploadPreviewTemplate" *ngIf="files">
+                      <div class="card mt-1 mb-0 shadow-none border">
+                        <div class="p-2">
+                          <div class="row align-items-center">
+                            <div class="col-auto">
+                              <img
+                                class="avatar-sm rounded bg-light"
+                                [alt]="files.name"
+                                [src]="getPreviewUrlImg(files)"
+                              />
+                            </div>
+                            <div class="col ps-0">
+                              <a
+                                href="javascript:void(0);"
+                                class="text-muted fw-bold"
+                                >{{ files.name }}</a
+                              >
+                              <p class="mb-0">{{ getSize(files) }}</p>
+                            </div>
+                            <div class="col-auto">
+                              <!-- Button -->
+                              <a
+                                href="javascript:void(0)"
+                                class="btn btn-link btn-lg text-muted"
+                                (click)="onRemoveFile($event)"
+                              >
+                                <i class="dripicons-cross"></i>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end file preview template -->
+                  </div>
+                </form>
+              </div>
+              <!-- end card-body -->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col-->
+        </div>
+  
+        <div class="mb-3 text-center">
+          <button class="btn btn-primary" type="submit">Add Student</button>
+        </div>
+      </form>
+    </div>
+  </ng-template><form #displayForm="ngForm" *ngIf="isSearchable">
+
+
+  <div class="row">
+    <div class="col-12 col-sm-6" *ngIf="pageSizeOptions.length">
+      <!-- <div class="text-center text-sm-start">
+                <label class="form-label me-1">Show
+                    <select class="form-select form-select-sm  w-auto ms-1 me-1 d-inline" name="pageSize"
+                        id="event-category" required [(ngModel)]="service.pageSize" (ngModelChange)="paginate()">
+                        <option *ngFor="let option of pageSizeOptions" [value]="option">{{option}}</option>
+                    </select>
+                    entries</label>
+            </div> -->
+
+      <div class="text-center text-sm-start">
+        <label class="d-inline"
+          >Search:
+          <input
+            type="text"
+            name="searchTerm"
+            class="form-control form-control-sm d-inline w-auto ms-1"
+            aria-controls="advanced-table"
+            [(ngModel)]="service.searchTerm"
+            (ngModelChange)="searchData()"
+          />
+        </label>
+
+        <!-- <button type="button" class="btn btn-light mb-2">Export</button> -->
+      </div>
+    </div>
+    <!-- end col-->
+    <div class="col-12" [class.col-sm-6]="pageSizeOptions.length">
+      <div
+        class="d-flex align-items-center justify-content-center justify-content-sm-end"
+      >
+        <button
+          type="button"
+          class="btn btn-danger mb-2 me-2"
+          (click)="open(addStudentModal)"
+        >
+          Add New Student
+        </button>
+      </div>
+    </div>
+    <!-- end col-->
+  </div>
+  <!-- end row -->
+</form>
+
+<div class="table-responsive">
+  <table
+    id="advancd-table"
+    class="table advanced-table"
+    [class]="tableClasses"
+    #advancedTable
+  >
+    <thead [class]="theadClasses">
+      <tr *ngIf="isSortable">
+        <!-- <th *ngIf="hasRowSelection" class="row_select">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="flexCheckIndeterminate"
+                            [checked]="selectAll" [indeterminate]="checkIntermediate()" (change)="selectAllRow($event)">
+                    </div>
+                </th> -->
+
+        <ng-container *ngFor="let column of columns">
+          <th
+            class="text-capitalize sortable pe-3 pe-lg-auto"
+            [style.width.px]="column.width"
+            [sortable]="column.name"
+            (sort)="onSort($event)"
+            *ngIf="column.sort != false"
+          >
+            {{ column.name }}
+          </th>
+          <th
+            class="text-capitalize"
+            [style.width.px]="column.width"
+            *ngIf="column.sort === false"
+          >
+            {{ column.name }}
+          </th>
+        </ng-container>
+      </tr>
+      <tr *ngIf="!isSortable">
+        <!-- <th *ngIf="hasRowSelection" class="row_select">
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="flexCheckIndeterminate"
+            />
+          </div>
+        </th> -->
+        <th
+          *ngFor="let column of columns"
+          [style.width.px]="column.width"
+          class="text-capitalize"
+        >
+          {{ column.name }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- <tr *ngFor="let record of tableData | slice: (service.page-1) * service.pageSize : service.page * service.pageSize;let i=index"
+                [class.selected]="isSelected[i+((service.page-1) * service.pageSize)]"> -->
+
+      <tr
+        *ngFor="let record of tableData; let i = index"
+        [class.selected]="isSelected[i + (service.page - 1) * service.pageSize]"
+      >
+        <!-- <td *ngIf="hasRowSelection">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox"
+                            [checked]="isSelected[i+((service.page-1) * service.pageSize)]" value=""
+                            id="flexCheckIndeterminate" (change)="selectRow(i+((service.page-1) * service.pageSize))">
+                    </div>
+                </td> -->
+        <td *ngFor="let column of columns">
+          <!-- <div [innerHtml]="callFormatter(column,record)"></div> -->
+
+          <ng-container *ngIf="column.name !== 'action'">
+            <div [innerHtml]="callFormatter(column, record)"></div>
+          </ng-container>
+          <ng-container *ngIf="column.name === 'action'">
+            <button (click)="openCourses(record)" class="btn btn-primary">
+              Edit
+            </button>
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex flex-wrap justify-content-between p-2" *ngIf="pagination">
+    <div>
+      Showing {{ service.startIndex }} to {{ service.endIndex }} of
+      {{ service.totalRecords }} entries
+    </div>
+    <ngb-pagination
+      class="pagination-rounded"
+      [collectionSize]="service.totalRecords"
+      [(page)]="service.page"
+      [maxSize]="3"
+      [rotate]="true"
+      [pageSize]="service.pageSize"
+      (pageChange)="paginate()"
+    >
+    </ngb-pagination>
+  </div>
+</div>
+
+
+
+
+
+
+<ng-template #addStudentModal let-modal>
+  <div class="modal-body">
+    <form
+      class="ps-3 pe-3"
+      [formGroup]="addStudentForm"
+      (ngSubmit)="onSubmitCreateCourse()"
+    >
+      <div class="mb-2">
+        <label for="username" class="form-label">Name</label>
+        <input
+          class="form-control"
+          type="email"
+          id="name"
+          required
+          formControlName="name"
+          placeholder="Student Name"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input
+          class="form-control"
+          type="email"
+          id="username"
+          required
+          formControlName="username"
+          placeholder="Username"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          class="form-control"
+          type="email"
+          id="email"
+          required
+          formControlName="email"
+          placeholder="Student Email"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="Password" class="form-label">Password</label>
+        <input
+          class="form-control"
+          type="email"
+          id="Password"
+          required
+          formControlName="pwd"
+          placeholder="Password"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="username" class="form-label">Confirm Password</label>
+        <input
+          class="form-control"
+          type="email"
+          id="confirm"
+          required
+          formControlName="confirm"
+          placeholder="Confirm password"
+        />
+      </div>
+
+      <br />
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title m-t-0">Image</h4>
+
+              <form #fileUpload="ngForm">
+                <ngx-dropzone
+                  [multiple]="false"
+                  (change)="onSelectImage($event)"
+                  class="dropzone"
+                  accept="image/jpeg,image/jpg,image/png,image/gif"
+                >
+                  <ngx-dropzone-label>
+                    <i class="h1 text-muted dripicons-cloud-upload"></i>
+                    <h3>Drop files here or click to upload.</h3>
+                  </ngx-dropzone-label>
+                </ngx-dropzone>
+
+                <!-- Preview -->
+                <div class="dropzone-previews mt-3" id="file-previews">
+                  <!-- file preview template -->
+                  <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
+                  <div id="uploadPreviewTemplate" *ngIf="files">
+                    <div class="card mt-1 mb-0 shadow-none border">
+                      <div class="p-2">
+                        <div class="row align-items-center">
+                          <div class="col-auto">
+                            <img
+                              class="avatar-sm rounded bg-light"
+                              [alt]="files.name"
+                              [src]="getPreviewUrlImg(files)"
+                            />
+                          </div>
+                          <div class="col ps-0">
+                            <a
+                              href="javascript:void(0);"
+                              class="text-muted fw-bold"
+                              >{{ files.name }}</a
+                            >
+                            <p class="mb-0">{{ getSize(files) }}</p>
+                          </div>
+                          <div class="col-auto">
+                            <!-- Button -->
+                            <a
+                              href="javascript:void(0)"
+                              class="btn btn-link btn-lg text-muted"
+                              (click)="onRemoveFile($event)"
+                            >
+                              <i class="dripicons-cross"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end file preview template -->
+                </div>
+              </form>
+            </div>
+            <!-- end card-body -->
+          </div>
+          <!-- end card-->
+        </div>
+        <!-- end col-->
+      </div>
+
+      <div class="mb-3 text-center">
+        <button class="btn btn-primary" type="submit">Add Student</button>
+      </div>
+    </form>
+  </div>
+</ng-template>

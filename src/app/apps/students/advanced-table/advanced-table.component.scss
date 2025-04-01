@@ -1,0 +1,23 @@
+select.form-control {
+    width: 80px;
+    padding: 5px;
+    font-size: 14px;
+  }
+
+  .custom-select {
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    border: none; /* Remove border */
+    padding: 5px; /* Add some padding */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px; /* Font size */
+  }
+  
+  .custom-select option {
+    color: black; /* Black text for dropdown options */
+    background-color: white; /* White background for options */
+  }
+
+  
+  
+  

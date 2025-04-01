@@ -1,10 +1,9 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CoursesComponent } from './courses/courses.component';
-import { MaterialsComponent } from './materials/materials.component';
-import { CategoriesComponent } from './categories/categories.component';
-import { AcademicsRoutingModule } from './academics-routing.module';
-
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { CoursesComponent } from "./courses/courses.component";
+import { MaterialsComponent } from "./materials/materials.component";
+import { CategoriesComponent } from "./categories/categories.component";
+import { AcademicsRoutingModule } from "./academics-routing.module";
 
 import { FormsModule } from "@angular/forms";
 import {
@@ -21,38 +20,37 @@ import { SimplebarAngularModule } from "simplebar-angular";
 import { PageTitleModule } from "src/app/shared/page-title/page-title.module";
 import { WidgetModule } from "src/app/shared/widget/widget.module";
 import { NgxDropzoneModule } from "ngx-dropzone";
-import { AdvancedTableModule } from "../users/advanced-table/advanced-table.module";
 import { AdvancedRoutingModule } from "src/app/pages/tables/advanced/advanced-routing.module";
-
-
+import { StudentsComponent } from "../students/students/students.component";
+import { AdvancedTableModule } from "./materials/advanced-table/advanced-table.module";
 
 @NgModule({
   declarations: [
     CoursesComponent,
     MaterialsComponent,
-    CategoriesComponent
+    CategoriesComponent,
+    
   ],
   imports: [
     CommonModule,
     AcademicsRoutingModule,
-    
     CommonModule,
-        FormsModule,
-        SimplebarAngularModule,
-        Select2Module,
-        NgbProgressbarModule,
-        NgbDatepickerModule,
-        NgbTooltipModule,
-        NgbAlertModule,
-        NgbModalModule,
-        NgbTooltipModule,
-        NgbDropdownModule,
-        NgApexchartsModule,
-        WidgetModule,
-        PageTitleModule,
-        NgxDropzoneModule,
-        AdvancedTableModule,
-        AdvancedRoutingModule,
-  ]
+    FormsModule,
+    SimplebarAngularModule,
+    Select2Module,
+    NgbProgressbarModule,
+    NgbDatepickerModule,
+    NgbTooltipModule,
+    NgbAlertModule,
+    NgbModalModule,
+    NgbTooltipModule,
+    NgbDropdownModule,
+    NgApexchartsModule,
+    WidgetModule,
+    PageTitleModule,
+    NgxDropzoneModule,
+    AdvancedTableModule,
+    AdvancedRoutingModule,
+  ],
 })
-export class AcademicsModule { }
+export class AcademicsModule {}

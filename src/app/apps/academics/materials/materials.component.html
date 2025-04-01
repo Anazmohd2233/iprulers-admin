@@ -1,1 +1,16 @@
-<p>materials works!</p>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="header-title">Materials</h4>
+                <br>
+                <!-- table start -->
+                <app-advanced-table-users [tableData]="records" [columns]="columns" [pagination]="true" [tableName] = "tableName"
+                    [pageSizeOptions]="pageSizeOptions" [hasRowSelection]="true" [isSearchable]="true"
+                    (search)="searchData($event)" [isSortable]="false" (sort)="onSort($event)"
+                    tableClasses="table-striped">
+                </app-advanced-table-users>
+            </div> <!-- end card body-->
+        </div> <!-- end card -->
+    </div><!-- end col-->
+</div>
