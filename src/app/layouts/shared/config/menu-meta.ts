@@ -2,13 +2,30 @@ import { MenuItem } from '../models/menu.model';
 
 // menu items
 export const MENU: MenuItem[] = [
-    { key: 'navigation', label: 'Navigation', isTitle: true },
-    { key: 'users', label: 'Users', isTitle: false, icon: 'uil-briefcase', link: 'apps/user-list' },
-    { key: 'courses', label: 'Course', isTitle: false, icon: 'uil-briefcase', link: 'apps/courses' },
-    { key: 'quiz', label: 'Quiz', isTitle: false, icon: 'uil-copy-alt', link: 'apps/quiz' },
+    { key: 'dashboard', label: 'Dashboard', isTitle: false, icon: 'uil-briefcase', link: 'admin/dashboard' },
 
-    { key: 'banner', label: 'Banner', isTitle: false, icon: 'uil-copy-alt', link: 'apps/banner' },
-    { key: 'cert', label: 'Certificate', isTitle: false, icon: 'uil-copy-alt', link: 'apps/certificate' },
+
+     {
+        key: 'academics', label: 'Academics', isTitle: false, icon: 'uil-store', collapsed: true,
+        children: [
+            { key: 'courses', label: 'Courses', link: '/admin/courses', parentKey: 'academics' },
+            { key: 'materials', label: 'Materials', link: '/admin/materials', parentKey: 'academics' },
+            { key: 'categories', label: 'Categories', link: '/admin/categories', parentKey: 'academics' },
+            
+        ]
+    },
+    { key: 'students', label: 'Students', isTitle: false, icon: 'uil-briefcase', link: 'admin/students' },
+
+
+
+
+    { key: 'navigation', label: 'Navigation', isTitle: true },
+    { key: 'users', label: 'Users', isTitle: false, icon: 'uil-briefcase', link: 'admin/user-list' },
+    { key: 'courses', label: 'Course', isTitle: false, icon: 'uil-briefcase', link: 'admin/courses02' },
+    { key: 'quiz', label: 'Quiz', isTitle: false, icon: 'uil-copy-alt', link: 'admin/quiz' },
+
+    { key: 'banner', label: 'Banner', isTitle: false, icon: 'uil-copy-alt', link: 'admin/banner' },
+    { key: 'cert', label: 'Certificate', isTitle: false, icon: 'uil-copy-alt', link: 'admin/certificate' },
     { key: 'event', label: 'Events', isTitle: false, icon: 'uil-copy-alt', link: 'apps/events' },
 
 

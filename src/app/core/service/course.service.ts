@@ -67,4 +67,22 @@ export class CourseService {
 
     return this.http.get<CourseListResponse>(url, { headers });
   }
+
+  
+
+  // IP RULERS 
+
+
+
+  createCourse(formdata: any) {
+    const apiUrl = `${this.baseUrl}/admin/course/create`;
+    // console.log('apiurl for listing users', apiUrl)
+    this.authorization = localStorage.getItem("Authorization");
+
+    const headers = new HttpHeaders({
+      Authorization: this.authorization,
+    });
+
+    return this.http.post<any>(apiUrl, formdata, { headers });
+  }
 }

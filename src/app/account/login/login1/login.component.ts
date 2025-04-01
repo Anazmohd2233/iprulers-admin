@@ -70,7 +70,7 @@ export class LoginComponent implements OnInit {
         if (response.success) {
           console.log('response', response)
           // localStorage.setItem('Authorization', response.data.api_key);
-           this.router.navigate(['apps/user-list']);
+           this.router.navigate(['admin/user-list']);
           // this.router.navigate([this.returnUrl]);
         } else {
           this.error = response.message || 'Invalid login credentials.';

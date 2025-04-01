@@ -11,7 +11,13 @@ const routes: Routes = [
   { path: 'projects', loadChildren: () => import('./project/project.module').then(m => m.ProjectModule) },
   { path: 'tasks', loadChildren: () => import('./tasks/tasks.module').then(m => m.TasksModule) },
   { path: '', loadChildren: () => import('./crm/crm.module').then(m => m.CrmModule) },
-  { path: '', loadChildren: () => import('./users/users.module').then(m => m.UsersModule) }
+  { path: '', loadChildren: () => import('./users/users.module').then(m => m.UsersModule) },
+
+  { path: '', loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule) },
+  { path: '', loadChildren: () => import('./academics/academics.module').then(m => m.AcademicsModule) },
+  { path: '', loadChildren: () => import('./students/students.module').then(m => m.StudentsModule) },
+
+
 ];
 
 @NgModule({

@@ -12,7 +12,7 @@ import { EventsComponent } from './events/events.component';
 
 const routes: Routes = [
   {
-    path: 'dashboard',
+    path: 'dashboard02',
     component: CRMDashboardComponent
   },
   {
@@ -20,7 +20,7 @@ const routes: Routes = [
     component: CRMOrderListComponent
   },
   {
-    path: 'courses',
+    path: 'courses02',
     component: CRMClientsComponent
   },
   {
