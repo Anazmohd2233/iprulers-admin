@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { CategoriesComponent } from './categories/categories.component';
-import { CoursesComponent } from './courses/courses.component';
 import { MaterialsComponent } from './materials/materials.component';
+import { CoursesComponent } from './courses/course_list/courses.component';
+import { EditCourseComponent } from './courses/edit-course/edit-course.component';
 
 
 
@@ -21,6 +22,10 @@ const routes: Routes = [
   {
     path: 'materials',
     component: MaterialsComponent
+  },
+  {
+    path: 'edit_course',
+    component: EditCourseComponent
   },
 
 ];

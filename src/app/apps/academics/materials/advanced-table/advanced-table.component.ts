@@ -17,7 +17,6 @@ import { NgbSortableHeaderDirective, SortEvent } from "./sortable.directive";
 import { Router } from "@angular/router";
 import { EnrolledCourse } from "../models/mode-user-courses";
 import { UserProfileService } from "src/app/core/service/user.service";
-import { CertificateService } from "src/app/core/service/certificate.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { StudentService } from "src/app/core/service/student/student.service";
@@ -74,7 +73,6 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     private componentFactoryResolver: ComponentFactoryResolver,
     private router: Router,
     private userService: UserProfileService,
-    private certificateService: CertificateService
   ) {}
 
   ngAfterViewChecked(): void {

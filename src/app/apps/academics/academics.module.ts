@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { CoursesComponent } from "./courses/courses.component";
 import { MaterialsComponent } from "./materials/materials.component";
 import { CategoriesComponent } from "./categories/categories.component";
 import { AcademicsRoutingModule } from "./academics-routing.module";
@@ -11,6 +10,7 @@ import {
   NgbDatepickerModule,
   NgbDropdownModule,
   NgbModalModule,
+  NgbNavModule,
   NgbProgressbarModule,
   NgbTooltipModule,
 } from "@ng-bootstrap/ng-bootstrap";
@@ -23,12 +23,15 @@ import { NgxDropzoneModule } from "ngx-dropzone";
 import { AdvancedRoutingModule } from "src/app/pages/tables/advanced/advanced-routing.module";
 import { StudentsComponent } from "../students/students/students.component";
 import { AdvancedTableModule } from "./materials/advanced-table/advanced-table.module";
+import { EditCourseComponent } from './courses/edit-course/edit-course.component';
+import { CoursesComponent } from "./courses/course_list/courses.component";
 
 @NgModule({
   declarations: [
     CoursesComponent,
     MaterialsComponent,
     CategoriesComponent,
+    EditCourseComponent,
     
   ],
   imports: [
@@ -51,6 +54,8 @@ import { AdvancedTableModule } from "./materials/advanced-table/advanced-table.m
     NgxDropzoneModule,
     AdvancedTableModule,
     AdvancedRoutingModule,
+    NgbNavModule,
+    PageTitleModule,
   ],
 })
 export class AcademicsModule {}

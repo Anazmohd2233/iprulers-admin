@@ -6,17 +6,38 @@
         (ngSubmit)="onSubmitCreateCourse()"
       >
         <div class="mb-2">
-          <label for="username" class="form-label">Category Title</label>
+          <label for="username" class="form-label">Course Title</label>
           <input
             class="form-control"
             type="email"
-            id="name"
+            id="course_title"
             required
-            formControlName="category_title"
-            placeholder="Category Title"
+            formControlName="course_title"
+            placeholder="Course Title"
           />
         </div>
-
+  
+        <div class="mb-3">
+          <label for="username" class="form-label">Card Title</label>
+          <input
+            class="form-control"
+            type="email"
+            id="card_title"
+            required
+            formControlName="card_title"
+            placeholder="Card Title"
+          />
+        </div>
+  
+        <div class="mb-3">
+          <label class="form-label">Category</label>
+  
+          <select class="form-control" formControlName="category">
+            <option value="" disabled selected>Select Category</option>
+            <option value="true">1</option>
+            <option value="false">2</option>
+          </select>
+        </div>
   
       
         <br />
@@ -24,7 +45,7 @@
           <div class="col-12">
             <div class="card">
               <div class="card-body">
-                <h4 class="header-title m-t-0">Category image</h4>
+                <h4 class="header-title m-t-0">course image</h4>
   
                 <form #fileUpload="ngForm">
                   <ngx-dropzone
@@ -100,8 +121,7 @@
   
     
   <!-- page title -->
-  <h4 class="header-title">CATEGORIES</h4>
-
+  <h4>COURSES</h4>
   <!-- end page title -->
   <div class="col-xl-12">
     <div class="text-xl-end mt-xl-0 mt-2">
@@ -110,7 +130,7 @@
         class="btn btn-primary mb-2 me-2"
         (click)="open(addCourseModal)"
       >
-        Add New Categories
+        Add New Course
       </button>
       <!-- <button type="button" class="btn btn-light mb-2">Export</button> -->
     </div>
@@ -138,26 +158,15 @@
             <hr class="bg-dark-lighten my-3" />
   
             <!-- Button Section (Pushed to Bottom) -->
-        <!-- Button Section (Pushed to Bottom) -->
-<div class="mt-auto d-flex gap-2">
-  <button
-    class="btn w-50 btn-primary"
-    placement="top"
-    (click)="goToCourseDetails(course)"
-  >
-    <p class="mb-0 text-center">Edit</p>
-  </button>
-  <button
-    class="btn w-50 btn-primary"
-    placement="top"
-    (click)="goToCourseDetails(course)"
-  >
-    <p class="mb-0 text-center">Delete</p>
-  </button>
-</div>
-
-            
-
+            <div class="mt-auto">
+              <button
+                class="btn w-100 btn-primary"
+                placement="top"
+                (click)="goToCourseDetails(course)"
+              >
+                <p class="mb-0 text-center">Edit Course</p>
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: 'courses', loadChildren: () => import('./dashboards/dashboards.module').then(m => m.DashboardModule) },
   { path: 'pages', loadChildren: () => import('./custom-pages/custom-pages.module').then(m => m.CustomPagesModule) },
   { path: 'ui', loadChildren: () => import('./uikit/uikit.module').then(m => m.UikitModule) },
   { path: 'advanced-ui', loadChildren: () => import('./advanced-ui/advanced-ui.module').then(m => m.AdvancedUiModule) },

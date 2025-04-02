@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { CourseListResponse, CourseModalResponseById } from "src/app/apps/chat/banner/banner.module";
+import { CourseListResponse, CourseModalResponseById } from "src/app/apps/models/course";
 import { environment } from "src/environments/environment";
 
 @Injectable({

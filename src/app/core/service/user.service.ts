@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { User } from '../models/auth.models';
-import { UserResponse } from 'src/app/apps/users/models/model';
 import { environment } from 'src/environments/environment';
-import { CourseByIdResponse } from 'src/app/apps/users/models/mode-user-courses';
+import { UserResponse } from 'src/app/apps/models/model';
+import { CourseByIdResponse } from 'src/app/apps/models/mode-user-courses';
 
 @Injectable({ providedIn: 'root' })
 export class UserProfileService {

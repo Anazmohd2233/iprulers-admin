@@ -9,20 +9,17 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormArray, FormBuilder,Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Router } from "@angular/router";
-import { CourseService } from "src/app/core/service/course.service";
-import { CategoryService } from 'src/app/core/service/category/category.service';
-import { Course } from '../../models/course';
+import { CourseService } from 'src/app/core/service/course/course.service';
+import { Course } from 'src/app/apps/models/course';
 
 @Component({
-  selector: 'app-categories',
-  templateUrl: './categories.component.html',
-  styleUrls: ['./categories.component.scss']
+  selector: 'app-courses',
+  templateUrl: './courses.component.html',
+  styleUrls: ['./courses.component.scss']
 })
 
 
-
-
-export class CategoriesComponent implements OnInit {
+export class CoursesComponent implements OnInit {
   addCourseForm!: FormGroup;
 
   courses: Course[] = [];
@@ -42,7 +39,7 @@ export class CategoriesComponent implements OnInit {
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private categoryService: CategoryService
+    private courseService: CourseService
   ) {}
 
   ngOnInit(): void {
@@ -55,8 +52,9 @@ export class CategoriesComponent implements OnInit {
     this._fetchData();
 
     this.addCourseForm = this.fb.group({
-      category_title: ["", Validators.required],
-
+      course_title: ["", Validators.required],
+      card_title: ["", Validators.required],
+      category: ["", Validators.required],
 
     });
 
@@ -69,7 +67,7 @@ export class CategoriesComponent implements OnInit {
   
 
 
-    this.categoryService.getCategory(this.page).subscribe({
+    this.courseService.getCourses(this.page).subscribe({
       next: (response) => {
         if (response.success) {
           this.courses = response.data.courses;
@@ -105,32 +103,33 @@ export class CategoriesComponent implements OnInit {
       const formData = new FormData();
 
       // Add scalar values
-      formData.append("category_title", this.addCourseForm.value.category_title);
-
+      formData.append("course_title", this.addCourseForm.value.course_title);
+      formData.append("card_title", this.addCourseForm.value.card_title);
+      formData.append("category", this.addCourseForm.value.category);
 
      
       if (this.files) {
-        formData.append("category_img", this.files); // Single file for course image
+        formData.append("course_img", this.files); // Single file for course image
       }
 
    
-      this.categoryService.createCategory(formData).subscribe({
+      this.courseService.createCourse(formData).subscribe({
         next: (response) => {
-          console.log("response of create category - ", response);
+          console.log("response of create course - ", response);
           if (response.success) {
             this.resetForm();
             this.files = null;
            
           } else {
-            console.error("Failed to create category:", response.message);
+            console.error("Failed to create course:", response.message);
           }
         },
         error: (error) => {
-          console.error("Error creating category:", error);
+          console.error("Error creating course:", error);
         },
         complete: () => {
           this._fetchData();
-          console.log("category created successfully!...");
+          console.log("Course created successfully!...");
         },
       });
 
@@ -139,8 +138,9 @@ export class CategoriesComponent implements OnInit {
   }
   resetForm() {
     this.addCourseForm.reset({
-      category_title: "",
-
+      course_title: "",
+      card_title: "",
+      category: "",
     });
     this.files = null;
   }
@@ -179,10 +179,13 @@ export class CategoriesComponent implements OnInit {
     );
   }
 
+
+
   goToCourseDetails(course: any): void {
     // this.router.navigate(['dashboard/analytics']);
-    localStorage.setItem("courseId", course.id); // Save URLs only
-    this.router.navigate([`courses/details/${course.id}`]);
-  }
+    // localStorage.setItem("courseId", course.id);
+    // this.router.navigate([`courses/details/${course.id}`]);
+    this.router.navigate([`admin/edit_course`]);
 
+  }
 }
