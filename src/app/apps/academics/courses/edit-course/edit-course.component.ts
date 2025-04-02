@@ -1,8 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { Select2Data } from 'ng-select2-component';
+
 
 // type
 import { BreadcrumbItem } from 'src/app/shared/page-title/page-title.model';
+
+
+
+
 @Component({
   selector: 'app-edit-course',
   templateUrl: './edit-course.component.html',
@@ -21,15 +27,27 @@ export class EditCourseComponent implements OnInit {
   tabs7: number = 1;
   tabs8: number = 1;
 
-  dynamicTabs: number[] = [1, 2, 3, 4, 5];
-  counter: number = 0;
+
+
 
   constructor () { }
 
+  dynamicTabs: number[] = [1, 2, 3, 4, 5];
+  counter: number = 0;
+
+
+
+
   ngOnInit(): void {
-    this.pageTitle = [{ label: 'Base UI', path: '/' }, { label: 'Tabs', path: '/', active: true }];
+  
+
     this.counter = this.dynamicTabs.length + 1;
+
+    
+
+   
   }
+
 
   /**
    * prevents opening of tab
@@ -60,5 +78,6 @@ export class EditCourseComponent implements OnInit {
     this.dynamicTabs.push(this.counter++);
     event.preventDefault();
   }
+  
 
 }

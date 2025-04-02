@@ -1,17 +1,18 @@
 
 import { Component, ComponentFactoryResolver, EventEmitter, Input, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
 import { BreadcrumbItem } from 'src/app/shared/page-title/page-title.model';
-import { SortEvent } from './advanced-table/sortable.directive';
 import { UserProfileService } from 'src/app/core/service/user.service';
-import { Admin } from './models/model';
-import { Column } from './advanced-table/advanced-table.component';
+import { Admin } from '../../../materials/models/model';
+import { Column } from '../../../materials/advanced-table/advanced-table.component';
+import { SortEvent } from '../../../materials/advanced-table/sortable.directive';
+
 @Component({
-  selector: 'app-materials',
-  templateUrl: './materials.component.html',
-  styleUrls: ['./materials.component.scss']
+  selector: 'app-edit-notes',
+  templateUrl: './edit-notes.component.html',
+  styleUrls: ['./edit-notes.component.scss']
 })
 
-export class MaterialsComponent implements OnInit {
+export class EditNotesComponent implements OnInit {
 
   pageTitle: BreadcrumbItem[] = [];
    records: Admin[] = [];
@@ -25,7 +26,7 @@ export class MaterialsComponent implements OnInit {
   limit: number = 0;
 
   page: number = 1;
-  tableName:string="material";
+  tableName:string="notes";
 
   constructor(private userService: UserProfileService) {}
   
@@ -71,23 +72,18 @@ export class MaterialsComponent implements OnInit {
    */
   initTableCofig(): void {
     this.columns = [
+     
       {
-        name: 'type',
-        label: 'Type',
-        formatter: (record: Admin) => "pdf",
-        width: 50,
-      },
-      {
-        name: 'name',
-        label: 'Name',
+        name: 'notes',
+        label: 'Notes',
         formatter: (record: Admin) => record.name,
-        width: 900,
+        width: 1100,
       },
       {
-        name: 'action',
-        label: 'Edit',
+        name: '',
+        label: '',
         formatter: () => '', 
-        width: 200
+        width: 100
       },
     
     ];
@@ -153,5 +149,7 @@ export class MaterialsComponent implements OnInit {
  
 
 }
+
+
 
 

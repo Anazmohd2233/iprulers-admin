@@ -25,6 +25,10 @@ import { StudentsComponent } from "../students/students/students.component";
 import { AdvancedTableModule } from "./materials/advanced-table/advanced-table.module";
 import { EditCourseComponent } from './courses/edit-course/edit-course.component';
 import { CoursesComponent } from "./courses/course_list/courses.component";
+import { EditNotesComponent } from './courses/edit-course/edit-notes/edit-notes.component';
+import { EditCourseDetailsComponent } from './courses/edit-course/edit-course-details/edit-course-details.component';
+import { EditLabComponent } from './courses/edit-course/edit-lab/edit-lab.component';
+import { EditModulesComponent } from './courses/edit-course/edit-modules/edit-modules.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +36,10 @@ import { CoursesComponent } from "./courses/course_list/courses.component";
     MaterialsComponent,
     CategoriesComponent,
     EditCourseComponent,
+    EditNotesComponent,
+    EditCourseDetailsComponent,
+    EditLabComponent,
+    EditModulesComponent,
     
   ],
   imports: [

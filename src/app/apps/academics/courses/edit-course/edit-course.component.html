@@ -1,106 +1,73 @@
-
 <div class="col-xl-12">
-    <div class="card">
-        <div class="card-body">
-            <h4 class="header-title">Tabs Justified</h4>
-          
+  <div class="card">
+    <div class="card-body">
+      <h4 class="header-title mb-3">Course Details</h4>
 
-            <ul ngbNav #nav2="ngbNav" [(activeId)]="tabs2" class="nav-pills bg-nav-pills nav-justified mb-3">
-                <li [ngbNavItem]="1">
-                    <a ngbNavLink class="rounded-0">
-                        <i class="mdi mdi-home-variant d-md-none d-block"></i>
-                        <span class="d-none d-md-block">Course</span>
-                    </a>
-                    <ng-template ngbNavContent>
-                        <ng-container *ngTemplateOutlet="Tab1"></ng-container>
-                    </ng-template>
-                </li>
-                <li [ngbNavItem]="2">
-                    <a ngbNavLink class="rounded-0">
-                        <i class="mdi mdi-account-circle d-md-none d-block"></i>
-                        <span class="d-none d-md-block">Modules & Sessions</span>
-                    </a>
-                    <ng-template ngbNavContent>
-                        <ng-container *ngTemplateOutlet="Tab2"></ng-container>
-                    </ng-template>
-                </li>
-                <li [ngbNavItem]="3">
-                    <a ngbNavLink class="rounded-0">
-                        <i class="mdi mdi-cog-outline d-md-none d-block"></i>
-                        <span class="d-none d-md-block">Notes
-                        </span>
-                    </a>
-                    <ng-template ngbNavContent>
-                        <ng-container *ngTemplateOutlet="Tab3"></ng-container>
-                    </ng-template>
-                </li>
-                <li [ngbNavItem]="4">
-                    <a ngbNavLink class="rounded-0">
-                        <i class="mdi mdi-cog-outline d-md-none d-block"></i>
-                        <span class="d-none d-md-block">Lab</span>
-                    </a>
-                    <ng-template ngbNavContent>
-                        <ng-container *ngTemplateOutlet="Tab4"></ng-container>
-                    </ng-template>
-                </li>
-            </ul>
-            <div [ngbNavOutlet]="nav2"></div>
-
-        </div> <!-- end card-body -->
-    </div> <!-- end card-->
+      <ul
+        ngbNav
+        #nav2="ngbNav"
+        [(activeId)]="tabs1"
+        class="nav-pills bg-nav-pills nav-justified mb-3"
+      >
+        <li [ngbNavItem]="1">
+          <a ngbNavLink class="rounded-0">
+            <i class="mdi mdi-home-variant d-md-none d-block"></i>
+            <span class="d-none d-md-block">Course</span>
+          </a>
+          <ng-template ngbNavContent>
+            <ng-container *ngTemplateOutlet="Tab1"></ng-container>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+          <a ngbNavLink class="rounded-0">
+            <i class="mdi mdi-account-circle d-md-none d-block"></i>
+            <span class="d-none d-md-block">Modules & Sessions</span>
+          </a>
+          <ng-template ngbNavContent>
+            <ng-container *ngTemplateOutlet="Tab2"></ng-container>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="3">
+          <a ngbNavLink class="rounded-0">
+            <i class="mdi mdi-cog-outline d-md-none d-block"></i>
+            <span class="d-none d-md-block">Notes </span>
+          </a>
+          <ng-template ngbNavContent>
+            <ng-container *ngTemplateOutlet="Tab3"></ng-container>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="4">
+          <a ngbNavLink class="rounded-0">
+            <i class="mdi mdi-cog-outline d-md-none d-block"></i>
+            <span class="d-none d-md-block">Lab</span>
+          </a>
+          <ng-template ngbNavContent>
+            <ng-container *ngTemplateOutlet="Tab4"></ng-container>
+          </ng-template>
+        </li>
+      </ul>
+      <div [ngbNavOutlet]="nav2"></div>
+    </div>
+    <!-- end card-body -->
+  </div>
+  <!-- end card-->
 </div>
 
-
 <ng-template #Tab1>
-    <p>Food truck quinoa dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-        Cum
-        sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies
-        nec,
-        pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
-    <p class="mb-0">Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
-        imperdiet
-        a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus
-        elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae,
-        eleifend
-        ac, enim.</p>
+<app-edit-course-details></app-edit-course-details>
 </ng-template>
 
 <ng-template #Tab2>
-    <p>Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a,
-        venenatis
-        vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum
-        semper
-        nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.</p>
-    <p class="mb-0">Food truck quinoa dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.
-        Aenean
-        massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis,
-        ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
+<app-edit-modules></app-edit-modules>
 </ng-template>
 
 <ng-template #Tab3>
-    <p>Food truck quinoa dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.
-        Cum
-        sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies
-        nec,
-        pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
-    <p class="mb-0">Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
-        imperdiet
-        a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus
-        elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae,
-        eleifend
-        ac, enim.</p>
+    <app-edit-notes></app-edit-notes>
+
 </ng-template>
 
 <ng-template #Tab4>
-    <p>ANas.................*******************it. Aenean commodo ligula eget dolor. Aenean massa.
-        Cum
-        sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies
-        nec,
-        pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.</p>
-    <p class="mb-0">Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut,
-        imperdiet
-        a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus
-        elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae,
-        eleifend
-        ac, enim.</p>
+  <app-edit-lab></app-edit-lab>
 </ng-template>
+
+

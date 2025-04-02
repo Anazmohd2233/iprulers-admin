@@ -1,0 +1,155 @@
+<div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <form (ngSubmit)="onSubmit()" #newProject="ngForm">
+            <div class="row">
+              <div class="col-xl-4">
+                <div class="mb-4">
+                  <ng-container>
+                    <div class="btn-group mb-2 me-1">
+                      <ng-container
+                        *ngTemplateOutlet="
+                          DropdownColored;
+                          context: { color: 'primary', text: 'Published' }
+                        "
+                      >
+                      </ng-container>
+                    </div>
+                    <!-- /btn-group -->
+                  </ng-container>
+                </div>
+
+                <div class="mb-3">
+                  <label for="projectname" class="form-label">Title</label>
+                  <input
+                    type="text"
+                    id="projectname"
+                    class="form-control"
+                    name="projectName"
+                    [(ngModel)]="projectName"
+                    #name="ngModel"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="projectname" class="form-label">Card Title</label>
+                  <input
+                    type="text"
+                    id="projectname"
+                    class="form-control"
+                    name="projectName"
+                    [(ngModel)]="projectName"
+                    #name="ngModel"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="project-overview" class="form-label"
+                    >Description</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="project-overview"
+                    rows="3"
+                    name="projectOverview"
+                    [(ngModel)]="projectOverview"
+                    #overview="ngModel"
+                  ></textarea>
+                </div>
+              </div>
+              <!-- end col-->
+
+              <div
+                class="col-xl-4 d-flex flex-column align-items-center text-center h-100"
+              >
+                <div class="me-15 mb-2">
+                  <img
+                    src="assets/images/users/avatar-6.jpg"
+                    alt="image"
+                    class="img-fluid"
+                    style="width: 150px; height: 150px; object-fit: cover"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <button type="button" class="btn btn-danger mb-2">
+                    Edit Image
+                  </button>
+                </div>
+              </div>
+
+              <div class="col-xl-4">
+                <div class="mb-3">
+                  <label for="projectname" class="form-label"
+                    >Duration (Hours)
+                  </label>
+                  <input
+                    type="text"
+                    id="projectname"
+                    class="form-control"
+                    name="projectName"
+                    [(ngModel)]="projectName"
+                    #name="ngModel"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="project-overview" class="form-label">Level</label>
+                  <select2 [data]="level" (update)="addMember($event)">
+                  </select2>
+                </div>
+
+                <div class="mb-3">
+                  <label for="projectname" class="form-label">Rating</label>
+                  <input
+                    type="text"
+                    id="projectname"
+                    class="form-control"
+                    name="projectName"
+                    [(ngModel)]="projectName"
+                    #name="ngModel"
+                  />
+                </div>
+
+                <div class="mb-3">
+                  <label for="project-overview" class="form-label"
+                    >Overview</label
+                  >
+                  <textarea
+                    class="form-control"
+                    id="project-overview"
+                    rows="3"
+                    name="projectOverview"
+                    [(ngModel)]="projectOverview"
+                    #overview="ngModel"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col">
+                <button class="btn btn-primary" type="submit">Submit Changes</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <!-- end card-body -->
+      </div>
+      <!-- end card-->
+    </div>
+    <!-- end col-->
+  </div>
+
+
+  <ng-template #DropdownColored let-color="color" let-text="text">
+    <div ngbDropdown>
+      <button class="btn btn-{{ color }}" id="dropdownBasic1" ngbDropdownToggle>
+        {{ text }}
+      </button>
+      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+        <button ngbDropdownItem>Published</button>
+        <button ngbDropdownItem>Draft</button>
+      </div>
+    </div>
+  </ng-template>

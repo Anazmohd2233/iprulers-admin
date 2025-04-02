@@ -59,6 +59,11 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   @ViewChildren("advancedTable") advancedTable!: any;
 
     addStudentForm!: FormGroup;
+    addLabForm!: FormGroup;
+    addMaterialForm!: FormGroup;
+    addNoteForm!: FormGroup;
+
+
     files: File | null = null; // Single file object
 
   
@@ -94,6 +99,22 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       confirm: ["", Validators.required], // Confirm password field
 
     });
+
+    this.addMaterialForm = this.fb.group({
+      category_title: ["", Validators.required],  // Material Title (Matches formControlName)
+      file: [null, Validators.required] // File Upload Validation
+    });
+
+    this.addLabForm = this.fb.group({
+      category_title: ["", Validators.required],  // Lab Title (Matches formControlName)
+      file: [null, Validators.required] // File Upload Validation
+    });
+
+    this.addNoteForm = this.fb.group({
+      category_title: ["", Validators.required],  // Lab Title (Matches formControlName)
+      file: [null, Validators.required] // File Upload Validation
+    });
+    
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -246,7 +267,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
 
     
 
-  onSubmitCreateCourse(): void {
+  onSubmitCreateStudent(): void {
     if (this.addStudentForm.valid) {
       const formData = new FormData();
 
@@ -287,6 +308,52 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
 
     }
   }
+
+
+
+  //Add Labs
+  onSubmitAddLabs(): void {
+    if (this.addStudentForm.valid) {
+      const formData = new FormData();
+
+      // Add scalar values
+      formData.append("name", this.addStudentForm.value.name);
+      formData.append("username", this.addStudentForm.value.username);
+      formData.append("email", this.addStudentForm.value.email);
+      formData.append("password", this.addStudentForm.value.pwd);
+
+      formData.append("confirm", this.addStudentForm.value.confirm);
+
+
+     
+      if (this.files) {
+        formData.append("img", this.files); // Single file for course image
+      }
+
+   
+      this.studentService.createStudent(formData).subscribe({
+        next: (response) => {
+          console.log("response of create student - ", response);
+          if (response.success) {
+            this.resetForm();
+            this.files = null;
+           
+          } else {
+            console.error("Failed to create student:", response.message);
+          }
+        },
+        error: (error) => {
+          console.error("Error creating student:", error);
+        },
+        complete: () => {
+          console.log("student created successfully!...");
+        },
+      });
+
+
+    }
+  }
+
   resetForm() {
     this.addStudentForm.reset({
       name: "",

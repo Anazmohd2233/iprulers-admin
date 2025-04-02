@@ -1,12 +1,10 @@
-
-<ng-template #addStudentModal let-modal>
-    <div class="modal-body">
-      <form
-        class="ps-3 pe-3"
-        [formGroup]="addStudentForm"
-        (ngSubmit)="onSubmitCreateCourse()"
-      >
-
+<ng-template #addMaterialModal let-modal>
+  <div class="modal-body">
+    <form
+      class="ps-3 pe-3"
+      [formGroup]="addMaterialForm"
+      (ngSubmit)="onSubmitCreateStudent()"
+    >
       <div class="mb-2">
         <label for="username" class="form-label">Material Title</label>
         <input
@@ -19,8 +17,6 @@
         />
       </div>
 
-
-    
       <br />
       <div class="row">
         <div class="col-12">
@@ -30,7 +26,7 @@
 
               <form #fileUpload="ngForm">
                 <ngx-dropzone
-                [multiple]="false"
+                  [multiple]="false"
                   (change)="onSelectImage($event)"
                   class="dropzone"
                   accept="image/jpeg,image/jpg,image/png,image/gif"
@@ -45,8 +41,7 @@
                 <div class="dropzone-previews mt-3" id="file-previews">
                   <!-- file preview template -->
                   <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
-                    <div id="uploadPreviewTemplate" *ngIf="files">
-
+                  <div id="uploadPreviewTemplate" *ngIf="files">
                     <div class="card mt-1 mb-0 shadow-none border">
                       <div class="p-2">
                         <div class="row align-items-center">
@@ -89,14 +84,341 @@
         </div>
         <!-- end col-->
       </div>
-  
+
+      <div class="mb-3 text-center">
+        <button class="btn btn-primary" type="submit">Add Material</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #addLabs let-modal>
+  <div class="modal-body">
+    <form
+      class="ps-3 pe-3"
+      [formGroup]="addNoteForm"
+      (ngSubmit)="onSubmitAddLabs()"
+    >
+      <div class="mb-2">
+        <label for="username" class="form-label">Lab Title</label>
+        <input
+          class="form-control"
+          type="email"
+          id="name"
+          required
+          formControlName="category_title"
+          placeholder="Category Title"
+        />
+      </div>
+
+      <br />
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title m-t-0">Note File</h4>
+
+              <form #fileUpload="ngForm">
+                <ngx-dropzone
+                  [multiple]="false"
+                  (change)="onSelectImage($event)"
+                  class="dropzone"
+                  accept="image/jpeg,image/jpg,image/png,image/gif"
+                >
+                  <ngx-dropzone-label>
+                    <i class="h1 text-muted dripicons-cloud-upload"></i>
+                    <h3>Drop files here or click to upload.</h3>
+                  </ngx-dropzone-label>
+                </ngx-dropzone>
+
+                <!-- Preview -->
+                <div class="dropzone-previews mt-3" id="file-previews">
+                  <!-- file preview template -->
+                  <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
+                  <div id="uploadPreviewTemplate" *ngIf="files">
+                    <div class="card mt-1 mb-0 shadow-none border">
+                      <div class="p-2">
+                        <div class="row align-items-center">
+                          <div class="col-auto">
+                            <img
+                              class="avatar-sm rounded bg-light"
+                              [alt]="files.name"
+                              [src]="getPreviewUrlImg(files)"
+                            />
+                          </div>
+                          <div class="col ps-0">
+                            <a
+                              href="javascript:void(0);"
+                              class="text-muted fw-bold"
+                              >{{ files.name }}</a
+                            >
+                            <p class="mb-0">{{ getSize(files) }}</p>
+                          </div>
+                          <div class="col-auto">
+                            <!-- Button -->
+                            <a
+                              href="javascript:void(0)"
+                              class="btn btn-link btn-lg text-muted"
+                              (click)="onRemoveFile($event)"
+                            >
+                              <i class="dripicons-cross"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end file preview template -->
+                </div>
+              </form>
+            </div>
+            <!-- end card-body -->
+          </div>
+          <!-- end card-->
+        </div>
+        <!-- end col-->
+      </div>
+
+      <div class="mb-3 text-center">
+        <button class="btn btn-primary" type="submit">Add Labs</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #addNotes let-modal>
+  <div class="modal-body">
+    <form
+      class="ps-3 pe-3"
+      [formGroup]="addLabForm"
+      (ngSubmit)="onSubmitAddLabs()"
+    >
+      <div class="mb-2">
+        <label for="username" class="form-label">Note Title</label>
+        <input
+          class="form-control"
+          type="email"
+          id="name"
+          required
+          formControlName="category_title"
+          placeholder="Category Title"
+        />
+      </div>
+
+      <br />
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title m-t-0">Lab File</h4>
+
+              <form #fileUpload="ngForm">
+                <ngx-dropzone
+                  [multiple]="false"
+                  (change)="onSelectImage($event)"
+                  class="dropzone"
+                  accept="image/jpeg,image/jpg,image/png,image/gif"
+                >
+                  <ngx-dropzone-label>
+                    <i class="h1 text-muted dripicons-cloud-upload"></i>
+                    <h3>Drop files here or click to upload.</h3>
+                  </ngx-dropzone-label>
+                </ngx-dropzone>
+
+                <!-- Preview -->
+                <div class="dropzone-previews mt-3" id="file-previews">
+                  <!-- file preview template -->
+                  <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
+                  <div id="uploadPreviewTemplate" *ngIf="files">
+                    <div class="card mt-1 mb-0 shadow-none border">
+                      <div class="p-2">
+                        <div class="row align-items-center">
+                          <div class="col-auto">
+                            <img
+                              class="avatar-sm rounded bg-light"
+                              [alt]="files.name"
+                              [src]="getPreviewUrlImg(files)"
+                            />
+                          </div>
+                          <div class="col ps-0">
+                            <a
+                              href="javascript:void(0);"
+                              class="text-muted fw-bold"
+                              >{{ files.name }}</a
+                            >
+                            <p class="mb-0">{{ getSize(files) }}</p>
+                          </div>
+                          <div class="col-auto">
+                            <!-- Button -->
+                            <a
+                              href="javascript:void(0)"
+                              class="btn btn-link btn-lg text-muted"
+                              (click)="onRemoveFile($event)"
+                            >
+                              <i class="dripicons-cross"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end file preview template -->
+                </div>
+              </form>
+            </div>
+            <!-- end card-body -->
+          </div>
+          <!-- end card-->
+        </div>
+        <!-- end col-->
+      </div>
+
+      <div class="mb-3 text-center">
+        <button class="btn btn-primary" type="submit">Add Labs</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+  <ng-template #addStudentModal let-modal>
+    <div class="modal-body">
+      <form
+        class="ps-3 pe-3"
+        [formGroup]="addStudentForm"
+        (ngSubmit)="onSubmitCreateStudent()"
+      >
+        <div class="mb-2">
+          <label for="username" class="form-label">Name</label>
+          <input
+            class="form-control"
+            type="email"
+            id="name"
+            required
+            formControlName="name"
+            placeholder="Student Name"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="username" class="form-label">Username</label>
+          <input
+            class="form-control"
+            type="email"
+            id="username"
+            required
+            formControlName="username"
+            placeholder="Username"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input
+            class="form-control"
+            type="email"
+            id="email"
+            required
+            formControlName="email"
+            placeholder="Student Email"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="Password" class="form-label">Password</label>
+          <input
+            class="form-control"
+            type="email"
+            id="Password"
+            required
+            formControlName="pwd"
+            placeholder="Password"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="username" class="form-label">Confirm Password</label>
+          <input
+            class="form-control"
+            type="email"
+            id="confirm"
+            required
+            formControlName="confirm"
+            placeholder="Confirm password"
+          />
+        </div>
+
+        <br />
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="header-title m-t-0">Image</h4>
+
+                <form #fileUpload="ngForm">
+                  <ngx-dropzone
+                    [multiple]="false"
+                    (change)="onSelectImage($event)"
+                    class="dropzone"
+                    accept="image/jpeg,image/jpg,image/png,image/gif"
+                  >
+                    <ngx-dropzone-label>
+                      <i class="h1 text-muted dripicons-cloud-upload"></i>
+                      <h3>Drop files here or click to upload.</h3>
+                    </ngx-dropzone-label>
+                  </ngx-dropzone>
+
+                  <!-- Preview -->
+                  <div class="dropzone-previews mt-3" id="file-previews">
+                    <!-- file preview template -->
+                    <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
+                    <div id="uploadPreviewTemplate" *ngIf="files">
+                      <div class="card mt-1 mb-0 shadow-none border">
+                        <div class="p-2">
+                          <div class="row align-items-center">
+                            <div class="col-auto">
+                              <img
+                                class="avatar-sm rounded bg-light"
+                                [alt]="files.name"
+                                [src]="getPreviewUrlImg(files)"
+                              />
+                            </div>
+                            <div class="col ps-0">
+                              <a
+                                href="javascript:void(0);"
+                                class="text-muted fw-bold"
+                                >{{ files.name }}</a
+                              >
+                              <p class="mb-0">{{ getSize(files) }}</p>
+                            </div>
+                            <div class="col-auto">
+                              <!-- Button -->
+                              <a
+                                href="javascript:void(0)"
+                                class="btn btn-link btn-lg text-muted"
+                                (click)="onRemoveFile($event)"
+                              >
+                                <i class="dripicons-cross"></i>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end file preview template -->
+                  </div>
+                </form>
+              </div>
+              <!-- end card-body -->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col-->
+        </div>
+
         <div class="mb-3 text-center">
           <button class="btn btn-primary" type="submit">Add Material</button>
         </div>
       </form>
     </div>
-  </ng-template><form #displayForm="ngForm" *ngIf="isSearchable">
-
+  </ng-template>
 
   <div class="row">
     <div class="col-12 col-sm-6" *ngIf="pageSizeOptions.length">
@@ -109,7 +431,7 @@
                     entries</label>
             </div> -->
 
-      <div class="text-center text-sm-start">
+      <div class="text-center text-sm-start" *ngIf="tableName == 'material'">
         <label class="d-inline"
           >Search:
           <input
@@ -126,23 +448,63 @@
       </div>
     </div>
     <!-- end col-->
-    <div class="col-12" [class.col-sm-6]="pageSizeOptions.length">
+    <div
+      class="col-12"
+      [class.col-sm-6]="pageSizeOptions.length"
+      *ngIf="tableName == 'material'"
+    >
       <div
         class="d-flex align-items-center justify-content-center justify-content-sm-end"
       >
         <button
           type="button"
           class="btn btn-primary mb-2 me-2"
-          (click)="open(addStudentModal)"
+          (click)="open(addMaterialModal)"
         >
           Add Material
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="col-12"
+      [class.col-sm-6]="pageSizeOptions.length"
+      *ngIf="tableName == 'labs'"
+    >
+      <div
+        class="d-flex align-items-center justify-content-center justify-content-sm-end"
+      >
+        <button
+          type="button"
+          class="btn btn-primary mb-2 me-2"
+          (click)="open(addLabs)"
+        >
+          Add Lab
+        </button>
+      </div>
+    </div>
+
+    <div
+      class="col-12"
+      [class.col-sm-6]="pageSizeOptions.length"
+      *ngIf="tableName == 'notes'"
+    >
+      <div
+        class="d-flex align-items-center justify-content-center justify-content-sm-end"
+      >
+        <button
+          type="button"
+          class="btn btn-primary mb-2 me-2"
+          (click)="open(addNotes)"
+        >
+          Add Notes
         </button>
       </div>
     </div>
     <!-- end col-->
   </div>
   <!-- end row -->
-</form>
+
 
 <div class="table-responsive">
   <table
@@ -220,11 +582,18 @@
           <ng-container *ngIf="column.name !== 'action'">
             <div [innerHtml]="callFormatter(column, record)"></div>
           </ng-container>
-          <ng-container *ngIf="column.name === 'action'">
+          <ng-container
+            *ngIf="column.name === 'action' && tableName == 'material'"
+          >
             <button (click)="openCourses(record)" class="btn btn-primary me-2">
               Edit
             </button>
             <button (click)="openCourses(record)" class="btn btn-primary">
+              Delete
+            </button>
+          </ng-container>
+          <ng-container *ngIf="column.name === '' && (tableName == 'labs' ||  tableName == 'notes' )">
+            <button (click)="openCourses(record)" class="btn btn-danger">
               Delete
             </button>
           </ng-container>
@@ -250,148 +619,3 @@
     </ngb-pagination>
   </div>
 </div>
-
-
-
-
-
-
-<ng-template #addStudentModal let-modal>
-  <div class="modal-body">
-    <form
-      class="ps-3 pe-3"
-      [formGroup]="addStudentForm"
-      (ngSubmit)="onSubmitCreateCourse()"
-    >
-      <div class="mb-2">
-        <label for="username" class="form-label">Name</label>
-        <input
-          class="form-control"
-          type="email"
-          id="name"
-          required
-          formControlName="name"
-          placeholder="Student Name"
-        />
-      </div>
-
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input
-          class="form-control"
-          type="email"
-          id="username"
-          required
-          formControlName="username"
-          placeholder="Username"
-        />
-      </div>
-
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input
-          class="form-control"
-          type="email"
-          id="email"
-          required
-          formControlName="email"
-          placeholder="Student Email"
-        />
-      </div>
-      <div class="mb-3">
-        <label for="Password" class="form-label">Password</label>
-        <input
-          class="form-control"
-          type="email"
-          id="Password"
-          required
-          formControlName="pwd"
-          placeholder="Password"
-        />
-      </div>
-      <div class="mb-3">
-        <label for="username" class="form-label">Confirm Password</label>
-        <input
-          class="form-control"
-          type="email"
-          id="confirm"
-          required
-          formControlName="confirm"
-          placeholder="Confirm password"
-        />
-      </div>
-
-      <br />
-      <div class="row">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="header-title m-t-0">Image</h4>
-
-              <form #fileUpload="ngForm">
-                <ngx-dropzone
-                  [multiple]="false"
-                  (change)="onSelectImage($event)"
-                  class="dropzone"
-                  accept="image/jpeg,image/jpg,image/png,image/gif"
-                >
-                  <ngx-dropzone-label>
-                    <i class="h1 text-muted dripicons-cloud-upload"></i>
-                    <h3>Drop files here or click to upload.</h3>
-                  </ngx-dropzone-label>
-                </ngx-dropzone>
-
-                <!-- Preview -->
-                <div class="dropzone-previews mt-3" id="file-previews">
-                  <!-- file preview template -->
-                  <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
-                  <div id="uploadPreviewTemplate" *ngIf="files">
-                    <div class="card mt-1 mb-0 shadow-none border">
-                      <div class="p-2">
-                        <div class="row align-items-center">
-                          <div class="col-auto">
-                            <img
-                              class="avatar-sm rounded bg-light"
-                              [alt]="files.name"
-                              [src]="getPreviewUrlImg(files)"
-                            />
-                          </div>
-                          <div class="col ps-0">
-                            <a
-                              href="javascript:void(0);"
-                              class="text-muted fw-bold"
-                              >{{ files.name }}</a
-                            >
-                            <p class="mb-0">{{ getSize(files) }}</p>
-                          </div>
-                          <div class="col-auto">
-                            <!-- Button -->
-                            <a
-                              href="javascript:void(0)"
-                              class="btn btn-link btn-lg text-muted"
-                              (click)="onRemoveFile($event)"
-                            >
-                              <i class="dripicons-cross"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end file preview template -->
-                </div>
-              </form>
-            </div>
-            <!-- end card-body -->
-          </div>
-          <!-- end card-->
-        </div>
-        <!-- end col-->
-      </div>
-
-      <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">Add Material</button>
-      </div>
-    </form>
-  </div>
-</ng-template>
