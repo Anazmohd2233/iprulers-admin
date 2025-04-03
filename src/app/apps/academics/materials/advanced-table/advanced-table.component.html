@@ -12,8 +12,8 @@
           type="email"
           id="name"
           required
-          formControlName="category_title"
-          placeholder="Category Title"
+          formControlName=""
+          placeholder="Material title"
         />
       </div>
 
@@ -106,8 +106,8 @@
           type="email"
           id="name"
           required
-          formControlName="category_title"
-          placeholder="Category Title"
+          formControlName=""
+          placeholder="Add lab title here"
         />
       </div>
 
@@ -200,8 +200,8 @@
           type="email"
           id="name"
           required
-          formControlName="category_title"
-          placeholder="Category Title"
+          formControlName=""
+          placeholder="Add note title here"
         />
       </div>
 
@@ -274,7 +274,7 @@
       </div>
 
       <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">Add Labs</button>
+        <button class="btn btn-primary" type="submit">Add Notes</button>
       </div>
     </form>
   </div>
@@ -602,7 +602,7 @@
     </tbody>
   </table>
 
-  <div class="d-flex flex-wrap justify-content-between p-2" *ngIf="pagination">
+  <!-- <div class="d-flex flex-wrap justify-content-between p-2" *ngIf="pagination">
     <div>
       Showing {{ service.startIndex }} to {{ service.endIndex }} of
       {{ service.totalRecords }} entries
@@ -617,5 +617,5 @@
       (pageChange)="paginate()"
     >
     </ngb-pagination>
-  </div>
+  </div> -->
 </div>
