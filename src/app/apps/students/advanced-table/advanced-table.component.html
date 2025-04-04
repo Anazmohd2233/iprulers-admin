@@ -263,7 +263,7 @@
             <div [innerHtml]="callFormatter(column, record)"></div>
           </ng-container>
           <ng-container *ngIf="column.name === 'action'">
-            <button (click)="openCourses(record)" class="btn btn-primary">
+            <button (click)="editStudent(record)" class="btn btn-primary">
               Edit
             </button>
           </ng-container>

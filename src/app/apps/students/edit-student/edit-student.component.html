@@ -1,0 +1,58 @@
+<h4 class="mb-3 mt-3">Students Details</h4>
+<app-profile-userbox [student]="student"></app-profile-userbox>
+
+<div class="col-xl-12">
+  <div class="card">
+    <div class="card-body">
+      <ul
+        ngbNav
+        #nav2="ngbNav"
+        [(activeId)]="tabs1"
+        class="nav-pills bg-nav-pills nav-justified mb-3"
+      >
+        <li [ngbNavItem]="1">
+          <a ngbNavLink class="rounded-0">
+            <i class="mdi mdi-home-variant d-md-none d-block"></i>
+            <span class="d-none d-md-block">Profile</span>
+          </a>
+          <ng-template ngbNavContent>
+            <ng-container *ngTemplateOutlet="Tab1"></ng-container>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+          <a ngbNavLink class="rounded-0">
+            <i class="mdi mdi-account-circle d-md-none d-block"></i>
+            <span class="d-none d-md-block">Courses</span>
+          </a>
+          <ng-template ngbNavContent>
+            <ng-container *ngTemplateOutlet="Tab2"></ng-container>
+          </ng-template>
+        </li>
+        <li [ngbNavItem]="3">
+          <a ngbNavLink class="rounded-0">
+            <i class="mdi mdi-cog-outline d-md-none d-block"></i>
+            <span class="d-none d-md-block">Materials </span>
+          </a>
+          <ng-template ngbNavContent>
+            <ng-container *ngTemplateOutlet="Tab3"></ng-container>
+          </ng-template>
+        </li>
+      </ul>
+      <div [ngbNavOutlet]="nav2"></div>
+    </div>
+    <!-- end card-body -->
+  </div>
+  <!-- end card-->
+</div>
+
+<ng-template #Tab1>
+  <app-edit-student-details></app-edit-student-details>
+</ng-template>
+
+<ng-template #Tab2>
+  <app-student-courses></app-student-courses>
+</ng-template>
+
+<ng-template #Tab3>
+  <app-student-materials></app-student-materials>
+</ng-template>

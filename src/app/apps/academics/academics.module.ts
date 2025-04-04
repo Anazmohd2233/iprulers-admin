@@ -45,7 +45,6 @@ import { EditModulesComponent } from './courses/edit-course/edit-modules/edit-mo
   imports: [
     CommonModule,
     AcademicsRoutingModule,
-    CommonModule,
     FormsModule,
     SimplebarAngularModule,
     Select2Module,

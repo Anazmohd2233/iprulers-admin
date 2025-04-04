@@ -1,1 +1,45 @@
-<h1>Hello Admin </h1>
+<h4 class="mt-3 mb-3">Dashboard</h4>
+<div class="row">
+    <div class="col-xl-5 col-lg-6">
+        <div class="row">
+            <div class="col-sm-6" *ngFor="let item of statisticsData1">
+                <!-- sample widget-->
+                <app-widget-statistics [title]="item.title" [description]="item.description" [stats]="item.stats"
+                    [trendNumber]="item.trendNumber" [trendTime]="item.trendTime" [icon]="item.icon"
+                    [trendIcon]="item.trendIcon" [trendTextClass]="item.trendTextClass!"></app-widget-statistics>
+            </div>
+            <!-- end col -->
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6" *ngFor="let item of statisticsData2">
+                <!-- sample widget-->
+                <app-widget-statistics [title]="item.title" [description]="item.description" [stats]="item.stats"
+                    [trendNumber]="item.trendNumber" [trendTime]="item.trendTime" [icon]="item.icon"
+                    [trendIcon]="item.trendIcon" [trendTextClass]="item.trendTextClass!"></app-widget-statistics>
+            </div>
+            <!-- end col -->
+        </div>
+    </div>
+    <!-- end col -->
+    <div class="col-xl-7 col-lg-6">
+        <div class="card card-h-100">
+            <div class="card-body">
+                <app-card-title cardTitle="Month vs Course Visits" [dropdownOptions]="dropdownOptions"
+                    containerClass="mb-2">
+                </app-card-title>
+
+                <!-- bar chart -->
+                <apx-chart class="apex-charts" [series]="barChart.series!" [chart]="barChart.chart!"
+                    [xaxis]="barChart.xaxis!" [tooltip]="barChart.tooltip!" [stroke]="barChart.stroke!"
+                    [plotOptions]="barChart.plotOptions!" [autoUpdateSeries]="false" [title]="barChart.title!"
+                    [grid]="barChart.grid!" [colors]="barChart.colors!" [responsive]="barChart.responsive!"
+                    [yaxis]="barChart.yaxis!" [subtitle]="barChart.subtitle!" [dataLabels]="barChart.dataLabels!"
+                    [legend]="barChart.legend!" [labels]="barChart.labels!">
+                </apx-chart>
+
+
+            </div> <!-- end card-body-->
+        </div> <!-- end card-->
+    </div> <!-- end col -->
+</div>

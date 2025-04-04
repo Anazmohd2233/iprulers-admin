@@ -5,11 +5,11 @@
                 <h4 class="header-title">STUDENTS</h4>
                 <br>
                 <!-- table start -->
-                <app-advanced-table-users [tableData]="records" [columns]="columns" [pagination]="true" [tableName] = "tableName"
+                <app-advanced-table-student [tableData]="records" [columns]="columns" [pagination]="true" [tableName] = "tableName"
                     [pageSizeOptions]="pageSizeOptions" [hasRowSelection]="true" [isSearchable]="true"
                     (search)="searchData($event)" [isSortable]="false" (sort)="onSort($event)"
                     tableClasses="table-striped">
-                </app-advanced-table-users>
+                </app-advanced-table-student>
             </div> <!-- end card body-->
         </div> <!-- end card -->
     </div><!-- end col-->

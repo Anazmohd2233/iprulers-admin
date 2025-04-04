@@ -26,14 +26,14 @@ export class EditCourseComponent implements OnInit {
   tabs6: number = 2;
   tabs7: number = 1;
   tabs8: number = 1;
-
+  dynamicTabs: number[] = [1, 2, 3, 4, 5];
+  counter: number = 0;
 
 
 
   constructor () { }
 
-  dynamicTabs: number[] = [1, 2, 3, 4, 5];
-  counter: number = 0;
+
 
 
 

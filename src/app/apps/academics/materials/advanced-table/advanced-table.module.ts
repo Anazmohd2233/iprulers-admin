@@ -9,6 +9,7 @@ import { NgbSortableHeaderDirective } from "./sortable.directive";
 // components
 import { AdvancedTableComponent } from "./advanced-table.component";
 import { NgxDropzoneModule } from "ngx-dropzone";
+import { Select2Module } from "ng-select2-component";
 
 @NgModule({
   declarations: [NgbSortableHeaderDirective, AdvancedTableComponent],
@@ -18,6 +19,7 @@ import { NgxDropzoneModule } from "ngx-dropzone";
     NgbModule,
     ReactiveFormsModule,
     NgxDropzoneModule,
+    Select2Module
   ],
   exports: [AdvancedTableComponent],
 })

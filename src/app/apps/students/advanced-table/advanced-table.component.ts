@@ -31,7 +31,7 @@ export interface Column {
 }
 
 @Component({
-  selector: "app-advanced-table-users",
+  selector: "app-advanced-table-student",
   templateUrl: "./advanced-table.component.html",
   styleUrls: ["./advanced-table.component.scss"],
   providers: [AdvancedTableServices],
@@ -192,11 +192,11 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       this.tableData.length;
   }
 
-  openCourses(record: any): void {
+  editStudent(record: any): void {
     console.log("Open courses for:", record);
     localStorage.setItem("userId_course", record.id); // Save URLs only
 
-    this.router.navigate([`admin/user-courses`]);
+    this.router.navigate([`admin/edit_student`]);
     // Add your logic here to open the Courses page/modal for the selected user.
   }
 

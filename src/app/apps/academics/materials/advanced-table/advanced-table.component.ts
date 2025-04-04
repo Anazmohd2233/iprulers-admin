@@ -20,6 +20,7 @@ import { UserProfileService } from "src/app/core/service/user.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { StudentService } from "src/app/core/service/student/student.service";
+import { Select2Data } from "ng-select2-component";
 
 export interface Column {
   name: string;
@@ -62,6 +63,9 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     addLabForm!: FormGroup;
     addMaterialForm!: FormGroup;
     addNoteForm!: FormGroup;
+  
+
+    
 
 
     files: File | null = null; // Single file object
@@ -101,8 +105,10 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     });
 
     this.addMaterialForm = this.fb.group({
-      category_title: ["", Validators.required],  // Material Title (Matches formControlName)
-      file: [null, Validators.required] // File Upload Validation
+      materialTitle: ["", Validators.required],  // Material Title (Matches formControlName)
+      materialType: [null, Validators.required], // File Upload Validation
+      materialLink: [null, Validators.required] // File Upload Validation
+
     });
 
     this.addLabForm = this.fb.group({
@@ -114,6 +120,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       category_title: ["", Validators.required],  // Lab Title (Matches formControlName)
       file: [null, Validators.required] // File Upload Validation
     });
+
+
     
   }
 
@@ -400,4 +408,5 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     );
   }
 
+ 
 }

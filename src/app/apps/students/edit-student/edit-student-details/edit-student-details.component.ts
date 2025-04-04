@@ -1,5 +1,5 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
+import { FormGroup, NgForm } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Select2Data } from 'ng-select2-component';
@@ -10,14 +10,15 @@ type selectedMember = {
   image: string;
 }
 @Component({
-  selector: 'app-edit-course-details',
-  templateUrl: './edit-course-details.component.html',
-  styleUrls: ['./edit-course-details.component.scss']
+  selector: 'app-edit-student-details',
+  templateUrl: './edit-student-details.component.html',
+  styleUrls: ['./edit-student-details.component.scss']
 })
-export class EditCourseDetailsComponent implements OnInit {
+export class EditStudentDetailsComponent implements OnInit {
 
   level: Select2Data = [];
   selectedMembers: selectedMember[] = [];
+  files: File | null = null; // Single file object
 
   projectName: string = '';
   projectOverview: string = '';
@@ -26,8 +27,10 @@ export class EditCourseDetailsComponent implements OnInit {
   projectBudget: number = 0;
   submitted: boolean = false;
 
-  files: File | null = null; // Single file object
-  courseImageForm!: FormGroup;
+  chnagePasswordForm!: FormGroup;
+
+
+
 
 
   @ViewChild('newProject', { static: true }) newProject!: NgForm;
@@ -35,8 +38,6 @@ export class EditCourseDetailsComponent implements OnInit {
   constructor(
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
-    private fb: FormBuilder,
-
 
   ) { }
 
@@ -87,40 +88,12 @@ export class EditCourseDetailsComponent implements OnInit {
     // }
   }
 
-  /**
-   *  adds new file in uploaded files
-   */
- 
-  /**
-  * Formats the size
-  */
-  getSize(f: File) {
-    const bytes = f.size;
-    if (bytes === 0) {
-      return '0 Bytes';
-    }
-    const k = 1024;
-    const dm = 2;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  open(content: TemplateRef<NgbModal>): void {
+    console.log('**********')
+    this.modalService.open(content, { scrollable: true });
   }
 
-
-  /**
-   * Returns the preview url
-   */
-  getPreviewUrl(f: File) {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(encodeURI(URL.createObjectURL(f)));
-  }
-
-      open(content: TemplateRef<NgbModal>): void {
-        console.log('**********')
-        this.modalService.open(content, { scrollable: true });
-      }
-
-      
+  
   onSelectImage(event: any): void {
     if (event.addedFiles && event.addedFiles.length > 0) {
       this.files = event.addedFiles[0]; // Store only the first selected file
@@ -133,6 +106,18 @@ export class EditCourseDetailsComponent implements OnInit {
     this.files = null; // Clear the file
   }
  
+  getSize(f: File) {
+    const bytes = f.size;
+    if (bytes === 0) {
+      return "0 Bytes";
+    }
+    const k = 1024;
+    const dm = 2;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
 
   /**
    * returns preview url of uploaded file
@@ -142,9 +127,10 @@ export class EditCourseDetailsComponent implements OnInit {
       encodeURI(URL.createObjectURL(f))
     );
   }
-  onChangeImage(){
-    console.log('course image change')
+  onChangePassword(){
+    console.log('*********password changed******')
   }
-  
+
+
 
 }

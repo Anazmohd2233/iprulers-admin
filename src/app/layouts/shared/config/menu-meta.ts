@@ -19,14 +19,14 @@ export const MENU: MenuItem[] = [
 
 
 
-    { key: 'navigation', label: 'Navigation', isTitle: true },
-    { key: 'users', label: 'Users', isTitle: false, icon: 'uil-briefcase', link: 'admin/user-list' },
-    { key: 'courses', label: 'Course', isTitle: false, icon: 'uil-briefcase', link: 'admin/courses02' },
-    { key: 'quiz', label: 'Quiz', isTitle: false, icon: 'uil-copy-alt', link: 'admin/quiz' },
+    // { key: 'navigation', label: 'Navigation', isTitle: true },
+    // { key: 'users', label: 'Users', isTitle: false, icon: 'uil-briefcase', link: 'admin/user-list' },
+    // { key: 'courses', label: 'Course', isTitle: false, icon: 'uil-briefcase', link: 'admin/courses02' },
+    // { key: 'quiz', label: 'Quiz', isTitle: false, icon: 'uil-copy-alt', link: 'admin/quiz' },
 
-    { key: 'banner', label: 'Banner', isTitle: false, icon: 'uil-copy-alt', link: 'admin/banner' },
-    { key: 'cert', label: 'Certificate', isTitle: false, icon: 'uil-copy-alt', link: 'admin/certificate' },
-    { key: 'event', label: 'Events', isTitle: false, icon: 'uil-copy-alt', link: 'apps/events' },
+    // { key: 'banner', label: 'Banner', isTitle: false, icon: 'uil-copy-alt', link: 'admin/banner' },
+    // { key: 'cert', label: 'Certificate', isTitle: false, icon: 'uil-copy-alt', link: 'admin/certificate' },
+    // { key: 'event', label: 'Events', isTitle: false, icon: 'uil-copy-alt', link: 'apps/events' },
 
 
     // {

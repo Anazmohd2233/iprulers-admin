@@ -1,96 +1,77 @@
 <ng-template #addMaterialModal let-modal>
   <div class="modal-body">
-    <form
-      class="ps-3 pe-3"
-      [formGroup]="addMaterialForm"
-      (ngSubmit)="onSubmitCreateStudent()"
-    >
+    <form class="ps-3 pe-3" [formGroup]="addMaterialForm" (ngSubmit)="onSubmitCreateStudent()">
+      
+      <!-- Material Title -->
       <div class="mb-2">
         <label for="username" class="form-label">Material Title</label>
         <input
           class="form-control"
-          type="email"
+          type="text"
           id="name"
           required
-          formControlName=""
+          formControlName="materialTitle"
           placeholder="Material title"
         />
       </div>
 
-      <br />
-      <div class="row">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="header-title m-t-0">Material File</h4>
-
-              <form #fileUpload="ngForm">
-                <ngx-dropzone
-                  [multiple]="false"
-                  (change)="onSelectImage($event)"
-                  class="dropzone"
-                  accept="image/jpeg,image/jpg,image/png,image/gif"
-                >
-                  <ngx-dropzone-label>
-                    <i class="h1 text-muted dripicons-cloud-upload"></i>
-                    <h3>Drop files here or click to upload.</h3>
-                  </ngx-dropzone-label>
-                </ngx-dropzone>
-
-                <!-- Preview -->
-                <div class="dropzone-previews mt-3" id="file-previews">
-                  <!-- file preview template -->
-                  <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
-                  <div id="uploadPreviewTemplate" *ngIf="files">
-                    <div class="card mt-1 mb-0 shadow-none border">
-                      <div class="p-2">
-                        <div class="row align-items-center">
-                          <div class="col-auto">
-                            <img
-                              class="avatar-sm rounded bg-light"
-                              [alt]="files.name"
-                              [src]="getPreviewUrlImg(files)"
-                            />
-                          </div>
-                          <div class="col ps-0">
-                            <a
-                              href="javascript:void(0);"
-                              class="text-muted fw-bold"
-                              >{{ files.name }}</a
-                            >
-                            <p class="mb-0">{{ getSize(files) }}</p>
-                          </div>
-                          <div class="col-auto">
-                            <!-- Button -->
-                            <a
-                              href="javascript:void(0)"
-                              class="btn btn-link btn-lg text-muted"
-                              (click)="onRemoveFile($event)"
-                            >
-                              <i class="dripicons-cross"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end file preview template -->
-                </div>
-              </form>
-            </div>
-            <!-- end card-body -->
-          </div>
-          <!-- end card-->
-        </div>
-        <!-- end col-->
+      <!-- Type Selection -->
+      <div class="mb-3">
+        <select class="form-select" name="materialType">
+          <option value="pdf">PDF</option>
+          <option value="link">Link</option>
+        </select>
+        
       </div>
+
+      <div class="mb-2">
+        <label for="username" class="form-label">Material Link</label>
+        <input
+          class="form-control"
+          type="text"
+          id="name"
+          required
+          formControlName="materialLink"
+          placeholder="Paste link here"
+        />
+      </div>
+
+      <!-- Conditionally Show Upload or Input -->
+      <div >
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="header-title m-t-0">Material File</h4>
+                <form #fileUpload="ngForm">
+                  <ngx-dropzone
+                    [multiple]="false"
+                    (change)="onSelectImage($event)"
+                    class="dropzone"
+                    accept="application/pdf"
+                  >
+                    <ngx-dropzone-label>
+                      <i class="h1 text-muted dripicons-cloud-upload"></i>
+                      <h3>Drop PDF file here or click to upload.</h3>
+                    </ngx-dropzone-label>
+                  </ngx-dropzone>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
 
       <div class="mb-3 text-center">
         <button class="btn btn-primary" type="submit">Add Material</button>
       </div>
+
     </form>
   </div>
 </ng-template>
+
 
 <ng-template #addLabs let-modal>
   <div class="modal-body">
