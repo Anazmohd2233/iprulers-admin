@@ -1,7 +1,10 @@
 <ng-template #addMaterialModal let-modal>
   <div class="modal-body">
-    <form class="ps-3 pe-3" [formGroup]="addMaterialForm" (ngSubmit)="onSubmitCreateStudent()">
-      
+    <form
+      class="ps-3 pe-3"
+      [formGroup]="addMaterialForm"
+      (ngSubmit)="onSubmitCreateStudent()"
+    >
       <!-- Material Title -->
       <div class="mb-2">
         <label for="username" class="form-label">Material Title</label>
@@ -17,11 +20,12 @@
 
       <!-- Type Selection -->
       <div class="mb-3">
+        <label for="username" class="form-label">File Type</label>
+
         <select class="form-select" name="materialType">
           <option value="pdf">PDF</option>
           <option value="link">Link</option>
         </select>
-        
       </div>
 
       <div class="mb-2">
@@ -37,7 +41,7 @@
       </div>
 
       <!-- Conditionally Show Upload or Input -->
-      <div >
+      <div>
         <div class="row">
           <div class="col-12">
             <div class="card">
@@ -62,16 +66,12 @@
         </div>
       </div>
 
-
-
       <div class="mb-3 text-center">
         <button class="btn btn-primary" type="submit">Add Material</button>
       </div>
-
     </form>
   </div>
 </ng-template>
-
 
 <ng-template #addLabs let-modal>
   <div class="modal-body">
@@ -97,7 +97,7 @@
         <div class="col-12">
           <div class="card">
             <div class="card-body">
-              <h4 class="header-title m-t-0">Note File</h4>
+              <h4 class="header-title m-t-0">Lab File</h4>
 
               <form #fileUpload="ngForm">
                 <ngx-dropzone
@@ -191,7 +191,7 @@
         <div class="col-12">
           <div class="card">
             <div class="card-body">
-              <h4 class="header-title m-t-0">Lab File</h4>
+              <h4 class="header-title m-t-0">Note File</h4>
 
               <form #fileUpload="ngForm">
                 <ngx-dropzone
@@ -261,149 +261,149 @@
   </div>
 </ng-template>
 
-  <ng-template #addStudentModal let-modal>
-    <div class="modal-body">
-      <form
-        class="ps-3 pe-3"
-        [formGroup]="addStudentForm"
-        (ngSubmit)="onSubmitCreateStudent()"
-      >
-        <div class="mb-2">
-          <label for="username" class="form-label">Name</label>
-          <input
-            class="form-control"
-            type="email"
-            id="name"
-            required
-            formControlName="name"
-            placeholder="Student Name"
-          />
-        </div>
+<ng-template #addStudentModal let-modal>
+  <div class="modal-body">
+    <form
+      class="ps-3 pe-3"
+      [formGroup]="addStudentForm"
+      (ngSubmit)="onSubmitCreateStudent()"
+    >
+      <div class="mb-2">
+        <label for="username" class="form-label">Name</label>
+        <input
+          class="form-control"
+          type="email"
+          id="name"
+          required
+          formControlName="name"
+          placeholder="Student Name"
+        />
+      </div>
 
-        <div class="mb-3">
-          <label for="username" class="form-label">Username</label>
-          <input
-            class="form-control"
-            type="email"
-            id="username"
-            required
-            formControlName="username"
-            placeholder="Username"
-          />
-        </div>
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input
+          class="form-control"
+          type="email"
+          id="username"
+          required
+          formControlName="username"
+          placeholder="Username"
+        />
+      </div>
 
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input
-            class="form-control"
-            type="email"
-            id="email"
-            required
-            formControlName="email"
-            placeholder="Student Email"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="Password" class="form-label">Password</label>
-          <input
-            class="form-control"
-            type="email"
-            id="Password"
-            required
-            formControlName="pwd"
-            placeholder="Password"
-          />
-        </div>
-        <div class="mb-3">
-          <label for="username" class="form-label">Confirm Password</label>
-          <input
-            class="form-control"
-            type="email"
-            id="confirm"
-            required
-            formControlName="confirm"
-            placeholder="Confirm password"
-          />
-        </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          class="form-control"
+          type="email"
+          id="email"
+          required
+          formControlName="email"
+          placeholder="Student Email"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="Password" class="form-label">Password</label>
+        <input
+          class="form-control"
+          type="email"
+          id="Password"
+          required
+          formControlName="pwd"
+          placeholder="Password"
+        />
+      </div>
+      <div class="mb-3">
+        <label for="username" class="form-label">Confirm Password</label>
+        <input
+          class="form-control"
+          type="email"
+          id="confirm"
+          required
+          formControlName="confirm"
+          placeholder="Confirm password"
+        />
+      </div>
 
-        <br />
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-body">
-                <h4 class="header-title m-t-0">Image</h4>
+      <br />
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title m-t-0">Image</h4>
 
-                <form #fileUpload="ngForm">
-                  <ngx-dropzone
-                    [multiple]="false"
-                    (change)="onSelectImage($event)"
-                    class="dropzone"
-                    accept="image/jpeg,image/jpg,image/png,image/gif"
-                  >
-                    <ngx-dropzone-label>
-                      <i class="h1 text-muted dripicons-cloud-upload"></i>
-                      <h3>Drop files here or click to upload.</h3>
-                    </ngx-dropzone-label>
-                  </ngx-dropzone>
+              <form #fileUpload="ngForm">
+                <ngx-dropzone
+                  [multiple]="false"
+                  (change)="onSelectImage($event)"
+                  class="dropzone"
+                  accept="image/jpeg,image/jpg,image/png,image/gif"
+                >
+                  <ngx-dropzone-label>
+                    <i class="h1 text-muted dripicons-cloud-upload"></i>
+                    <h3>Drop files here or click to upload.</h3>
+                  </ngx-dropzone-label>
+                </ngx-dropzone>
 
-                  <!-- Preview -->
-                  <div class="dropzone-previews mt-3" id="file-previews">
-                    <!-- file preview template -->
-                    <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
-                    <div id="uploadPreviewTemplate" *ngIf="files">
-                      <div class="card mt-1 mb-0 shadow-none border">
-                        <div class="p-2">
-                          <div class="row align-items-center">
-                            <div class="col-auto">
-                              <img
-                                class="avatar-sm rounded bg-light"
-                                [alt]="files.name"
-                                [src]="getPreviewUrlImg(files)"
-                              />
-                            </div>
-                            <div class="col ps-0">
-                              <a
-                                href="javascript:void(0);"
-                                class="text-muted fw-bold"
-                                >{{ files.name }}</a
-                              >
-                              <p class="mb-0">{{ getSize(files) }}</p>
-                            </div>
-                            <div class="col-auto">
-                              <!-- Button -->
-                              <a
-                                href="javascript:void(0)"
-                                class="btn btn-link btn-lg text-muted"
-                                (click)="onRemoveFile($event)"
-                              >
-                                <i class="dripicons-cross"></i>
-                              </a>
-                            </div>
+                <!-- Preview -->
+                <div class="dropzone-previews mt-3" id="file-previews">
+                  <!-- file preview template -->
+                  <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
+                  <div id="uploadPreviewTemplate" *ngIf="files">
+                    <div class="card mt-1 mb-0 shadow-none border">
+                      <div class="p-2">
+                        <div class="row align-items-center">
+                          <div class="col-auto">
+                            <img
+                              class="avatar-sm rounded bg-light"
+                              [alt]="files.name"
+                              [src]="getPreviewUrlImg(files)"
+                            />
+                          </div>
+                          <div class="col ps-0">
+                            <a
+                              href="javascript:void(0);"
+                              class="text-muted fw-bold"
+                              >{{ files.name }}</a
+                            >
+                            <p class="mb-0">{{ getSize(files) }}</p>
+                          </div>
+                          <div class="col-auto">
+                            <!-- Button -->
+                            <a
+                              href="javascript:void(0)"
+                              class="btn btn-link btn-lg text-muted"
+                              (click)="onRemoveFile($event)"
+                            >
+                              <i class="dripicons-cross"></i>
+                            </a>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <!-- end file preview template -->
                   </div>
-                </form>
-              </div>
-              <!-- end card-body -->
+                  <!-- end file preview template -->
+                </div>
+              </form>
             </div>
-            <!-- end card-->
+            <!-- end card-body -->
           </div>
-          <!-- end col-->
+          <!-- end card-->
         </div>
+        <!-- end col-->
+      </div>
 
-        <div class="mb-3 text-center">
-          <button class="btn btn-primary" type="submit">Add Material</button>
-        </div>
-      </form>
-    </div>
-  </ng-template>
+      <div class="mb-3 text-center">
+        <button class="btn btn-primary" type="submit">Add Material</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
 
-  <div class="row">
-    <div class="col-12 col-sm-6" *ngIf="pageSizeOptions.length">
-      <!-- <div class="text-center text-sm-start">
+<div class="row">
+  <div class="col-12 col-sm-6" *ngIf="pageSizeOptions.length">
+    <!-- <div class="text-center text-sm-start">
                 <label class="form-label me-1">Show
                     <select class="form-select form-select-sm  w-auto ms-1 me-1 d-inline" name="pageSize"
                         id="event-category" required [(ngModel)]="service.pageSize" (ngModelChange)="paginate()">
@@ -412,80 +412,79 @@
                     entries</label>
             </div> -->
 
-      <div class="text-center text-sm-start" *ngIf="tableName == 'material'">
-        <label class="d-inline"
-          >Search:
-          <input
-            type="text"
-            name="searchTerm"
-            class="form-control form-control-sm d-inline w-auto ms-1"
-            aria-controls="advanced-table"
-            [(ngModel)]="service.searchTerm"
-            (ngModelChange)="searchData()"
-          />
-        </label>
+    <div class="text-center text-sm-start" *ngIf="tableName == 'material'">
+      <label class="d-inline"
+        >Search:
+        <input
+          type="text"
+          name="searchTerm"
+          class="form-control form-control-sm d-inline w-auto ms-1"
+          aria-controls="advanced-table"
+          [(ngModel)]="service.searchTerm"
+          (ngModelChange)="searchData()"
+        />
+      </label>
 
-        <!-- <button type="button" class="btn btn-light mb-2">Export</button> -->
-      </div>
+      <!-- <button type="button" class="btn btn-light mb-2">Export</button> -->
     </div>
-    <!-- end col-->
-    <div
-      class="col-12"
-      [class.col-sm-6]="pageSizeOptions.length"
-      *ngIf="tableName == 'material'"
-    >
-      <div
-        class="d-flex align-items-center justify-content-center justify-content-sm-end"
-      >
-        <button
-          type="button"
-          class="btn btn-primary mb-2 me-2"
-          (click)="open(addMaterialModal)"
-        >
-          Add Material
-        </button>
-      </div>
-    </div>
-
-    <div
-      class="col-12"
-      [class.col-sm-6]="pageSizeOptions.length"
-      *ngIf="tableName == 'labs'"
-    >
-      <div
-        class="d-flex align-items-center justify-content-center justify-content-sm-end"
-      >
-        <button
-          type="button"
-          class="btn btn-primary mb-2 me-2"
-          (click)="open(addLabs)"
-        >
-          Add Lab
-        </button>
-      </div>
-    </div>
-
-    <div
-      class="col-12"
-      [class.col-sm-6]="pageSizeOptions.length"
-      *ngIf="tableName == 'notes'"
-    >
-      <div
-        class="d-flex align-items-center justify-content-center justify-content-sm-end"
-      >
-        <button
-          type="button"
-          class="btn btn-primary mb-2 me-2"
-          (click)="open(addNotes)"
-        >
-          Add Notes
-        </button>
-      </div>
-    </div>
-    <!-- end col-->
   </div>
-  <!-- end row -->
+  <!-- end col-->
+  <div
+    class="col-12"
+    [class.col-sm-6]="pageSizeOptions.length"
+    *ngIf="tableName == 'material'"
+  >
+    <div
+      class="d-flex align-items-center justify-content-center justify-content-sm-end"
+    >
+      <button
+        type="button"
+        class="btn btn-primary mb-2 me-2"
+        (click)="open(addMaterialModal)"
+      >
+        Add Material
+      </button>
+    </div>
+  </div>
 
+  <div
+    class="col-12"
+    [class.col-sm-6]="pageSizeOptions.length"
+    *ngIf="tableName == 'labs'"
+  >
+    <div
+      class="d-flex align-items-center justify-content-center justify-content-sm-end"
+    >
+      <button
+        type="button"
+        class="btn btn-primary mb-2 me-2"
+        (click)="open(addLabs)"
+      >
+        Add Lab
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="col-12"
+    [class.col-sm-6]="pageSizeOptions.length"
+    *ngIf="tableName == 'notes'"
+  >
+    <div
+      class="d-flex align-items-center justify-content-center justify-content-sm-end"
+    >
+      <button
+        type="button"
+        class="btn btn-primary mb-2 me-2"
+        (click)="open(addNotes)"
+      >
+        Add Notes
+      </button>
+    </div>
+  </div>
+  <!-- end col-->
+</div>
+<!-- end row -->
 
 <div class="table-responsive">
   <table
@@ -566,15 +565,26 @@
           <ng-container
             *ngIf="column.name === 'action' && tableName == 'material'"
           >
-            <button (click)="openCourses(record)" class="btn btn-primary me-2">
+            <button
+              (click)="open(addMaterialModal)"
+              class="btn btn-sm btn-primary me-2"
+            >
               Edit
             </button>
-            <button (click)="openCourses(record)" class="btn btn-primary">
+            <button
+              (click)="openCourses(record)"
+              class="btn btn-sm btn-primary"
+            >
               Delete
             </button>
           </ng-container>
-          <ng-container *ngIf="column.name === '' && (tableName == 'labs' ||  tableName == 'notes' )">
-            <button (click)="openCourses(record)" class="btn btn-danger">
+          <ng-container
+            *ngIf="
+              column.name === '' &&
+              (tableName == 'labs' || tableName == 'notes')
+            "
+          >
+            <button (click)="openCourses(record)" class="btn btn-sm btn-danger">
               Delete
             </button>
           </ng-container>

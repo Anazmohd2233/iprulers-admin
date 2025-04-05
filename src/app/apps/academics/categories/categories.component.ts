@@ -179,10 +179,6 @@ export class CategoriesComponent implements OnInit {
     );
   }
 
-  goToCourseDetails(course: any): void {
-    // this.router.navigate(['dashboard/analytics']);
-    localStorage.setItem("courseId", course.id); // Save URLs only
-    this.router.navigate([`courses/details/${course.id}`]);
-  }
+ 
 
 }

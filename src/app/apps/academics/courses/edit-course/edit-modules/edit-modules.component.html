@@ -1,1 +1,301 @@
-<p>edit-modules works!</p>
+
+<ng-template #addModuleModal let-modal>
+    <div class="modal-body">
+      <form
+        class="ps-3 pe-3"
+        [formGroup]="addModuleForm"
+        (ngSubmit)="onSubmitAddModule()"
+      >
+        <div class="mb-2">
+          <label for="username" class="form-label">Module Title</label>
+          <input
+            class="form-control"
+            type="email"
+            id="name"
+            required
+            formControlName="module_title"
+            placeholder="Module name"
+          />
+        </div>
+  
+   
+  
+        <div class="mb-3 text-center">
+          <button class="btn btn-primary" type="submit">Add Module</button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #addSessionModal let-modal>
+    <div class="modal-body">
+      <form
+        class="ps-3 pe-3"
+        [formGroup]="addSessionForm"
+        (ngSubmit)="onSubmitAddSession()"
+      >
+        <div class="mb-2">
+          <label for="username" class="form-label">Session Title</label>
+          <input
+            class="form-control"
+            type="email"
+            id="name"
+            required
+            formControlName="session_title"
+            placeholder="Session name"
+          />
+        </div>
+
+        <div class="mb-2">
+            <label for="username" class="form-label">Duration</label>
+
+        <ngb-timepicker [(ngModel)]="time" [seconds]="true" [spinners]="false"
+
+      ></ngb-timepicker>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title m-t-0">Upload Video</h4>
+
+              <form #fileUpload="ngForm">
+                <ngx-dropzone
+                [multiple]="false"
+                  (change)="onSelectImage($event)"
+                  class="dropzone"
+                >
+                  <ngx-dropzone-label>
+                    <i class="h1 text-muted dripicons-cloud-upload"></i>
+                    <h3>Drop files here or click to upload.</h3>
+                  </ngx-dropzone-label>
+                </ngx-dropzone>
+
+                <!-- Preview -->
+                <div class="dropzone-previews mt-3" id="file-previews">
+                  <!-- file preview template -->
+                  <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
+                    <div id="uploadPreviewTemplate" *ngIf="files">
+
+                    <div class="card mt-1 mb-0 shadow-none border">
+                      <div class="p-2">
+                        <div class="row align-items-center">
+                          
+                          <div class="col ps-0">
+                            <a
+                              href="javascript:void(0);"
+                              class="text-muted fw-bold"
+                              >{{ files.name }}</a
+                            >
+                            <p class="mb-0">{{ getSize(files) }}</p>
+                          </div>
+                          <div class="col-auto">
+                            <!-- Button -->
+                            <a
+                              href="javascript:void(0)"
+                              class="btn btn-link btn-lg text-muted"
+                              (click)="onRemoveFile($event)"
+                            >
+                              <i class="dripicons-cross"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end file preview template -->
+                </div>
+              </form>
+            </div>
+            <!-- end card-body -->
+          </div>
+          <!-- end card-->
+        </div>
+        <!-- end col-->
+      </div>
+   
+  
+        <div class="mb-3 text-center">
+          <button class="btn btn-primary" type="submit">Add Session</button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  
+<ng-template #updateModuleModal let-modal>
+    <div class="modal-body">
+      <form
+        class="ps-3 pe-3"
+        [formGroup]="addModuleForm"
+        (ngSubmit)="onSubmitAddModule()"
+      >
+        <div class="mb-2">
+          <label for="username" class="form-label">Module Title</label>
+          <input
+            class="form-control"
+            type="email"
+            id="name"
+            required
+            formControlName="module_title"
+            placeholder="Module name"
+          />
+        </div>
+  
+   
+  
+        <div class="mb-3 text-center">
+          <button class="btn btn-primary" type="submit">Update Module</button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+  <ng-template #updateSessionModal let-modal>
+    <div class="modal-body">
+      <form
+        class="ps-3 pe-3"
+        [formGroup]="addSessionForm"
+        (ngSubmit)="onSubmitAddSession()"
+      >
+        <div class="mb-2">
+          <label for="username" class="form-label">Session Title</label>
+          <input
+            class="form-control"
+            type="email"
+            id="name"
+            required
+            formControlName="session_title"
+            placeholder="Session name"
+          />
+        </div>
+
+        <div class="mb-2">
+            <label for="username" class="form-label">Duration</label>
+
+        <ngb-timepicker [(ngModel)]="time" [seconds]="true" [spinners]="false"
+
+      ></ngb-timepicker>
+    </div>
+
+
+   
+  
+        <div class="mb-3 text-center">
+          <button class="btn btn-primary" type="submit">Update Session</button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+<div class="row">
+    <div class="col-xl-12">
+      <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="header-title mb-0">Modules and Sessions</h4>
+                <button class="btn btn-primary rounded-pill"           (click)="open(addModuleModal)"
+                >
+                  <i class="mdi mdi-plus me-1"></i> Add Module
+                </button>
+              </div>
+              
+  
+          <ngb-accordion #acc="ngbAccordion" [closeOthers]="true" activeIds="accordion1">
+            <ngb-panel *ngFor="let module of modules" [id]="'accordion' + module.id">
+              <ng-template ngbPanelTitle>
+                <div class="d-flex justify-content-between align-items-center w-100 border-bottom pb-0">
+                  <div class="d-flex align-items-center">
+                    <button class="btn btn-primary me-2">
+                      {{ module.name }}
+                    </button>
+                  </div>
+                  <div>
+                    <button class="btn btn-sm btn-danger me-2" (click)="open(updateModuleModal)">
+                      <i class="mdi mdi-pencil"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" (click)="onDeleteModule(module.id)">
+                      <i class="mdi mdi-delete"></i>
+                    </button>
+                  </div>
+                </div>
+              </ng-template>
+              <ng-template ngbPanelContent>
+                <!-- <div class="p-0  rounded border"> -->
+              
+  
+                  <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                             
+                
+                           
+                               
+                                        <div class="bg-dragula p-0 p-lg-4">
+                                            <div id="handle-dragula-left" class="py-2" [sortablejs]="personList1"
+                                                [sortablejsOptions]="options1">
+                                                <button class="btn btn-danger rounded-pill"  (click)="open(addSessionModal)"
+                                                >
+                                                    <i class="mdi mdi-plus me-1"></i> Add Session
+                                                  </button>
+                                                <ng-container *ngFor="let person of personList1">
+                                                    <ng-container
+                                                        *ngTemplateOutlet="DragabbleItem;context:{item: person, list: personList1, handle: true, includedesc:false}">
+                                                    </ng-container>
+                                                </ng-container>
+                
+                                            </div> <!-- end company-list-1-->
+                                        </div> <!-- end div.bg-light-->
+                                 
+                
+                                 
+                
+                            
+                            </div> <!-- end card-body -->
+                        </div> <!-- end card -->
+                    </div> <!-- end col -->
+                </div> <!-- end row -->
+                <!-- </div> -->
+              </ng-template>
+            </ngb-panel>
+          </ngb-accordion>
+        </div> <!-- end card-body -->
+      </div> <!-- end card -->
+    </div> <!-- end col -->
+
+
+
+  </div>
+
+
+  <ng-template #DragabbleItem let-item="item" let-list="list" let-handle="handle" let-includedesc="includedesc">
+    <div class="card mt-2 mb-0">
+      <div class="card-body">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="d-flex align-items-start">
+            <div class="w-100 overflow-hidden">
+              <h5 class="mb-1 mt-0">{{ item.name }}</h5>
+              <p [ngClass]="{ 'mb-0': !includedesc }"> {{ item.title }} </p>
+            </div>
+          </div>
+  
+          <!-- Edit & Delete buttons -->
+          <div class="ms-2 d-flex align-items-center gap-1">
+            <button class="btn btn-sm btn-primary me-2"  (click)="open(updateSessionModal)">
+                <i class="mdi mdi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-primary" >
+                <i class="mdi mdi-delete"></i>
+              </button>
+          </div>
+  
+          <!-- Optional Drag Handle -->
+          <span class="dragula-handle ms-2" *ngIf="handle"></span>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  
+  

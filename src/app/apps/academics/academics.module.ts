@@ -6,12 +6,15 @@ import { AcademicsRoutingModule } from "./academics-routing.module";
 
 import { FormsModule } from "@angular/forms";
 import {
+  NgbAccordionModule,
   NgbAlertModule,
+  NgbCollapseModule,
   NgbDatepickerModule,
   NgbDropdownModule,
   NgbModalModule,
   NgbNavModule,
   NgbProgressbarModule,
+  NgbTimepickerModule,
   NgbTooltipModule,
 } from "@ng-bootstrap/ng-bootstrap";
 import { NgApexchartsModule } from "ng-apexcharts";
@@ -29,6 +32,8 @@ import { EditNotesComponent } from './courses/edit-course/edit-notes/edit-notes.
 import { EditCourseDetailsComponent } from './courses/edit-course/edit-course-details/edit-course-details.component';
 import { EditLabComponent } from './courses/edit-course/edit-lab/edit-lab.component';
 import { EditModulesComponent } from './courses/edit-course/edit-modules/edit-modules.component';
+import { AccordionsRoutingModule } from "src/app/pages/uikit/accordions/accordions-routing.module";
+import { SortablejsModule } from "ngx-sortablejs";
 
 @NgModule({
   declarations: [
@@ -63,6 +68,12 @@ import { EditModulesComponent } from './courses/edit-course/edit-modules/edit-mo
     AdvancedRoutingModule,
     NgbNavModule,
     PageTitleModule,
+    NgbAccordionModule,
+    NgbCollapseModule,
+    AccordionsRoutingModule,
+    SortablejsModule,
+    NgbTimepickerModule,
+
   ],
 })
 export class AcademicsModule {}
