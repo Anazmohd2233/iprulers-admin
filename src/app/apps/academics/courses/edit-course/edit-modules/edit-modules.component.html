@@ -241,7 +241,7 @@
                                                     <i class="mdi mdi-plus me-1"></i> Add Session
                                                   </button>
                                                 <ng-container *ngFor="let person of personList1">
-                                                    <ng-container
+                                                    <ng-container  
                                                         *ngTemplateOutlet="DragabbleItem;context:{item: person, list: personList1, handle: true, includedesc:false}">
                                                     </ng-container>
                                                 </ng-container>
@@ -271,6 +271,7 @@
 
 
   <ng-template #DragabbleItem let-item="item" let-list="list" let-handle="handle" let-includedesc="includedesc">
+    <ng-container *ngIf="item">
     <div class="card mt-2 mb-0">
       <div class="card-body">
         <div class="d-flex align-items-start justify-content-between">
@@ -296,6 +297,5 @@
         </div>
       </div>
     </div>
+  </ng-container>
   </ng-template>
-  
-  
