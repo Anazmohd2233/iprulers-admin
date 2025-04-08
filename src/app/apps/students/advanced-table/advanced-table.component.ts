@@ -62,7 +62,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     addStudentForm!: FormGroup;
     files: File | null = null; // Single file object
 
-  
+    
 
   constructor(
     private modalService: NgbModal,
@@ -89,7 +89,6 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
 
     this.addStudentForm = this.fb.group({
       name: ["", Validators.required],
-      username: ["", Validators.required],
       email: ["", [Validators.required, Validators.email]], // Email validation
       pwd: ["", Validators.required], // Password field
       confirm: ["", Validators.required], // Confirm password field
@@ -104,13 +103,14 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       this.paginate();
     }
   }
+  get form1() { return this.addStudentForm.controls; }
 
   /**
    * sets pagination configurations
    */
   paginate(): void {
-    if (this.tableName === "userList") {
-      this.getUserList();
+    if (this.tableName === "students") {
+      this._fetchData();
     }
   }
 
@@ -201,78 +201,77 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   }
 
 
+  _fetchData(): void {
+    // this.records = tableData;
 
-
-
-
-  getUserList(): void {
-    this.userService.getUserList(this.service.page).subscribe({
+    this.studentService.getStudent(this.service.page).subscribe({
       next: (response) => {
+        console.log("response of student list - ", response);
         if (response.success) {
-          this.tableData = response.data.admin_list; // Update table data
+          this.tableData = response.data.students;
           this.service.totalRecords = response.data.total_count; // Set total records
           this.service.pageSize = response.data.limit; // Ensure pageSize matches API limit
 
-          // Set start and end index
-          this.service.startIndex =
-            this.service.totalRecords > 0
-              ? (this.service.page - 1) * this.service.pageSize + 1
-              : 0;
+     // Set start and end index
+     this.service.startIndex =
+     this.service.totalRecords > 0
+       ? (this.service.page - 1) * this.service.pageSize + 1
+       : 0;
 
-          this.service.endIndex = Math.min(
-            this.service.startIndex + this.service.pageSize - 1,
-            this.service.totalRecords
-          );
+   this.service.endIndex = Math.min(
+     this.service.startIndex + this.service.pageSize - 1,
+     this.service.totalRecords
+   );
         } else {
           console.error("Failed to fetch data:", response.message);
         }
       },
-      error: (error) => console.error("Error fetching data:", error),
+      error: (error) => {
+        console.error("Error fetching students list:", error);
+      }
     });
   }
 
 
 
 
-
-
-
-
-
-
     open(content: TemplateRef<NgbModal>): void {
-      console.log('**********')
       this.modalService.open(content, { scrollable: true });
     }
 
     
 
-  onSubmitCreateCourse(): void {
-    if (this.addStudentForm.valid) {
-      const formData = new FormData();
-
-      // Add scalar values
-      formData.append("name", this.addStudentForm.value.name);
-      formData.append("username", this.addStudentForm.value.username);
-      formData.append("email", this.addStudentForm.value.email);
-      formData.append("password", this.addStudentForm.value.pwd);
-
-      formData.append("confirm", this.addStudentForm.value.confirm);
-
-
-     
-      if (this.files) {
-        formData.append("img", this.files); // Single file for course image
+    createStudent(): void {
+      if (this.addStudentForm.invalid) {
+        this.addStudentForm.markAllAsTouched();
+        return;
       }
-
-   
+    
+      const password = this.addStudentForm.value.pwd;
+      const confirmPassword = this.addStudentForm.value.confirm;
+    
+      if (password !== confirmPassword) {
+        console.error("Passwords do not match");
+        return;
+      }
+    
+      const formData = new FormData();
+      formData.append("name", this.addStudentForm.value.name);
+      formData.append("email", this.addStudentForm.value.email);
+      formData.append("password", password);
+      formData.append("confirm", confirmPassword);
+    
+      if (this.files) {
+        formData.append("student_img", this.files);
+      }
+    
       this.studentService.createStudent(formData).subscribe({
         next: (response) => {
           console.log("response of create student - ", response);
           if (response.success) {
             this.resetForm();
             this.files = null;
-           
+            // Optional: show a success toast or close modal
           } else {
             console.error("Failed to create student:", response.message);
           }
@@ -281,13 +280,11 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
           console.error("Error creating student:", error);
         },
         complete: () => {
-          console.log("student created successfully!...");
-        },
+          console.log("Student created successfully!");
+        }
       });
-
-
     }
-  }
+    
   resetForm() {
     this.addStudentForm.reset({
       name: "",

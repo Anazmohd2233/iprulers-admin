@@ -5,6 +5,7 @@ import { SortEvent } from './advanced-table/sortable.directive';
 import { UserProfileService } from 'src/app/core/service/user.service';
 import { Admin } from './models/model';
 import { Column } from './advanced-table/advanced-table.component';
+import { MaterialService } from 'src/app/core/service/material/material.service';
 @Component({
   selector: 'app-materials',
   templateUrl: './materials.component.html',
@@ -14,11 +15,11 @@ import { Column } from './advanced-table/advanced-table.component';
 export class MaterialsComponent implements OnInit {
 
   pageTitle: BreadcrumbItem[] = [];
-   records: Admin[] = [];
+   records: any[] = [];
   columns: Column[] = [];
   pageSizeOptions: number[] = [10, 25, 50, 100];
 
-   adminList: Admin[] = [];
+   materialList: any[] = [];
 
  
   totalCount: number = 0;
@@ -27,7 +28,11 @@ export class MaterialsComponent implements OnInit {
   page: number = 1;
   tableName:string="material";
 
-  constructor(private userService: UserProfileService) {}
+  constructor(
+    private userService: UserProfileService,
+    private materialService: MaterialService,
+
+  ) {}
   
   ngOnInit(): void {
     this.pageTitle = [{ label: 'Tables', path: '/' }, { label: 'Advanced Tables', path: '/', active: true }];
@@ -42,15 +47,15 @@ export class MaterialsComponent implements OnInit {
     // this.records = tableData;
 
 
-    this.userService.getUserList(this.page).subscribe({
+    this.materialService.getMaterial(this.page).subscribe({
       next: (response) => 
-        {console.log('response of user list - ',response)
+        {console.log('response of material list - ',response)
         if (response.success) {
-          this.adminList = response.data.admin_list;
-          this.records = this.adminList;
+          this.materialList = response.data.material;
+          this.records = this.materialList;
           this.totalCount = response.data.total_count;
           this.limit = response.data.limit;
-          console.log('Admins:', this.adminList);
+          console.log('Materials:', this.materialList);
         } else {
           console.error('Failed to fetch data:', response.message);
         }
@@ -74,13 +79,13 @@ export class MaterialsComponent implements OnInit {
       {
         name: 'type',
         label: 'Type',
-        formatter: (record: Admin) => "pdf",
+        formatter: (record: any) => record.type,
         width: 50,
       },
       {
         name: 'name',
         label: 'Name',
-        formatter: (record: Admin) => record.name,
+        formatter: (record: any) => record.title,
         width: 900,
       },
       {
@@ -109,7 +114,7 @@ export class MaterialsComponent implements OnInit {
    */
   onSort(event: SortEvent): void {
     if (event.direction === '') {
-      this.records = this.adminList;
+      this.records = this.materialList;
     } else {
       this.records = [...this.records].sort((a, b) => {
         const res = this.compare(a[event.column], b[event.column]);
@@ -140,7 +145,7 @@ export class MaterialsComponent implements OnInit {
       this._fetchData();
     }
     else {
-      let updatedData = this.adminList;
+      let updatedData = this.materialList;
 
       //  filter
       updatedData = updatedData.filter(record => this.matches(record, searchTerm));

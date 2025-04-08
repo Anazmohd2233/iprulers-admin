@@ -3,7 +3,7 @@
     <form
       class="ps-3 pe-3"
       [formGroup]="addMaterialForm"
-      (ngSubmit)="onSubmitCreateStudent()"
+      (ngSubmit)="createMaterial()"
     >
       <!-- Material Title -->
       <div class="mb-2">
@@ -13,7 +13,7 @@
           type="text"
           id="name"
           required
-          formControlName="materialTitle"
+          formControlName="title"
           placeholder="Material title"
         />
       </div>
@@ -22,48 +22,89 @@
       <div class="mb-3">
         <label for="username" class="form-label">File Type</label>
 
-        <select class="form-select" name="materialType">
+        <select class="form-select" formControlName="type">
+          <option value="" disabled>Select a material type</option>
           <option value="pdf">PDF</option>
           <option value="link">Link</option>
         </select>
+
+    
+        
       </div>
 
-      <div class="mb-2">
+      <div class="mb-2" *ngIf="addMaterialForm.get('type')?.value === 'link'">
         <label for="username" class="form-label">Material Link</label>
         <input
           class="form-control"
           type="text"
           id="name"
           required
-          formControlName="materialLink"
+          formControlName="link"
           placeholder="Paste link here"
         />
       </div>
 
-      <!-- Conditionally Show Upload or Input -->
-      <div>
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-body">
-                <h4 class="header-title m-t-0">Material File</h4>
-                <form #fileUpload="ngForm">
-                  <ngx-dropzone
-                    [multiple]="false"
-                    (change)="onSelectImage($event)"
-                    class="dropzone"
-                    accept="application/pdf"
+  
+
+      <div class="row" *ngIf="addMaterialForm.get('type')?.value === 'pdf'">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title m-t-0">Upload Material document</h4>
+
+              <form #fileUpload="ngForm">
+                <ngx-dropzone
+                  (change)="onSelectDoc($event)"
+                  class="dropzone"
+                  accept=".pdf, .doc, .docx, .ppt, .txt" 
                   >
-                    <ngx-dropzone-label>
-                      <i class="h1 text-muted dripicons-cloud-upload"></i>
-                      <h3>Drop PDF file here or click to upload.</h3>
-                    </ngx-dropzone-label>
-                  </ngx-dropzone>
-                </form>
-              </div>
+                  <ngx-dropzone-label>
+                    <i class="h1 text-muted dripicons-cloud-upload"></i>
+                    <h3>Drop files here or click to upload.</h3>
+                  </ngx-dropzone-label>
+                </ngx-dropzone>
+
+                <!-- Preview -->
+                <div class="dropzone-previews mt-3" id="file-previews">
+                  <!-- file preview template -->
+                  <div id="uploadPreviewTemplate" *ngIf="docs">
+                    <div class="card mt-1 mb-0 shadow-none border">
+                      <div class="p-2">
+                        <div class="row align-items-center">
+                          <div class="col-auto">
+                           
+                          </div>
+                          <div class="col ps-0">
+                            <a
+                              href="javascript:void(0);"
+                              class="text-muted fw-bold"
+                              >{{ docs.name }}</a
+                            >
+                            <p class="mb-0">{{ getSize(docs) }}</p>
+                          </div>
+                          <div class="col-auto">
+                            <!-- Button -->
+                            <a
+                              href="javascript:void(0)"
+                              class="btn btn-link btn-lg text-muted"
+                              (click)="onRemoveDoc($event)"
+                            >
+                              <i class="dripicons-cross"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- end file preview template -->
+                </div>
+              </form>
             </div>
+            <!-- end card-body -->
           </div>
+          <!-- end card-->
         </div>
+        <!-- end col-->
       </div>
 
       <div class="mb-3 text-center">

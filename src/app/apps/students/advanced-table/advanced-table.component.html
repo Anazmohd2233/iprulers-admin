@@ -1,145 +1,166 @@
-
 <ng-template #addStudentModal let-modal>
-    <div class="modal-body">
-      <form
-        class="ps-3 pe-3"
-        [formGroup]="addStudentForm"
-        (ngSubmit)="onSubmitCreateCourse()"
-      >
-        <div class="mb-2">
-          <label for="username" class="form-label">Name</label>
-          <input
-            class="form-control"
-            type="email"
-            id="name"
-            required
-            formControlName="name"
-            placeholder="Student Name"
-          />
-        </div>
+
   
-        <div class="mb-3">
-          <label for="username" class="form-label">Username</label>
-          <input
-            class="form-control"
-            type="email"
-            id="username"
-            required
-            formControlName="username"
-            placeholder="Username"
-          />
+  <div class="modal-body">
+    <form
+      class="ps-3 pe-3 needs-validation"
+      [formGroup]="addStudentForm"
+      (ngSubmit)="createStudent()"
+    >
+      <!-- Name -->
+      <div class="mb-2">
+        <label for="name" class="form-label">Name</label>
+        <input
+          class="form-control"
+          type="text"
+          id="name"
+          formControlName="name"
+          placeholder="Student Name"
+          [ngClass]="{
+            'is-valid': form1.name.touched && form1.name.valid,
+            'is-invalid': form1.name.touched && form1.name.invalid
+          }"
+        />
+        <div *ngIf="form1.name.touched && form1.name.valid" class="valid-feedback">
+          Looks good!
         </div>
-  
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input
-            class="form-control"
-            type="email"
-            id="email"
-            required
-            formControlName="email"
-            placeholder="Student Email"
-          />
+        <div *ngIf="form1.name.touched && form1.name.invalid" class="invalid-feedback">
+          Please enter student name.
         </div>
-        <div class="mb-3">
-          <label for="Password" class="form-label">Password</label>
-          <input
-            class="form-control"
-            type="email"
-            id="Password"
-            required
-            formControlName="pwd"
-            placeholder="Password"
-          />
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          class="form-control"
+          type="email"
+          id="email"
+          formControlName="email"
+          placeholder="Student Email"
+          [ngClass]="{
+            'is-valid': form1.email.touched && form1.email.valid,
+            'is-invalid': form1.email.touched && form1.email.invalid
+          }"
+        />
+        <div *ngIf="form1.email.touched && form1.email.valid" class="valid-feedback">
+          Valid email.
         </div>
-        <div class="mb-3">
-          <label for="username" class="form-label">Confirm Password</label>
-          <input
-            class="form-control"
-            type="email"
-            id="confirm"
-            required
-            formControlName="confirm"
-            placeholder="Confirm password"
-          />
+        <div *ngIf="form1.email.touched && form1.email.invalid" class="invalid-feedback">
+          Please enter a valid email.
         </div>
-  
-        <br />
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-body">
-                <h4 class="header-title m-t-0">Image</h4>
-  
-                <form #fileUpload="ngForm">
-                  <ngx-dropzone
-                    [multiple]="false"
-                    (change)="onSelectImage($event)"
-                    class="dropzone"
-                    accept="image/jpeg,image/jpg,image/png,image/gif"
-                  >
-                    <ngx-dropzone-label>
-                      <i class="h1 text-muted dripicons-cloud-upload"></i>
-                      <h3>Drop files here or click to upload.</h3>
-                    </ngx-dropzone-label>
-                  </ngx-dropzone>
-  
-                  <!-- Preview -->
-                  <div class="dropzone-previews mt-3" id="file-previews">
-                    <!-- file preview template -->
-                    <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
-                    <div id="uploadPreviewTemplate" *ngIf="files">
-                      <div class="card mt-1 mb-0 shadow-none border">
-                        <div class="p-2">
-                          <div class="row align-items-center">
-                            <div class="col-auto">
-                              <img
-                                class="avatar-sm rounded bg-light"
-                                [alt]="files.name"
-                                [src]="getPreviewUrlImg(files)"
-                              />
-                            </div>
-                            <div class="col ps-0">
-                              <a
-                                href="javascript:void(0);"
-                                class="text-muted fw-bold"
-                                >{{ files.name }}</a
-                              >
-                              <p class="mb-0">{{ getSize(files) }}</p>
-                            </div>
-                            <div class="col-auto">
-                              <!-- Button -->
-                              <a
-                                href="javascript:void(0)"
-                                class="btn btn-link btn-lg text-muted"
-                                (click)="onRemoveFile($event)"
-                              >
-                                <i class="dripicons-cross"></i>
-                              </a>
-                            </div>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        <label for="pwd" class="form-label">Password</label>
+        <input
+          class="form-control"
+          type="password"
+          id="pwd"
+          formControlName="pwd"
+          placeholder="Password"
+          [ngClass]="{
+            'is-valid': form1.pwd.touched && form1.pwd.valid,
+            'is-invalid': form1.pwd.touched && form1.pwd.invalid
+          }"
+        />
+        <div *ngIf="form1.pwd.touched && form1.pwd.valid" class="valid-feedback">
+          Looks good!
+        </div>
+        <div *ngIf="form1.pwd.touched && form1.pwd.invalid" class="invalid-feedback">
+          Password is required.
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="mb-3">
+        <label for="confirm" class="form-label">Confirm Password</label>
+        <input
+          class="form-control"
+          type="text"
+          id="confirm"
+          formControlName="confirm"
+          placeholder="Confirm password"
+          [ngClass]="{
+            'is-valid': form1.confirm.touched && form1.confirm.valid && form1.confirm.value === form1.pwd.value,
+            'is-invalid': form1.confirm.touched && form1.confirm.value !== form1.pwd.value
+          }"
+        />
+        <div *ngIf="form1.confirm.touched && form1.confirm.value === form1.pwd.value" class="valid-feedback">
+          Passwords match.
+        </div>
+        <div *ngIf="form1.confirm.touched && form1.confirm.value !== form1.pwd.value" class="invalid-feedback">
+          Passwords do not match.
+        </div>
+      </div>
+
+      <!-- Image (No validation needed as per your request) -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h4 class="header-title m-t-0">Image</h4>
+              <form #fileUpload="ngForm">
+                <ngx-dropzone
+                  [multiple]="false"
+                  (change)="onSelectImage($event)"
+                  class="dropzone"
+                  accept="image/jpeg,image/jpg,image/png,image/gif"
+                >
+                  <ngx-dropzone-label>
+                    <i class="h1 text-muted dripicons-cloud-upload"></i>
+                    <h3>Drop files here or click to upload.</h3>
+                  </ngx-dropzone-label>
+                </ngx-dropzone>
+
+                <div class="dropzone-previews mt-3" id="file-previews">
+                  <div id="uploadPreviewTemplate" *ngIf="files">
+                    <div class="card mt-1 mb-0 shadow-none border">
+                      <div class="p-2">
+                        <div class="row align-items-center">
+                          <div class="col-auto">
+                            <img
+                              class="avatar-sm rounded bg-light"
+                              [alt]="files.name"
+                              [src]="getPreviewUrlImg(files)"
+                            />
+                          </div>
+                          <div class="col ps-0">
+                            <a href="javascript:void(0);" class="text-muted fw-bold">
+                              {{ files.name }}
+                            </a>
+                            <p class="mb-0">{{ getSize(files) }}</p>
+                          </div>
+                          <div class="col-auto">
+                            <a
+                              href="javascript:void(0)"
+                              class="btn btn-link btn-lg text-muted"
+                              (click)="onRemoveFile($event)"
+                            >
+                              <i class="dripicons-cross"></i>
+                            </a>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <!-- end file preview template -->
                   </div>
-                </form>
-              </div>
-              <!-- end card-body -->
+                </div>
+              </form>
             </div>
-            <!-- end card-->
           </div>
-          <!-- end col-->
         </div>
-  
-        <div class="mb-3 text-center">
-          <button class="btn btn-primary" type="submit">Add Student</button>
-        </div>
-      </form>
-    </div>
-  </ng-template><form #displayForm="ngForm" *ngIf="isSearchable">
+      </div>
 
+      <!-- Submit Button -->
+      <div class="mb-3 text-center">
+        <button class="btn btn-primary" type="submit">Add Student</button>
+      </div>
+    </form>
+  </div>
+</ng-template>
 
+<form #displayForm="ngForm" *ngIf="isSearchable">
   <div class="row">
     <div class="col-12 col-sm-6" *ngIf="pageSizeOptions.length">
       <!-- <div class="text-center text-sm-start">
@@ -287,150 +308,9 @@
       (pageChange)="paginate()"
     >
     </ngb-pagination>
+
+    
   </div>
 </div>
 
 
-
-
-
-
-<ng-template #addStudentModal let-modal>
-  <div class="modal-body">
-    <form
-      class="ps-3 pe-3"
-      [formGroup]="addStudentForm"
-      (ngSubmit)="onSubmitCreateCourse()"
-    >
-      <div class="mb-2">
-        <label for="username" class="form-label">Name</label>
-        <input
-          class="form-control"
-          type="email"
-          id="name"
-          required
-          formControlName="name"
-          placeholder="Student Name"
-        />
-      </div>
-
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input
-          class="form-control"
-          type="email"
-          id="username"
-          required
-          formControlName="username"
-          placeholder="Username"
-        />
-      </div>
-
-      <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input
-          class="form-control"
-          type="email"
-          id="email"
-          required
-          formControlName="email"
-          placeholder="Student Email"
-        />
-      </div>
-      <div class="mb-3">
-        <label for="Password" class="form-label">Password</label>
-        <input
-          class="form-control"
-          type="email"
-          id="Password"
-          required
-          formControlName="pwd"
-          placeholder="Password"
-        />
-      </div>
-      <div class="mb-3">
-        <label for="username" class="form-label">Confirm Password</label>
-        <input
-          class="form-control"
-          type="email"
-          id="confirm"
-          required
-          formControlName="confirm"
-          placeholder="Confirm password"
-        />
-      </div>
-
-      <br />
-      <div class="row">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="header-title m-t-0">Image</h4>
-
-              <form #fileUpload="ngForm">
-                <ngx-dropzone
-                  [multiple]="false"
-                  (change)="onSelectImage($event)"
-                  class="dropzone"
-                  accept="image/jpeg,image/jpg,image/png,image/gif"
-                >
-                  <ngx-dropzone-label>
-                    <i class="h1 text-muted dripicons-cloud-upload"></i>
-                    <h3>Drop files here or click to upload.</h3>
-                  </ngx-dropzone-label>
-                </ngx-dropzone>
-
-                <!-- Preview -->
-                <div class="dropzone-previews mt-3" id="file-previews">
-                  <!-- file preview template -->
-                  <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
-                  <div id="uploadPreviewTemplate" *ngIf="files">
-                    <div class="card mt-1 mb-0 shadow-none border">
-                      <div class="p-2">
-                        <div class="row align-items-center">
-                          <div class="col-auto">
-                            <img
-                              class="avatar-sm rounded bg-light"
-                              [alt]="files.name"
-                              [src]="getPreviewUrlImg(files)"
-                            />
-                          </div>
-                          <div class="col ps-0">
-                            <a
-                              href="javascript:void(0);"
-                              class="text-muted fw-bold"
-                              >{{ files.name }}</a
-                            >
-                            <p class="mb-0">{{ getSize(files) }}</p>
-                          </div>
-                          <div class="col-auto">
-                            <!-- Button -->
-                            <a
-                              href="javascript:void(0)"
-                              class="btn btn-link btn-lg text-muted"
-                              (click)="onRemoveFile($event)"
-                            >
-                              <i class="dripicons-cross"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end file preview template -->
-                </div>
-              </form>
-            </div>
-            <!-- end card-body -->
-          </div>
-          <!-- end card-->
-        </div>
-        <!-- end col-->
-      </div>
-
-      <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">Add Student</button>
-      </div>
-    </form>
-  </div>
-</ng-template>

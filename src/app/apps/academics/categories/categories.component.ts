@@ -23,9 +23,9 @@ import { Course } from '../../models/course';
 
 
 export class CategoriesComponent implements OnInit {
-  addCourseForm!: FormGroup;
+  addCategoryForm!: FormGroup;
 
-  courses: Course[] = [];
+  category: any[] = [];
   page:number = 1;
 
   pageTitle: BreadcrumbItem[] = [];
@@ -54,13 +54,15 @@ export class CategoriesComponent implements OnInit {
     ];
     this._fetchData();
 
-    this.addCourseForm = this.fb.group({
-      category_title: ["", Validators.required],
+    this.addCategoryForm = this.fb.group({
+      category_title: ['', Validators.required],
+
 
 
     });
 
   }
+  get form1() { return this.addCategoryForm.controls; }
 
   /**
    * fetches order list
@@ -72,11 +74,11 @@ export class CategoriesComponent implements OnInit {
     this.categoryService.getCategory(this.page).subscribe({
       next: (response) => {
         if (response.success) {
-          this.courses = response.data.courses;
+          this.category = response.data.category;
 
-          console.log("Courses loaded:", this.courses);
+          console.log("category loaded:", this.category);
         } else {
-          console.error("Failed to load courses:", response.message);
+          console.error("Failed to load category:", response.message);
         }
       },
       error: (error) => {
@@ -100,12 +102,12 @@ export class CategoriesComponent implements OnInit {
 
 
 
-  onSubmitCreateCourse(): void {
-    if (this.addCourseForm.valid) {
+  createCategory(): void {
+    if (this.addCategoryForm.valid) {
       const formData = new FormData();
 
       // Add scalar values
-      formData.append("category_title", this.addCourseForm.value.category_title);
+      formData.append("category_title", this.addCategoryForm.value.category_title);
 
 
      
@@ -138,7 +140,7 @@ export class CategoriesComponent implements OnInit {
     }
   }
   resetForm() {
-    this.addCourseForm.reset({
+    this.addCategoryForm.reset({
       category_title: "",
 
     });

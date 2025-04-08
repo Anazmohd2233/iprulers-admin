@@ -36,12 +36,12 @@ export interface Banner {
   export interface Course {
     id: string;
     name: string;
-    description: string;
+    card_title: string;
+    category: string;
     img: string | null;
     status: number;
     createdAt: string;
     updatedAt: string;
-    details: CourseDetails[];
   }
   
   export interface CourseListResponse {

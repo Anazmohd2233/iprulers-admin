@@ -1,8 +1,9 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm } from '@angular/forms';
+import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Select2Data } from 'ng-select2-component';
+import { CourseService } from 'src/app/core/service/course.service';
 
 type selectedMember = {
   id: number;
@@ -27,20 +28,37 @@ export class EditCourseDetailsComponent implements OnInit {
   submitted: boolean = false;
 
   files: File | null = null; // Single file object
+
   courseImageForm!: FormGroup;
+  addCourseDetailsForm!: FormGroup;
 
 
-  @ViewChild('newProject', { static: true }) newProject!: NgForm;
+
 
   constructor(
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
     private fb: FormBuilder,
+        private courseService: CourseService
+    
+
 
 
   ) { }
 
   ngOnInit(): void {
+
+
+    this.addCourseDetailsForm = this.fb.group({
+      title: ['', Validators.required],
+      card_title: ['', Validators.required],
+      description: [''],
+      duration: [''],
+      level: [''],
+      rating: [''],
+      overview: [''],
+    });
+    
 
     this.level = [
       {
@@ -64,9 +82,58 @@ export class EditCourseDetailsComponent implements OnInit {
   /**
    *  on project form submit
    */
-  onSubmit(): void {
-    this.newProject.form.reset();
+  onSubmitCourseDetails(): void {
+    if (this.addCourseDetailsForm.valid) {
+      const formData = new FormData();
+  
+      // Append form values
+      formData.append('title', this.addCourseDetailsForm.value.title);
+      formData.append('card_title', this.addCourseDetailsForm.value.card_title);
+      formData.append('description', this.addCourseDetailsForm.value.description);
+      formData.append('duration', this.addCourseDetailsForm.value.duration);
+      formData.append('level', this.addCourseDetailsForm.value.level);
+      formData.append('rating', this.addCourseDetailsForm.value.rating);
+      formData.append('overview', this.addCourseDetailsForm.value.overview);
+  
+      // Add image file if available
+      if (this.files) {
+        formData.append('course_img', this.files); // Assuming this.files holds a single File object
+      }
+  
+      this.courseService.createCourse(formData).subscribe({
+        next: (response) => {
+          console.log('Response from createCourse:', response);
+          if (response.success) {
+            this.resetForm();
+          } else {
+            console.error('Failed to create course:', response.message);
+          }
+        },
+        error: (error) => {
+          console.error('Error creating course:', error);
+        },
+        complete: () => {
+          console.log('Course created successfully!');
+        }
+      });
+    } else {
+      console.log('Form is not valid')
+      this.addCourseDetailsForm.markAllAsTouched();
+    }
   }
+  resetForm() {
+    this.addCourseDetailsForm.reset({
+      title: '',
+      card_title: '',
+      description: '',
+      duration: '',
+      level: '',
+      rating: '',
+      overview: ''
+    });
+    this.files = null;
+  }
+  
 
   /**
    * returns member id

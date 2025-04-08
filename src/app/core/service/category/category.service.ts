@@ -17,7 +17,7 @@ export class CategoryService {
 
 
   createCategory(formdata: any) {
-    const apiUrl = `${this.baseUrl}/admin/course/create`;
+    const apiUrl = `${this.baseUrl}/admin/category/create`;
     // console.log('apiurl for listing users', apiUrl)
     this.authorization = localStorage.getItem("Authorization");
 
@@ -28,12 +28,12 @@ export class CategoryService {
     return this.http.post<any>(apiUrl, formdata, { headers });
   }
 
-  getCategory(page: any): Observable<CourseListResponse> {
-    const url = `${this.baseUrl}/admin/course/list/${page}`;
+  getCategory(page: any): Observable<any> {
+    const url = `${this.baseUrl}/admin/category/list/${page}`;
     this.authorization = localStorage.getItem("Authorization");
 
     const headers = new HttpHeaders({ Authorization: this.authorization });
 
-    return this.http.get<CourseListResponse>(url, { headers });
+    return this.http.get<any>(url, { headers });
   }
 }

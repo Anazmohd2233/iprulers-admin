@@ -21,6 +21,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { StudentService } from "src/app/core/service/student/student.service";
 import { Select2Data } from "ng-select2-component";
+import { MaterialService } from "src/app/core/service/material/material.service";
 
 export interface Column {
   name: string;
@@ -67,8 +68,11 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
 
     
 
+    selectedType: string = '';
 
     files: File | null = null; // Single file object
+    docs: File | null = null;
+
 
   
 
@@ -76,6 +80,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     private modalService: NgbModal,
     private fb: FormBuilder,
     private studentService: StudentService,
+    private materialService: MaterialService,
+
 
     public service: AdvancedTableServices,
     private sanitizer: DomSanitizer,
@@ -105,9 +111,10 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     });
 
     this.addMaterialForm = this.fb.group({
-      materialTitle: ["", Validators.required],  // Material Title (Matches formControlName)
-      materialType: [null, Validators.required], // File Upload Validation
-      materialLink: [null, Validators.required] // File Upload Validation
+      title: ["", Validators.required],  // Material Title (Matches formControlName)
+      type: [null, Validators.required], // File Upload Validation
+      link: [""], // File Upload Validation
+
 
     });
 
@@ -121,9 +128,28 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       file: [null, Validators.required] // File Upload Validation
     });
 
+    this.addMaterialForm.get('type')?.valueChanges.subscribe((type) => {
+      const linkControl = this.addMaterialForm.get('link');
+    
+      if (type === 'link') {
+        linkControl?.setValidators([Validators.required]);
+        linkControl?.updateValueAndValidity();
+    
+        this.docs = null; // clear uploaded file
+      } else if (type === 'pdf') {
+        linkControl?.clearValidators();
+        linkControl?.setValue(null);
+        linkControl?.updateValueAndValidity();
+      }
+    });
+    
+    
+
 
     
   }
+
+  
 
   ngOnChanges(changes: SimpleChanges): void {
     // this.paginate();
@@ -317,7 +343,50 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     }
   }
 
+  createMaterial():void{
 
+    if (this.addMaterialForm.valid) {
+      const formData = new FormData();
+
+      const { title, type, link } = this.addMaterialForm.value;
+
+      formData.append("title", title);
+      formData.append("type", type);
+  
+      if (type === 'link') {
+        formData.append("link", link);
+      }
+  
+      if (type === 'pdf' && this.docs) {
+        formData.append("material_document", this.docs);
+      }
+  
+   
+      this.materialService.createMaterial(formData).subscribe({
+        next: (response) => {
+          console.log("response of create material - ", response);
+          if (response.success) {
+            this.resetForm();
+            this.docs = null;
+           
+          } else {
+            console.error("Failed to create material:", response.message);
+          }
+        },
+        error: (error) => {
+          console.error("Error creating material:", error);
+        },
+        complete: () => {
+          console.log("material created successfully!...");
+        },
+      });
+
+
+    }else{
+      console.log('material form not validated')
+    }
+
+  }
 
   //Add Labs
   onSubmitAddLabs(): void {
@@ -372,6 +441,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     });
   
     this.files = null;
+    this.docs = null;
+
   }
   
   onSelectImage(event: any): void {
@@ -407,6 +478,19 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       encodeURI(URL.createObjectURL(f))
     );
   }
+  getPreviewUrlDoc(f: File) {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      encodeURI(URL.createObjectURL(f))
+    );
+  }
+  onRemoveDoc(event: any) {
+    this.docs = null;
+  }
 
+  onSelectDoc(event: any) {
+    if (event.addedFiles && event.addedFiles.length > 0) {
+      this.docs = event.addedFiles[0]; // Store only the first selected file
+    }
+  }
  
 }

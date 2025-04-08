@@ -1,42 +1,54 @@
-import { Component, ComponentFactoryResolver, EventEmitter, Input, OnInit, Output, QueryList, SimpleChanges, ViewChildren } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import {
+  Component,
+  ComponentFactoryResolver,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  QueryList,
+  SimpleChanges,
+  ViewChildren,
+} from "@angular/core";
+import { DomSanitizer } from "@angular/platform-browser";
 
-
-import { BreadcrumbItem } from 'src/app/shared/page-title/page-title.model';
-import { AdvancedTable } from './advanced.model';
-import { Column } from '../advanced-table/advanced-table.component';
-import { SortEvent } from '../advanced-table/sortable.directive';
-import { UserProfileService } from 'src/app/core/service/user.service';
-import { Admin } from '../models/model';
+import { BreadcrumbItem } from "src/app/shared/page-title/page-title.model";
+import { AdvancedTable } from "./advanced.model";
+import { Column } from "../advanced-table/advanced-table.component";
+import { SortEvent } from "../advanced-table/sortable.directive";
+import { UserProfileService } from "src/app/core/service/user.service";
+import { Admin } from "../models/model";
+import { StudentService } from "src/app/core/service/student/student.service";
 
 @Component({
-  selector: 'app-students',
-  templateUrl: './students.component.html',
-  styleUrls: ['./students.component.scss']
+  selector: "app-students",
+  templateUrl: "./students.component.html",
+  styleUrls: ["./students.component.scss"],
 })
-
-
 export class StudentsComponent implements OnInit {
-
   pageTitle: BreadcrumbItem[] = [];
-   records: Admin[] = [];
+  records: Admin[] = [];
   columns: Column[] = [];
   pageSizeOptions: number[] = [10, 25, 50, 100];
 
-   adminList: Admin[] = [];
+  studentList: any[] = [];
 
- 
   totalCount: number = 0;
   limit: number = 0;
 
   page: number = 1;
-  tableName:string="userList";
+  tableName: string = "students";
 
-  constructor(private userService: UserProfileService) {}
-  
+  constructor(
+    private userService: UserProfileService,
+    private studentService: StudentService
+  ) {}
+
   ngOnInit(): void {
-    this.pageTitle = [{ label: 'Tables', path: '/' }, { label: 'Advanced Tables', path: '/', active: true }];
-     this._fetchData();
+    this.pageTitle = [
+      { label: "Tables", path: "/" },
+      { label: "Advanced Tables", path: "/", active: true },
+    ];
+    this._fetchData();
     this.initTableCofig();
   }
 
@@ -46,29 +58,27 @@ export class StudentsComponent implements OnInit {
   _fetchData(): void {
     // this.records = tableData;
 
-
-    this.userService.getUserList(this.page).subscribe({
-      next: (response) => 
-        {console.log('response of user list - ',response)
+    this.studentService.getStudent(this.page).subscribe({
+      next: (response) => {
+        console.log("response of user list - ", response);
         if (response.success) {
-          this.adminList = response.data.admin_list;
-          this.records = this.adminList;
+          this.studentList = response.data.students;
+          this.records = this.studentList;
           this.totalCount = response.data.total_count;
           this.limit = response.data.limit;
-          console.log('Admins:', this.adminList);
+          console.log("Admins:", this.studentList);
         } else {
-          console.error('Failed to fetch data:', response.message);
+          console.error("Failed to fetch data:", response.message);
         }
       },
       error: (error) => {
-        console.error('Error fetching admin list:', error);
+        console.error("Error fetching admin list:", error);
       },
       complete: () => {
         // Optionally handle the completion logic here
-        console.log('Admin list fetch completed.');
-      }
+        console.log("Admin list fetch completed.");
+      },
     });
-    
   }
 
   /**
@@ -77,36 +87,35 @@ export class StudentsComponent implements OnInit {
   initTableCofig(): void {
     this.columns = [
       {
-        name: 'name',
-        label: 'Name',
+        name: "name",
+        label: "Name",
         formatter: (record: Admin) => record.name,
         width: 300,
       },
       {
-        name: 'username',
-        label: 'Username',
-        formatter: (record: Admin) => record.phone,
+        name: "username",
+        label: "Username",
+        formatter: (record: Admin) => record.email,
         width: 300,
       },
       {
-        name: 'status',
-        label: 'Status',
-        formatter: (record: Admin) => record.email,
-        width: 300
+        name: "status",
+        label: "Status",
+        formatter: (record: Admin) => record.status==1?'Active':'Inactive',
+        width: 300,
       },
-     
+
       {
-        name: 'action',
-        label: 'Edit',
-        formatter: () => '', 
-        width: 150
+        name: "action",
+        label: "Edit",
+        formatter: () => "",
+        width: 150,
       },
-    
     ];
   }
 
   openCourses(record: Admin) {
-    console.log('Courses for', record);
+    console.log("Courses for", record);
     // Your logic here
   }
 
@@ -120,49 +129,46 @@ export class StudentsComponent implements OnInit {
    * @param event column name, sort direction
    */
   onSort(event: SortEvent): void {
-    if (event.direction === '') {
-      this.records = this.adminList;
+    if (event.direction === "") {
+      this.records = this.studentList;
     } else {
       this.records = [...this.records].sort((a, b) => {
         const res = this.compare(a[event.column], b[event.column]);
-        return event.direction === 'asc' ? res : -res;
+        return event.direction === "asc" ? res : -res;
       });
     }
   }
 
   /**
- * Table Data Match with Search input
- * @param tables Table field value fetch
- * @param term Search the value
- */
+   * Table Data Match with Search input
+   * @param tables Table field value fetch
+   * @param term Search the value
+   */
   matches(tables: Admin, term: string) {
-    return tables.name.toLowerCase().includes(term)
-      || tables.phone.toLowerCase().includes(term)
-      || tables.email.toLowerCase().includes(term)
-      || String(tables.gender).includes(term)
-      // || tables.date.toLowerCase().includes(term)
-      // || tables.salary.toLowerCase().includes(term);
+    return (
+      tables.name.toLowerCase().includes(term) ||
+      tables.phone.toLowerCase().includes(term) ||
+      tables.email.toLowerCase().includes(term) ||
+      String(tables.gender).includes(term)
+    );
+    // || tables.date.toLowerCase().includes(term)
+    // || tables.salary.toLowerCase().includes(term);
   }
 
   /**
    * Search Method
-  */
+   */
   searchData(searchTerm: string): void {
-    if (searchTerm === '') {
+    if (searchTerm === "") {
       this._fetchData();
-    }
-    else {
-      let updatedData = this.adminList;
+    } else {
+      let updatedData = this.studentList;
 
       //  filter
-      updatedData = updatedData.filter(record => this.matches(record, searchTerm));
+      updatedData = updatedData.filter((record) =>
+        this.matches(record, searchTerm)
+      );
       this.records = updatedData;
     }
-
   }
-
-
- 
-
 }
-

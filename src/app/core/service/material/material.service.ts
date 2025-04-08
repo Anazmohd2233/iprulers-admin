@@ -1,7 +1,9 @@
+
+
+
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { CourseListResponse } from "src/app/apps/models/course";
 import { environment } from "src/environments/environment";
 
 @Injectable({
@@ -9,7 +11,7 @@ import { environment } from "src/environments/environment";
 })
 
 
-export class StudentService {
+export class MaterialService {
   baseUrl = environment.baseUrl;
   authorization: any;
 
@@ -18,8 +20,8 @@ export class StudentService {
 
 
 
-  createStudent(formdata: any) {
-    const apiUrl = `${this.baseUrl}/admin/student/create`;
+  createMaterial(formdata: any) {
+    const apiUrl = `${this.baseUrl}/admin/material/create`;
     this.authorization = localStorage.getItem("Authorization");
 
     const headers = new HttpHeaders({
@@ -29,8 +31,8 @@ export class StudentService {
     return this.http.post<any>(apiUrl, formdata, { headers });
   }
 
-  getStudent(page: any): Observable<any> {
-    const url = `${this.baseUrl}/admin/student/list/${page}`;
+  getMaterial(page: any): Observable<any> {
+    const url = `${this.baseUrl}/admin/material/list/${page}`;
     this.authorization = localStorage.getItem("Authorization");
 
     const headers = new HttpHeaders({ Authorization: this.authorization });
@@ -38,3 +40,5 @@ export class StudentService {
     return this.http.get<any>(url, { headers });
   }
 }
+
+
