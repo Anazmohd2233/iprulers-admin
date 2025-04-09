@@ -61,9 +61,7 @@ export class StudentCoursesComponent implements OnInit {
 
     }
 
-
-
-    this._fetchData();
+    this.getCourse();
 
     this.assignCourseForm = this.fb.group({
       course: ["", Validators.required],
@@ -77,7 +75,7 @@ export class StudentCoursesComponent implements OnInit {
   /**
    * fetches order list
    */
-  private _fetchData(): void {
+  private getCourse(): void {
     this.courseService.getCourses(this.page).subscribe({
       next: (response) => {
         if (response.success) {
@@ -114,6 +112,7 @@ export class StudentCoursesComponent implements OnInit {
         next: (response) => {
           console.log("response of assign course - ", response);
           if (response.success) {
+            this.fetchStudentDetails(this.studentID);
             this.assignCourseForm.reset();
           } else {
             console.error("Failed to assign course:", response.message);
@@ -123,7 +122,6 @@ export class StudentCoursesComponent implements OnInit {
           console.error("Error assign course:", error);
         },
         complete: () => {
-          this._fetchData();
           console.log("Course assign successfully!...");
         },
       });

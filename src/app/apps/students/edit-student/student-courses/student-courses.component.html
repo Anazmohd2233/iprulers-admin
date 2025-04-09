@@ -78,8 +78,15 @@
       <div class="card-body d-flex flex-column">
         <div class="text-center">
           <!-- Image Container -->
-          <span class="badge bg-success me-1 text-light mb-2">Active</span>
-
+          <span 
+          class="badge me-1 text-light mb-2"
+          [ngClass]="{
+            'bg-success': course.status === 'Active',
+            'bg-danger': course.status === 'Expired'
+          }"
+        >
+          {{ course.status }}
+        </span>
           <div class="image-container">
             <img
               src="assets/images/users/avatar-1.jpg"
