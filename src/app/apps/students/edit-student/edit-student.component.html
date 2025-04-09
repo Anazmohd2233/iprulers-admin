@@ -1,5 +1,5 @@
 <h4 class="mb-3 mt-3">Students Details</h4>
-<app-profile-userbox [student]="student"></app-profile-userbox>
+<app-profile-userbox [student]="studentList" [studentID]="studentId"></app-profile-userbox>
 
 <div class="col-xl-12">
   <div class="card">
@@ -46,13 +46,13 @@
 </div>
 
 <ng-template #Tab1>
-  <app-edit-student-details></app-edit-student-details>
+  <app-edit-student-details [studentID]="studentId"></app-edit-student-details>
 </ng-template>
 
 <ng-template #Tab2>
-  <app-student-courses></app-student-courses>
+  <app-student-courses [studentID]="studentId"></app-student-courses>
 </ng-template>
 
 <ng-template #Tab3>
-  <app-student-materials></app-student-materials>
+  <app-student-materials [studentID]="studentId"></app-student-materials>
 </ng-template>

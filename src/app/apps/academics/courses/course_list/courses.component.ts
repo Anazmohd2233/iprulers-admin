@@ -24,13 +24,8 @@ export class CoursesComponent implements OnInit {
 
   courses: Course[] = [];
   page:number = 1;
-
   pageTitle: BreadcrumbItem[] = [];
-  // files: File[] = [];
   files: File | null = null; // Single file object
-
-  docs: File | null = null;
-
   authorization: any;
 
   constructor(
@@ -64,8 +59,6 @@ export class CoursesComponent implements OnInit {
    * fetches order list
    */
   private _fetchData(): void {
-  
-
 
     this.courseService.getCourses(this.page).subscribe({
       next: (response) => {

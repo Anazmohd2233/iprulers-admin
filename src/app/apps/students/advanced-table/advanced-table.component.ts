@@ -196,7 +196,9 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     console.log("Open courses for:", record);
     localStorage.setItem("userId_course", record.id); // Save URLs only
 
-    this.router.navigate([`admin/edit_student`]);
+    //this.router.navigate([`admin/edit_student`]);
+    this.router.navigate([`admin/student`, record.id]);
+
     // Add your logic here to open the Courses page/modal for the selected user.
   }
 

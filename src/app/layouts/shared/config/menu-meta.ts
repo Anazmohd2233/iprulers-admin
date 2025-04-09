@@ -8,9 +8,9 @@ export const MENU: MenuItem[] = [
      {
         key: 'academics', label: 'Academics', isTitle: false, icon: 'uil-store', collapsed: true,
         children: [
+            { key: 'categories', label: 'Categories', link: '/admin/categories', parentKey: 'academics' },
             { key: 'courses', label: 'Courses', link: '/admin/courses', parentKey: 'academics' },
             { key: 'materials', label: 'Materials', link: '/admin/materials', parentKey: 'academics' },
-            { key: 'categories', label: 'Categories', link: '/admin/categories', parentKey: 'academics' },
             
         ]
     },

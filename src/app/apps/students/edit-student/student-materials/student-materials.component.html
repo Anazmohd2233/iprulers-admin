@@ -1,95 +1,26 @@
-<ng-template #addStudentCourseModal let-modal>
-  <div class="modal-body">
-    <form
-      class="ps-3 pe-3"
-      [formGroup]="addCourseForm"
-      (ngSubmit)="onSubmitCreateCourse()"
-    >
-      <div class="mb-3">
-        <label class="form-label">Course</label>
-
-        <select class="form-control" formControlName="course">
-          <option value="" disabled selected>Select Course</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-        </select>
-      </div>
-
-      <div class="mb-2">
-        <label for="expiry-date" class="form-label">Expiry Date</label>
-        <input
-          class="form-control"
-          id="example-date"
-          type="date"
-          formControlName="date"
-        />
-      </div>
-
-      <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">Add Course</button>
-      </div>
-    </form>
-  </div>
-</ng-template>
-
-<ng-template #updateDateModal let-modal>
-  <div class="modal-body">
-    <form
-      class="ps-3 pe-3"
-      [formGroup]="updateDateForm"
-      (ngSubmit)="updateDate()"
-    >
-      <div class="mb-3">
-        <label for="expiry-date" class="form-label">Expiry Date</label>
-        <input
-          class="form-control"
-          id="example-date"
-          type="date"
-          formControlName="date"
-        />
-      </div>
-
-      <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">
-          Update Expiry Date
-        </button>
-      </div>
-    </form>
-  </div>
-</ng-template>
-
-<!-- <div class="col-xl-12">
-    <div class="text-xl-end mt-xl-0 mt-2">
-      <button
-        type="button"
-        class="btn btn-primary mb-2 me-2"
-        (click)="open(addStudentCourseModal)"
-      >
-        Add Materials
-      </button>
-    </div>
-  </div> -->
 
 <div class="col-xl-6 mb-4">
   <div class="text-xl-end mt-xl-0 mt-2">
+    <form
+      class="ps-3 pe-3"
+      [formGroup]="assignMaterialForm"
+      (ngSubmit)="assignMaterial()"
+    >
     <div class="input-group">
-      <select
-        class="form-select"
-        id="inputGroupSelect04"
-        aria-label="Example select with button addon"
-      >
-        <option selected>Add a material</option>
-        <option value="1">One</option>
-        <option value="2">Two</option>
-        <option value="3">Three</option>
+      <select class="form-control" formControlName="material">
+        <option value="" disabled selected>Select Material</option>
+        <option *ngFor="let material of materialList" [value]="material.id">
+          {{ material.title }}
+        </option>
       </select>
-      <button class="btn btn-primary" type="button">Add Material</button>
+      <button class="btn btn-primary" type="submit">Add Material</button>
     </div>
+    </form>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-md-6 col-xxl-3" *ngFor="let course of courses">
+  <div class="col-md-6 col-xxl-3 mb-3" *ngFor="let material of studentMaterial">
     <div class="card h-100 d-flex flex-column border border-dark mb-1">
       <div class="card-body d-flex flex-column">
         <div class="text-center">
@@ -99,11 +30,11 @@
           <div
             class="avatar-md bg-success rounded mx-auto d-flex align-items-center justify-content-center"
           >
-            <span class="avatar-title bg-success rounded"> PDF </span>
+            <span class="avatar-title bg-success rounded"> {{material.material.type}} </span>
           </div>
 
           <!-- Course Name (Fixed Height) -->
-          <h4 class="course-title mt-2 my-1">Material 1</h4>
+          <h4 class="course-title mt-2 my-1">{{material.material.title}}</h4>
 
           <!-- <hr class="bg-dark-lighten my-3" /> -->
 
@@ -112,7 +43,6 @@
             <button
               class="btn w-100 btn-danger"
               placement="top"
-              (click)="open(updateDateModal)"
             >
               <p class="mb-0 text-center">Delete</p>
             </button>
@@ -122,36 +52,5 @@
     </div>
   </div>
 
-  <div class="col-md-6 col-xxl-3" *ngFor="let course of courses">
-    <div class="card h-100 d-flex flex-column border border-dark mb-1">
-      <div class="card-body d-flex flex-column">
-        <div class="text-center">
 
-          <!-- Image Container -->
-          <!-- Image Container -->
-          <div
-            class="avatar-md bg-success rounded mx-auto d-flex align-items-center justify-content-center"
-          >
-            <span class="avatar-title bg-success rounded"> Link </span>
-          </div>
-
-          <!-- Course Name (Fixed Height) -->
-          <h4 class="course-title mt-2 my-1">Material 2</h4>
-
-          <!-- <hr class="bg-dark-lighten my-3" /> -->
-
-          <!-- Button Section (Pushed to Bottom) -->
-          <div class="mt-1">
-            <button
-              class="btn w-100 btn-danger"
-              placement="top"
-              (click)="open(updateDateModal)"
-            >
-              <p class="mb-0 text-center">Delete</p>
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>

@@ -29,7 +29,6 @@ export class MaterialsComponent implements OnInit {
   tableName:string="material";
 
   constructor(
-    private userService: UserProfileService,
     private materialService: MaterialService,
 
   ) {}

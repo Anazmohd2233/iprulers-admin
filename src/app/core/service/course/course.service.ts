@@ -9,31 +9,16 @@ import { environment } from "src/environments/environment";
 })
 export class CourseService {
   baseUrl = environment.baseUrl;
-  authorization: any;
 
   constructor(private http: HttpClient) {}
 
-
-
-
   createCourse(formdata: any) {
     const apiUrl = `${this.baseUrl}/admin/course/create`;
-    // console.log('apiurl for listing users', apiUrl)
-    this.authorization = localStorage.getItem("Authorization");
-
-    const headers = new HttpHeaders({
-      Authorization: this.authorization,
-    });
-
-    return this.http.post<any>(apiUrl, formdata, { headers });
+    return this.http.post<any>(apiUrl, formdata);
   }
 
   getCourses(page: any): Observable<CourseListResponse> {
     const url = `${this.baseUrl}/admin/course/list/${page}`;
-    this.authorization = localStorage.getItem("Authorization");
-
-    const headers = new HttpHeaders({ Authorization: this.authorization });
-
-    return this.http.get<CourseListResponse>(url, { headers });
+    return this.http.get<CourseListResponse>(url);
   }
 }

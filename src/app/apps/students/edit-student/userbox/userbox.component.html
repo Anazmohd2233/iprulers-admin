@@ -1,3 +1,66 @@
+<ng-template #changePasswordModal let-modal>
+    <div class="modal-body">
+      <form
+        class="ps-3 pe-3 needs-validation"
+        [formGroup]="changePasswordForm"
+        (ngSubmit)="onChangePassword()"
+      >
+   
+  
+  
+   <!-- Password -->
+   <div class="mb-3">
+    <label for="pwd" class="form-label">Password</label>
+    <input
+      class="form-control"
+      type="password"
+      id="pwd"
+      required
+      formControlName="pwd"
+      placeholder="Password"
+      [ngClass]="{
+        'is-valid': form1.pwd.touched && form1.pwd.valid,
+        'is-invalid': form1.pwd.touched && form1.pwd.invalid
+      }"
+    />
+    <div *ngIf="form1.pwd.touched && form1.pwd.valid" class="valid-feedback">
+      Looks good!
+    </div>
+    <div *ngIf="form1.pwd.touched && form1.pwd.invalid" class="invalid-feedback">
+      Password is required.
+    </div>
+  </div>
+
+  <!-- Confirm Password -->
+  <div class="mb-3">
+    <label for="confirm" class="form-label">Confirm Password</label>
+    <input
+      class="form-control"
+      type="text"
+      id="confirm"
+      required
+      formControlName="confirm"
+      placeholder="Confirm password"
+      [ngClass]="{
+        'is-valid': form1.confirm.touched && form1.confirm.valid && form1.confirm.value === form1.pwd.value,
+        'is-invalid': form1.confirm.touched && form1.confirm.value !== form1.pwd.value
+      }"
+    />
+    <div *ngIf="form1.confirm.touched && form1.confirm.value === form1.pwd.value" class="valid-feedback">
+      Passwords match.
+    </div>
+    <div *ngIf="form1.confirm.touched && form1.confirm.value !== form1.pwd.value" class="invalid-feedback">
+      Passwords do not match.
+    </div>
+  </div>
+  
+        <div class="mb-3 text-center">
+          <button class="btn btn-primary" type="submit">Change Password</button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+  
 <div class="row">
     <div class="col-sm-12">
         <!-- Profile -->
@@ -8,13 +71,14 @@
                         <div class="row align-items-center">
                             <div class="col-auto">
                                 <div class="avatar-lg">
-                                    <img [src]="student.avatar" alt="" class="rounded-circle img-thumbnail">
+                                    <img src="assets/images/users/avatar-1.jpg" alt="Student Avatar" class="rounded-circle img-thumbnail">
+
                                 </div>
                             </div>
                             <div class="col">
                                 <div>
                                     <h4 class="mt-1 mb-1 text-white">{{student.name}}</h4>
-                                    <p class="font-13 text-white-50"> {{student.title}}</p>
+                                    <!-- <p class="font-13 text-white-50"> {{student.title}}</p> -->
 
                                     <ul class="mb-0 list-inline text-light">
                                         <li class="list-inline-item me-3">
@@ -28,10 +92,12 @@
                         </div>
                     </div> <!-- end col-->
 
+                    
+
                     <div class="col-sm-4">
                         <div class="text-center mt-sm-0 mt-3 text-sm-end">
-                            <button type="button" class="btn btn-light">
-                                <i class="mdi mdi-account-edit me-1"></i> Edit Profile
+                            <button type="button" class="btn btn-light" (click)="open(changePasswordModal)">
+                                <i class="mdi mdi-account-edit me-1"></i> Change Password
                             </button>
                         </div>
                     </div> <!-- end col-->

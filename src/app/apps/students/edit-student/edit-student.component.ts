@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../models/auth.models';
 import { BreadcrumbItem } from 'src/app/shared/page-title/page-title.model';
 import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
+import { ActivatedRoute } from '@angular/router';
+import { StudentService } from 'src/app/core/service/student/student.service';
 
 @Component({
   selector: 'app-edit-student',
@@ -10,7 +11,6 @@ import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap';
 })
 export class EditStudentComponent implements OnInit {
 
-  student: User | null = null;
     pageTitle: BreadcrumbItem[] = [];
     tabs1: number = 1;
     tabs2: number = 2;
@@ -23,24 +23,24 @@ export class EditStudentComponent implements OnInit {
     dynamicTabs: number[] = [1, 2, 3, 4, 5];
     counter: number = 0;
 
-  constructor() { }
+
+    studentList: any;
+    studentId: any;
+
+  constructor(
+        private route: ActivatedRoute,
+        private studentService: StudentService,
+  ) { }
 
   ngOnInit(): void {
 
-    this.student = {
-      id: 1,
-      username: 'johndoe',
-      password: 'securepassword123',
-      firstName: 'John',
-      lastName: 'Doe',
-      name: 'John Doe',
-      token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-      email: 'johndoe@example.com',
-      avatar: 'assets/images/users/avatar-1.jpg',  // ✅ correct relative path
 
-      location: 'New York, USA',
-      title: 'johndoe@gmail.com'
-    };
+    const student_id = this.route.snapshot.paramMap.get("id");
+    if (student_id) {
+      this.fetchStudentDetails(student_id);
+      this.studentId = student_id;
+    }
+
     this.counter = this.dynamicTabs.length + 1;
   }
 
@@ -74,5 +74,27 @@ export class EditStudentComponent implements OnInit {
       event.preventDefault();
     }
     
+
+    fetchStudentDetails(id: any): void {
+      this.studentService.getStudentById(id).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.studentList = response.data;
+            console.log("studentList", this.studentList);
+  
+         
+          } else {
+            console.error("Failed to fetch data:", response.message);
+          }
+        },
+        error: (error) => {
+          console.error("Error fetching admin list:", error);
+        },
+        complete: () => {
+          // Optionally handle the completion logic here
+          console.log("Admin list fetch completed.");
+        },
+      });
+    }
 
 }
