@@ -43,7 +43,6 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private calendar: NgbCalendar,
-    public toastService: ToastService
   ) {
     //set datepicker value to today
     this.date = this.calendar.getToday();
@@ -297,11 +296,4 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  showSuccess() {
-    console.log('toaster fn workinf')
-    this.toastService.show("I am a success toast", {
-      classname: "bg-success text-light",
-      delay: 10000,
-    });
-  }
 }

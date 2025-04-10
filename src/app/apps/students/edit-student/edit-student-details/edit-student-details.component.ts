@@ -1,10 +1,17 @@
-import { Component, Input, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import {
+  Component,
+  Input,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from "@angular/core";
 import { FormBuilder, FormGroup, NgForm, Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Select2Data } from "ng-select2-component";
 import { ToastService } from "src/app/apps/toaster/toaster.service";
+import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
 import { StudentService } from "src/app/core/service/student/student.service";
 
 type selectedMember = {
@@ -18,7 +25,6 @@ type selectedMember = {
   styleUrls: ["./edit-student-details.component.scss"],
 })
 export class EditStudentDetailsComponent implements OnInit {
-
   @Input() studentID: any | null = null;
 
   level: Select2Data = [];
@@ -27,7 +33,6 @@ export class EditStudentDetailsComponent implements OnInit {
   editStudentDetails!: FormGroup;
 
   studentList: any;
-  studentId: any;
 
   constructor(
     private sanitizer: DomSanitizer,
@@ -35,7 +40,7 @@ export class EditStudentDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private studentService: StudentService,
     private fb: FormBuilder,
-    public toastService: ToastService
+    private toaster: ToastUtilService
   ) {}
 
   ngOnInit(): void {
@@ -74,29 +79,29 @@ export class EditStudentDetailsComponent implements OnInit {
     if (this.editStudentDetails.valid) {
       const formData = new FormData();
 
-      const { name, email, username, status } =
-        this.editStudentDetails.value;
+      const { name, email, username, status } = this.editStudentDetails.value;
 
       formData.append("name", name);
       formData.append("email", email);
       formData.append("username", username);
       formData.append("status", status);
 
-      this.studentService.updateStudent(formData,this.studentId).subscribe({
+      this.studentService.updateStudent(formData, this.studentID).subscribe({
         next: (response) => {
           if (response.success) {
-
-            this.fetchStudentDetails(this.studentId);
+            this.toaster.success("Success", "Student Details Updated.");
+            this.fetchStudentDetails(this.studentID);
           } else {
+            this.toaster.warn("Failed", "Student Details Updated Failed.");
             console.error("Failed to update Student:", response.message);
           }
         },
         error: (error) => {
+          this.toaster.error("Failed", "Something went wrong.");
+
           console.error("Error updating Student:", error);
         },
         complete: () => {
-          this.toastService.show('I am a success toast', { classname: 'bg-success text-light', delay: 10000 });
-
           console.log("Student updated successfully!...");
         },
       });

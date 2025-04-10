@@ -4,13 +4,14 @@ import { BreadcrumbItem } from "src/app/shared/page-title/page-title.model";
 
 // data
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { FormArray, FormBuilder, Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CourseService } from "src/app/core/service/course/course.service";
 import { Course } from "src/app/apps/models/course";
 import { StudentService } from "src/app/core/service/student/student.service";
+import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
 
 @Component({
   selector: "app-student-courses",
@@ -19,6 +20,8 @@ import { StudentService } from "src/app/core/service/student/student.service";
 })
 export class StudentCoursesComponent implements OnInit {
   @Input() studentID: any | null = null;
+  modalRef!: NgbModalRef;
+
 
   assignCourseForm!: FormGroup;
   updateDateForm!: FormGroup;
@@ -26,10 +29,8 @@ export class StudentCoursesComponent implements OnInit {
   page: number = 1;
 
   studentList: any;
-  
+
   studentCourse: any[] = [];
-
-
 
   ribbons = [
     {
@@ -51,14 +52,13 @@ export class StudentCoursesComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private router: Router,
     private courseService: CourseService,
-    private studentService: StudentService
+    private studentService: StudentService,
+    private toaster: ToastUtilService
   ) {}
 
   ngOnInit(): void {
-
     if (this.studentID) {
       this.fetchStudentDetails(this.studentID);
-
     }
 
     this.getCourse();
@@ -80,8 +80,6 @@ export class StudentCoursesComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.courses = response.data.courses;
-
-          console.log("Courses loaded:", this.courses);
         } else {
           console.error("Failed to load courses:", response.message);
         }
@@ -96,7 +94,7 @@ export class StudentCoursesComponent implements OnInit {
   }
 
   open(content: TemplateRef<NgbModal>): void {
-    this.modalService.open(content, { scrollable: true });
+    this.modalRef = this.modalService.open(content, { scrollable: true });
   }
 
   assignCourse(): void {
@@ -112,13 +110,20 @@ export class StudentCoursesComponent implements OnInit {
         next: (response) => {
           console.log("response of assign course - ", response);
           if (response.success) {
+            this.toaster.success("Success", "Course Assigned Successfully.");
+
             this.fetchStudentDetails(this.studentID);
             this.assignCourseForm.reset();
+            this.modalRef.close(); // ✅ Close the modal here
           } else {
+            this.toaster.warn('Failed', 'Course Assigned Failed.');
+
             console.error("Failed to assign course:", response.message);
           }
         },
         error: (error) => {
+          this.toaster.error('Failed', 'Something went wrong.');
+
           console.error("Error assign course:", error);
         },
         complete: () => {

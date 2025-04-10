@@ -10,6 +10,8 @@ import { LayoutModule } from './layouts/layout.module';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { NgbToastModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbdToastGlobalModule } from './apps/toaster/toast-global.module';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { AppComponent } from './app.component';
     HttpClientModule,
     QuillModule.forRoot(),
     LayoutModule,
-    AppRoutingModule
+    AppRoutingModule,
+         NgbToastModule,NgbdToastGlobalModule
+    
   ],
   providers: [
     Title,

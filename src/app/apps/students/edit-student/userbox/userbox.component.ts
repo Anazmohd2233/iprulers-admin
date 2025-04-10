@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { StudentService } from 'src/app/core/service/student/student.service';
 // types
@@ -13,6 +13,8 @@ export class UserboxComponent implements OnInit {
 
   @Input() student: any | null = null;
   @Input() studentID: any | null = null;
+  modalRef!: NgbModalRef;
+
 
   changePasswordForm!: FormGroup;
   get form1() { return this.changePasswordForm.controls; }
@@ -37,7 +39,7 @@ export class UserboxComponent implements OnInit {
   }
 
     open(content: TemplateRef<NgbModal>): void {
-      this.modalService.open(content, { scrollable: true });
+      this.modalRef = this.modalService.open(content, { scrollable: true });
     }
 
     onChangePassword(){
@@ -55,6 +57,8 @@ export class UserboxComponent implements OnInit {
           next: (response) => {
             if (response.success) {
               this.changePasswordForm.reset();
+              this.modalRef.close(); // ✅ Close the modal here
+
 
             } else {
               console.error("Failed to update password:", response.message);

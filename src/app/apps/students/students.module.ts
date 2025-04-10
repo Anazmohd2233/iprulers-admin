@@ -27,6 +27,7 @@ import { UserboxComponent } from "./edit-student/userbox/userbox.component";
 import { EditStudentDetailsComponent } from "./edit-student/edit-student-details/edit-student-details.component";
 import { StudentCoursesComponent } from './edit-student/student-courses/student-courses.component';
 import { StudentMaterialsComponent } from './edit-student/student-materials/student-materials.component';
+import { NgbdToastGlobalModule } from "../toaster/toast-global.module";
 
 @NgModule({
   declarations: [
@@ -57,6 +58,8 @@ import { StudentMaterialsComponent } from './edit-student/student-materials/stud
     NgApexchartsModule,
     WidgetModule,
     NgxDropzoneModule,
+    NgbdToastGlobalModule
+
   ],
 })
 export class StudentsModule {}
