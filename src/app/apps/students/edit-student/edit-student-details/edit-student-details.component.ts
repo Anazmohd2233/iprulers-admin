@@ -4,6 +4,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Select2Data } from "ng-select2-component";
+import { ToastService } from "src/app/apps/toaster/toaster.service";
 import { StudentService } from "src/app/core/service/student/student.service";
 
 type selectedMember = {
@@ -33,7 +34,8 @@ export class EditStudentDetailsComponent implements OnInit {
     private modalService: NgbModal,
     private route: ActivatedRoute,
     private studentService: StudentService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    public toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -83,6 +85,7 @@ export class EditStudentDetailsComponent implements OnInit {
       this.studentService.updateStudent(formData,this.studentId).subscribe({
         next: (response) => {
           if (response.success) {
+
             this.fetchStudentDetails(this.studentId);
           } else {
             console.error("Failed to update Student:", response.message);
@@ -92,6 +95,8 @@ export class EditStudentDetailsComponent implements OnInit {
           console.error("Error updating Student:", error);
         },
         complete: () => {
+          this.toastService.show('I am a success toast', { classname: 'bg-success text-light', delay: 10000 });
+
           console.log("Student updated successfully!...");
         },
       });
