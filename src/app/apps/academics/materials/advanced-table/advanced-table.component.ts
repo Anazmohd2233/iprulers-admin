@@ -17,11 +17,12 @@ import { NgbSortableHeaderDirective, SortEvent } from "./sortable.directive";
 import { Router } from "@angular/router";
 import { EnrolledCourse } from "../models/mode-user-courses";
 import { UserProfileService } from "src/app/core/service/user.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { StudentService } from "src/app/core/service/student/student.service";
 import { Select2Data } from "ng-select2-component";
 import { MaterialService } from "src/app/core/service/material/material.service";
+import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
 
 export interface Column {
   name: string;
@@ -64,17 +65,11 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     addLabForm!: FormGroup;
     addMaterialForm!: FormGroup;
     addNoteForm!: FormGroup;
-  
-
-    
-
+    modalRef!: NgbModalRef;
     selectedType: string = '';
-
     files: File | null = null; // Single file object
     docs: File | null = null;
 
-
-  
 
   constructor(
     private modalService: NgbModal,
@@ -85,9 +80,9 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
 
     public service: AdvancedTableServices,
     private sanitizer: DomSanitizer,
-    private componentFactoryResolver: ComponentFactoryResolver,
     private router: Router,
     private userService: UserProfileService,
+        private toaster: ToastUtilService,
   ) {}
 
   ngAfterViewChecked(): void {
@@ -343,8 +338,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     }
   }
 
-  createMaterial():void{
-
+ 
+  createMaterial(): void {
     if (this.addMaterialForm.valid) {
       const formData = new FormData();
 
@@ -352,40 +347,43 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
 
       formData.append("title", title);
       formData.append("type", type);
-  
-      if (type === 'link') {
+
+      if (type === "link") {
         formData.append("link", link);
       }
-  
-      if (type === 'pdf' && this.docs) {
+
+      if (type === "pdf" && this.docs) {
         formData.append("material_document", this.docs);
       }
-  
-   
+
       this.materialService.createMaterial(formData).subscribe({
         next: (response) => {
-          console.log("response of create material - ", response);
           if (response.success) {
-            this.resetForm();
+            // this.matComponent.getMaterial();
             this.docs = null;
-           
+            this.addMaterialForm.reset();
+            this.modalRef.close();
+            this.toaster.success("Success", response.message);
           } else {
+            this.toaster.warn("Alert", response.message);
+
             console.error("Failed to create material:", response.message);
           }
         },
         error: (error) => {
+          this.toaster.error("Failed", "Something went wrong.");
+
           console.error("Error creating material:", error);
         },
         complete: () => {
           console.log("material created successfully!...");
         },
       });
+    } else {
+      this.toaster.warn("Alert", 'Fill all mandaratory fields!!');
 
-
-    }else{
-      console.log('material form not validated')
+      console.log("material form not validated");
     }
-
   }
 
   //Add Labs
