@@ -18,9 +18,11 @@ import { Router } from "@angular/router";
 import { EnrolledCourse } from "../models/mode-user-courses";
 import { UserProfileService } from "src/app/core/service/user.service";
 
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { StudentService } from "src/app/core/service/student/student.service";
+import { StudentsComponent } from "../students/students.component";
+import { ToastUtilService } from "../../toaster/toasterUtilService";
 
 export interface Column {
   name: string;
@@ -59,21 +61,20 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   headers!: QueryList<NgbSortableHeaderDirective>;
   @ViewChildren("advancedTable") advancedTable!: any;
 
-    addStudentForm!: FormGroup;
-    files: File | null = null; // Single file object
-
-    
+  addStudentForm!: FormGroup;
+  files: File | null = null; // Single file object
+  modalRef!: NgbModalRef;
 
   constructor(
     private modalService: NgbModal,
     private fb: FormBuilder,
     private studentService: StudentService,
-
     public service: AdvancedTableServices,
     private sanitizer: DomSanitizer,
-    private componentFactoryResolver: ComponentFactoryResolver,
     private router: Router,
     private userService: UserProfileService,
+    private studComponent: StudentsComponent,
+    private toaster: ToastUtilService
   ) {}
 
   ngAfterViewChecked(): void {
@@ -81,18 +82,15 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit(): void {
-    console.log("***********tableName*********", this.tableName);
     for (let i = 0; i < this.tableData.length; i++) {
       this.isSelected[i] = false;
     }
-
 
     this.addStudentForm = this.fb.group({
       name: ["", Validators.required],
       email: ["", [Validators.required, Validators.email]], // Email validation
       pwd: ["", Validators.required], // Password field
       confirm: ["", Validators.required], // Confirm password field
-
     });
   }
 
@@ -103,7 +101,9 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       this.paginate();
     }
   }
-  get form1() { return this.addStudentForm.controls; }
+  get form1() {
+    return this.addStudentForm.controls;
+  }
 
   /**
    * sets pagination configurations
@@ -202,7 +202,6 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     // Add your logic here to open the Courses page/modal for the selected user.
   }
 
-
   _fetchData(): void {
     // this.records = tableData;
 
@@ -214,103 +213,94 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
           this.service.totalRecords = response.data.total_count; // Set total records
           this.service.pageSize = response.data.limit; // Ensure pageSize matches API limit
 
-     // Set start and end index
-     this.service.startIndex =
-     this.service.totalRecords > 0
-       ? (this.service.page - 1) * this.service.pageSize + 1
-       : 0;
+          // Set start and end index
+          this.service.startIndex =
+            this.service.totalRecords > 0
+              ? (this.service.page - 1) * this.service.pageSize + 1
+              : 0;
 
-   this.service.endIndex = Math.min(
-     this.service.startIndex + this.service.pageSize - 1,
-     this.service.totalRecords
-   );
+          this.service.endIndex = Math.min(
+            this.service.startIndex + this.service.pageSize - 1,
+            this.service.totalRecords
+          );
         } else {
           console.error("Failed to fetch data:", response.message);
         }
       },
       error: (error) => {
         console.error("Error fetching students list:", error);
-      }
+      },
     });
   }
 
+  open(content: TemplateRef<NgbModal>): void {
+    this.modalRef = this.modalService.open(content, { scrollable: true });
+  }
 
-
-
-    open(content: TemplateRef<NgbModal>): void {
-      this.modalService.open(content, { scrollable: true });
+  createStudent(): void {
+    if (this.addStudentForm.invalid) {
+      this.addStudentForm.markAllAsTouched();
+      return;
     }
 
-    
+    const password = this.addStudentForm.value.pwd;
+    const confirmPassword = this.addStudentForm.value.confirm;
 
-    createStudent(): void {
-      if (this.addStudentForm.invalid) {
-        this.addStudentForm.markAllAsTouched();
-        return;
-      }
-    
-      const password = this.addStudentForm.value.pwd;
-      const confirmPassword = this.addStudentForm.value.confirm;
-    
-      if (password !== confirmPassword) {
-        console.error("Passwords do not match");
-        return;
-      }
-    
-      const formData = new FormData();
-      formData.append("name", this.addStudentForm.value.name);
-      formData.append("email", this.addStudentForm.value.email);
-      formData.append("password", password);
-      formData.append("confirm", confirmPassword);
-    
-      if (this.files) {
-        formData.append("student_img", this.files);
-      }
-    
-      this.studentService.createStudent(formData).subscribe({
-        next: (response) => {
-          console.log("response of create student - ", response);
-          if (response.success) {
-            this.resetForm();
-            this.files = null;
-            // Optional: show a success toast or close modal
-          } else {
-            console.error("Failed to create student:", response.message);
-          }
-        },
-        error: (error) => {
-          console.error("Error creating student:", error);
-        },
-        complete: () => {
-          console.log("Student created successfully!");
+    if (password !== confirmPassword) {
+      console.error("Passwords do not match");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", this.addStudentForm.value.name);
+    formData.append("email", this.addStudentForm.value.email);
+    formData.append("password", password);
+    formData.append("confirm", confirmPassword);
+
+    if (this.files) {
+      formData.append("student_img", this.files);
+    }
+
+    this.studentService.createStudent(formData).subscribe({
+      next: (response) => {
+        console.log("response of create student - ", response);
+        if (response.success) {
+          this.files = null;
+          this.addStudentForm.reset();
+          this.modalRef.close();
+          this.toaster.success("Success", response.message);
+          this.studComponent.getStudent();
+
+          this.files = null;
+          // Optional: show a success toast or close modal
+        } else {
+          this.toaster.warn("Alert", response.message);
+
+          console.error("Failed to create student:", response.message);
         }
-      });
-    }
-    
-  resetForm() {
-    this.addStudentForm.reset({
-      name: "",
-      username: "",
-      email: "",
-      pwd: "",
-      confirm: ""
+      },
+      error: (error) => {
+        this.toaster.error("Failed", "Something went wrong.");
+
+        console.error("Error creating student:", error);
+      },
+      complete: () => {
+        console.log("Student created successfully!");
+      },
     });
-  
-    this.files = null;
   }
-  
+
   onSelectImage(event: any): void {
     if (event.addedFiles && event.addedFiles.length > 0) {
       this.files = event.addedFiles[0]; // Store only the first selected file
     }
   }
 
-
   onRemoveFile(event: any) {
     // this.files.splice(this.files.indexOf(event), 1);
     this.files = null; // Clear the file
   }
- 
+
   getSize(f: File) {
     const bytes = f.size;
     if (bytes === 0) {
@@ -332,5 +322,4 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       encodeURI(URL.createObjectURL(f))
     );
   }
-
 }

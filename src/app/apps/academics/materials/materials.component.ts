@@ -13,7 +13,6 @@ import { MaterialService } from 'src/app/core/service/material/material.service'
 })
 
 export class MaterialsComponent implements OnInit {
-
   pageTitle: BreadcrumbItem[] = [];
    records: any[] = [];
   columns: Column[] = [];
@@ -34,27 +33,20 @@ export class MaterialsComponent implements OnInit {
   ) {}
   
   ngOnInit(): void {
-    this.pageTitle = [{ label: 'Tables', path: '/' }, { label: 'Advanced Tables', path: '/', active: true }];
-     this._fetchData();
+     this.getMaterial();
     this.initTableCofig();
   }
 
-  /**
-   * fetches table records
-   */
-  _fetchData(): void {
-    // this.records = tableData;
-
+  getMaterial(): void {
 
     this.materialService.getMaterial(this.page).subscribe({
       next: (response) => 
-        {console.log('response of material list - ',response)
+        {
         if (response.success) {
           this.materialList = response.data.material;
           this.records = this.materialList;
           this.totalCount = response.data.total_count;
           this.limit = response.data.limit;
-          console.log('Materials:', this.materialList);
         } else {
           console.error('Failed to fetch data:', response.message);
         }
@@ -141,7 +133,7 @@ export class MaterialsComponent implements OnInit {
   */
   searchData(searchTerm: string): void {
     if (searchTerm === '') {
-      this._fetchData();
+      this.getMaterial();
     }
     else {
       let updatedData = this.materialList;

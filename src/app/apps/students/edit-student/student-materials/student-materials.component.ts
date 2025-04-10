@@ -1,53 +1,45 @@
-
-
-import { Component, Input, OnInit, TemplateRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { BreadcrumbItem } from 'src/app/shared/page-title/page-title.model';
-
+import { Component, Input, OnInit, TemplateRef } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import { BreadcrumbItem } from "src/app/shared/page-title/page-title.model";
 
 // data
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { FormArray, FormBuilder,Validators } from "@angular/forms";
+import { FormArray, FormBuilder, Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 
-import { StudentService } from 'src/app/core/service/student/student.service';
-import { MaterialService } from 'src/app/core/service/material/material.service';
+import { StudentService } from "src/app/core/service/student/student.service";
+import { MaterialService } from "src/app/core/service/material/material.service";
+import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
 
 @Component({
-  selector: 'app-student-materials',
-  templateUrl: './student-materials.component.html',
-  styleUrls: ['./student-materials.component.scss']
+  selector: "app-student-materials",
+  templateUrl: "./student-materials.component.html",
+  styleUrls: ["./student-materials.component.scss"],
 })
-
 export class StudentMaterialsComponent implements OnInit {
+  @Input() studentID: any | null = null;
 
-    @Input() studentID: any | null = null;
-
-    assignMaterialForm!: FormGroup;
-
+  assignMaterialForm!: FormGroup;
 
   materialList: any[] = [];
   studentMaterial: any[] = [];
 
-
-
-  page:number = 1;
+  page: number = 1;
 
   ribbons = [
     {
       name: "CCIE EI v1.1 DOO-1 Section 2",
       img: "assets/images/sample.jpg",
-      ribbon: { name: "Expired", color: "danger", direction: "left" }
+      ribbon: { name: "Expired", color: "danger", direction: "left" },
     },
     {
       name: "CCIE EI v1.1 DOO-1 Section 3",
       img: "assets/images/sample2.jpg",
-      ribbon: { name: "New", color: "success", direction: "right" }
-    }
+      ribbon: { name: "New", color: "success", direction: "right" },
+    },
   ];
-  
 
   constructor(
     private http: HttpClient,
@@ -55,9 +47,8 @@ export class StudentMaterialsComponent implements OnInit {
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private studentService: StudentService,
-        private materialService: MaterialService,
-    
-
+    private materialService: MaterialService,
+    private toaster: ToastUtilService
   ) {}
 
   ngOnInit(): void {
@@ -69,10 +60,7 @@ export class StudentMaterialsComponent implements OnInit {
       this.fetchStudentDetails(this.studentID);
       this.getMaterials();
     }
-
   }
-
- 
 
   assignMaterial(): void {
     if (this.assignMaterialForm.valid) {
@@ -86,48 +74,51 @@ export class StudentMaterialsComponent implements OnInit {
         next: (response) => {
           console.log("response of assign materials - ", response);
           if (response.success) {
+            this.toaster.success("Success", response.message);
+
             this.assignMaterialForm.reset();
             this.fetchStudentDetails(this.studentID);
-
           } else {
+            this.toaster.warn("Alert", response.message);
+
             console.error("Failed to assign materials:", response.message);
           }
         },
         error: (error) => {
+          this.toaster.error("Failed", "Something went wrong.");
+
           console.error("Error assign materials:", error);
         },
         complete: () => {
           console.log("material assign successfully!...");
         },
       });
-    }else{
-      console.log('material adding form not validated')
+    } else {
+      console.log("material adding form not validated");
     }
   }
 
   getMaterials(): void {
-
     this.materialService.getMaterial(this.page).subscribe({
-      next: (response) => 
-        {console.log('response of material list - ',response)
+      next: (response) => {
+        console.log("response of material list - ", response);
         if (response.success) {
           this.materialList = response.data.material;
-          console.log('Materials:', this.materialList);
+          console.log("Materials:", this.materialList);
         } else {
-          console.error('Failed to fetch data:', response.message);
+          console.error("Failed to fetch data:", response.message);
         }
       },
       error: (error) => {
-        console.error('Error fetching admin list:', error);
+        console.error("Error fetching admin list:", error);
       },
       complete: () => {
         // Optionally handle the completion logic here
-        console.log('Admin list fetch completed.');
-      }
+        console.log("Admin list fetch completed.");
+      },
     });
-    
   }
-  
+
   fetchStudentDetails(id: any): void {
     this.studentService.getStudentById(id).subscribe({
       next: (response) => {
@@ -147,8 +138,4 @@ export class StudentMaterialsComponent implements OnInit {
       },
     });
   }
-
-
 }
-
-

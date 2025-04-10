@@ -48,25 +48,23 @@ export class StudentsComponent implements OnInit {
       { label: "Tables", path: "/" },
       { label: "Advanced Tables", path: "/", active: true },
     ];
-    this._fetchData();
+    this.getStudent();
     this.initTableCofig();
   }
 
   /**
    * fetches table records
    */
-  _fetchData(): void {
+  getStudent(): void {
     // this.records = tableData;
 
     this.studentService.getStudent(this.page).subscribe({
       next: (response) => {
-        console.log("response of user list - ", response);
         if (response.success) {
           this.studentList = response.data.students;
           this.records = this.studentList;
           this.totalCount = response.data.total_count;
           this.limit = response.data.limit;
-          console.log("Admins:", this.studentList);
         } else {
           console.error("Failed to fetch data:", response.message);
         }
@@ -160,7 +158,7 @@ export class StudentsComponent implements OnInit {
    */
   searchData(searchTerm: string): void {
     if (searchTerm === "") {
-      this._fetchData();
+      this.getStudent();
     } else {
       let updatedData = this.studentList;
 

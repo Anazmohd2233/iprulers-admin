@@ -22,7 +22,6 @@ export class StudentCoursesComponent implements OnInit {
   @Input() studentID: any | null = null;
   modalRef!: NgbModalRef;
 
-
   assignCourseForm!: FormGroup;
   updateDateForm!: FormGroup;
   courses: Course[] = [];
@@ -116,13 +115,13 @@ export class StudentCoursesComponent implements OnInit {
             this.assignCourseForm.reset();
             this.modalRef.close(); // ✅ Close the modal here
           } else {
-            this.toaster.warn('Failed', 'Course Assigned Failed.');
+            this.toaster.warn("Alert", response.message);
 
             console.error("Failed to assign course:", response.message);
           }
         },
         error: (error) => {
-          this.toaster.error('Failed', 'Something went wrong.');
+          this.toaster.error("Failed", "Something went wrong.");
 
           console.error("Error assign course:", error);
         },
