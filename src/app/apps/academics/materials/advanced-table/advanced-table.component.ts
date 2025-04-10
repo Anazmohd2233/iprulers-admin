@@ -23,6 +23,7 @@ import { StudentService } from "src/app/core/service/student/student.service";
 import { Select2Data } from "ng-select2-component";
 import { MaterialService } from "src/app/core/service/material/material.service";
 import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
+import { MaterialsComponent } from "../materials.component";
 
 export interface Column {
   name: string;
@@ -56,6 +57,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   @Output() search = new EventEmitter<string>();
   @Output() sort = new EventEmitter<SortEvent>();
   @Output() handleTableLoad = new EventEmitter<void>();
+  @Output() materialAdded = new EventEmitter<void>();
 
   @ViewChildren(NgbSortableHeaderDirective)
   headers!: QueryList<NgbSortableHeaderDirective>;
@@ -76,8 +78,6 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     private fb: FormBuilder,
     private studentService: StudentService,
     private materialService: MaterialService,
-
-
     public service: AdvancedTableServices,
     private sanitizer: DomSanitizer,
     private router: Router,
@@ -90,7 +90,6 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   }
 
   ngOnInit(): void {
-    console.log("***********tableName*********", this.tableName);
     for (let i = 0; i < this.tableData.length; i++) {
       this.isSelected[i] = false;
     }
@@ -280,62 +279,13 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     });
   }
 
-
-
-
-
-
-
-
-
-
     open(content: TemplateRef<NgbModal>): void {
       console.log('**********')
-      this.modalService.open(content, { scrollable: true });
+      this.modalRef=this.modalService.open(content, { scrollable: true });
     }
-
-    
 
   onSubmitCreateStudent(): void {
-    if (this.addStudentForm.valid) {
-      const formData = new FormData();
-
-      // Add scalar values
-      formData.append("name", this.addStudentForm.value.name);
-      formData.append("username", this.addStudentForm.value.username);
-      formData.append("email", this.addStudentForm.value.email);
-      formData.append("password", this.addStudentForm.value.pwd);
-
-      formData.append("confirm", this.addStudentForm.value.confirm);
-
-
-     
-      if (this.files) {
-        formData.append("img", this.files); // Single file for course image
-      }
-
-   
-      this.studentService.createStudent(formData).subscribe({
-        next: (response) => {
-          console.log("response of create student - ", response);
-          if (response.success) {
-            this.resetForm();
-            this.files = null;
-           
-          } else {
-            console.error("Failed to create student:", response.message);
-          }
-        },
-        error: (error) => {
-          console.error("Error creating student:", error);
-        },
-        complete: () => {
-          console.log("student created successfully!...");
-        },
-      });
-
-
-    }
+ 
   }
 
  
@@ -359,7 +309,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       this.materialService.createMaterial(formData).subscribe({
         next: (response) => {
           if (response.success) {
-            // this.matComponent.getMaterial();
+            this.materialAdded.emit();
             this.docs = null;
             this.addMaterialForm.reset();
             this.modalRef.close();

@@ -6,6 +6,9 @@
       (ngSubmit)="createCategory()"
       #validate1="ngForm"
     >
+    <h4 class="header-title m-t-0 mb-2">
+      {{ selectedCategory ? 'Edit Category' : 'Add New Category' }}
+    </h4>
 
     <div class="mb-3">
       <label class="form-label" for="validationCustom01">Category Title</label>
@@ -91,7 +94,10 @@
       </div>
 
       <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">Add Category</button>
+        <!-- <button class="btn btn-primary" type="submit">Add Category</button> -->
+        <button class="btn btn-primary" type="submit">
+          {{ selectedCategory ? 'Update Category' : 'Add Category' }}
+        </button>
       </div>
     </form>
   </div>
@@ -142,7 +148,7 @@
             <button
               class="btn w-50 btn-primary"
               placement="top"
-              (click)="open(addCategoryModal)"
+              (click)="open(addCategoryModal,cat)"
             >
               <p class="mb-0 text-center">Edit</p>
             </button>

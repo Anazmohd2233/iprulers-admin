@@ -5,13 +5,14 @@ import { BreadcrumbItem } from 'src/app/shared/page-title/page-title.model';
 
 // data
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { FormArray, FormBuilder,Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 import { CourseService } from "src/app/core/service/course.service";
 import { CategoryService } from 'src/app/core/service/category/category.service';
 import { Course } from '../../models/course';
+import { ToastUtilService } from '../../toaster/toasterUtilService';
 
 @Component({
   selector: 'app-categories',
@@ -24,17 +25,14 @@ import { Course } from '../../models/course';
 
 export class CategoriesComponent implements OnInit {
   addCategoryForm!: FormGroup;
-
   category: any[] = [];
   page:number = 1;
-
-  pageTitle: BreadcrumbItem[] = [];
-  // files: File[] = [];
-  files: File | null = null; // Single file object
-
+  files: File | null = null; 
   docs: File | null = null;
+    modalRef!: NgbModalRef;
+    selectedCategory: any = null; // null = add mode
 
-  authorization: any;
+  
 
   constructor(
     private http: HttpClient,
@@ -42,22 +40,15 @@ export class CategoriesComponent implements OnInit {
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private toaster: ToastUtilService
+    
   ) {}
 
   ngOnInit(): void {
-    this.authorization = localStorage.getItem("Authorization");
-
-    this.pageTitle = [
-      { label: "CRM", path: "/" },
-      { label: "Clients List", path: "/", active: true },
-    ];
-    this._fetchData();
-
+    this.getCategory();
     this.addCategoryForm = this.fb.group({
       category_title: ['', Validators.required],
-
-
 
     });
 
@@ -67,9 +58,7 @@ export class CategoriesComponent implements OnInit {
   /**
    * fetches order list
    */
-  private _fetchData(): void {
-  
-
+  private getCategory(): void {
 
     this.categoryService.getCategory(this.page).subscribe({
       next: (response) => {
@@ -90,48 +79,62 @@ export class CategoriesComponent implements OnInit {
     });
   }
 
-  public user = {
-    name: "Izzat Nadiri",
-    age: 26,
-  };
+ 
+  // open(content: TemplateRef<NgbModal>): void {
+  //   this.modalRef = this.modalService.open(content, { scrollable: true });
+  // }
 
-  open(content: TemplateRef<NgbModal>): void {
-    this.modalService.open(content, { scrollable: true });
+  open(content: TemplateRef<NgbModal>, category?: any): void {
+    this.selectedCategory = category || null;
+  
+    if (this.selectedCategory) {
+      this.addCategoryForm.patchValue({
+        category_title: this.selectedCategory.category_title,
+      });
+  
+      // optionally preload image preview if editing
+    } else {
+      this.addCategoryForm.reset();
+      this.files = null;
+    }
+  
+    this.modalRef = this.modalService.open(content, { scrollable: true });
   }
-
-
-
+  
 
   createCategory(): void {
     if (this.addCategoryForm.valid) {
       const formData = new FormData();
 
-      // Add scalar values
       formData.append("category_title", this.addCategoryForm.value.category_title);
 
 
-     
       if (this.files) {
         formData.append("category_img", this.files); // Single file for course image
       }
 
-   
       this.categoryService.createCategory(formData).subscribe({
         next: (response) => {
-          console.log("response of create category - ", response);
           if (response.success) {
-            this.resetForm();
+            this.getCategory();
             this.files = null;
+            this.addCategoryForm.reset();
+            this.modalRef.close();
+            this.toaster.success("Success", response.message);
            
           } else {
+            this.toaster.warn("Alert", response.message);
+
             console.error("Failed to create category:", response.message);
           }
         },
         error: (error) => {
+          this.toaster.error("Failed", "Something went wrong.");
+
           console.error("Error creating category:", error);
         },
         complete: () => {
-          this._fetchData();
+          this.getCategory();
           console.log("category created successfully!...");
         },
       });
@@ -139,13 +142,7 @@ export class CategoriesComponent implements OnInit {
 
     }
   }
-  resetForm() {
-    this.addCategoryForm.reset({
-      category_title: "",
 
-    });
-    this.files = null;
-  }
 
   onSelectImage(event: any): void {
     if (event.addedFiles && event.addedFiles.length > 0) {

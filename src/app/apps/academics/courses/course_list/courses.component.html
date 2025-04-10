@@ -34,9 +34,12 @@
   
           <select class="form-control" formControlName="category">
             <option value="" disabled selected>Select Category</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
+            <option *ngFor="let cat of category" [value]="cat.id">
+              {{ cat.category_title }}
+            </option>
           </select>
+
+        
         </div>
   
       

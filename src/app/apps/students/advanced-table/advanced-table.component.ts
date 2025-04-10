@@ -56,6 +56,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   @Output() search = new EventEmitter<string>();
   @Output() sort = new EventEmitter<SortEvent>();
   @Output() handleTableLoad = new EventEmitter<void>();
+  @Output() materialAdded = new EventEmitter<void>();
+
 
   @ViewChildren(NgbSortableHeaderDirective)
   headers!: QueryList<NgbSortableHeaderDirective>;
@@ -72,8 +74,6 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     public service: AdvancedTableServices,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private userService: UserProfileService,
-    private studComponent: StudentsComponent,
     private toaster: ToastUtilService
   ) {}
 
@@ -269,9 +269,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
           this.addStudentForm.reset();
           this.modalRef.close();
           this.toaster.success("Success", response.message);
-          this.studComponent.getStudent();
-
-          this.files = null;
+          this.materialAdded.emit();
           // Optional: show a success toast or close modal
         } else {
           this.toaster.warn("Alert", response.message);

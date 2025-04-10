@@ -11,6 +11,7 @@ import { DomSanitizer } from "@angular/platform-browser";
 import { Router } from "@angular/router";
 import { CourseService } from 'src/app/core/service/course/course.service';
 import { Course } from 'src/app/apps/models/course';
+import { CategoryService } from 'src/app/core/service/category/category.service';
 
 @Component({
   selector: 'app-courses',
@@ -24,9 +25,8 @@ export class CoursesComponent implements OnInit {
 
   courses: Course[] = [];
   page:number = 1;
-  pageTitle: BreadcrumbItem[] = [];
   files: File | null = null; // Single file object
-  authorization: any;
+  category: any[] = [];
 
   constructor(
     private http: HttpClient,
@@ -34,17 +34,15 @@ export class CoursesComponent implements OnInit {
     private fb: FormBuilder,
     private sanitizer: DomSanitizer,
     private router: Router,
-    private courseService: CourseService
+    private courseService: CourseService,
+        private categoryService: CategoryService,
+    
   ) {}
 
   ngOnInit(): void {
-    this.authorization = localStorage.getItem("Authorization");
 
-    this.pageTitle = [
-      { label: "CRM", path: "/" },
-      { label: "Clients List", path: "/", active: true },
-    ];
-    this._fetchData();
+
+    this.getCourse();
 
     this.addCourseForm = this.fb.group({
       course_title: ["", Validators.required],
@@ -52,13 +50,14 @@ export class CoursesComponent implements OnInit {
       category: ["", Validators.required],
 
     });
+    this.getCategory();
 
   }
 
   /**
    * fetches order list
    */
-  private _fetchData(): void {
+  private getCourse(): void {
 
     this.courseService.getCourses(this.page).subscribe({
       next: (response) => {
@@ -79,10 +78,7 @@ export class CoursesComponent implements OnInit {
     });
   }
 
-  public user = {
-    name: "Izzat Nadiri",
-    age: 26,
-  };
+ 
 
   open(content: TemplateRef<NgbModal>): void {
     this.modalService.open(content, { scrollable: true });
@@ -110,6 +106,8 @@ export class CoursesComponent implements OnInit {
         next: (response) => {
           console.log("response of create course - ", response);
           if (response.success) {
+            this.getCourse();
+
             this.resetForm();
             this.files = null;
            
@@ -121,7 +119,6 @@ export class CoursesComponent implements OnInit {
           console.error("Error creating course:", error);
         },
         complete: () => {
-          this._fetchData();
           console.log("Course created successfully!...");
         },
       });
@@ -175,10 +172,29 @@ export class CoursesComponent implements OnInit {
 
 
   goToCourseDetails(course: any): void {
-    // this.router.navigate(['dashboard/analytics']);
-    // localStorage.setItem("courseId", course.id);
-    // this.router.navigate([`courses/details/${course.id}`]);
+
     this.router.navigate([`admin/edit_course`]);
 
+  }
+
+  private getCategory(): void {
+
+    this.categoryService.getCategory(this.page).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.category = response.data.category;
+
+          console.log("category loaded:", this.category);
+        } else {
+          console.error("Failed to load category:", response.message);
+        }
+      },
+      error: (error) => {
+          console.error("API error:", error);
+      },
+      complete: () => {
+        console.log('Admin list fetch completed.');
+      }
+    });
   }
 }
