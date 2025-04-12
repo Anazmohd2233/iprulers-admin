@@ -114,12 +114,12 @@
   </div>
 </ng-template>
 
-<ng-template #addLabs let-modal>
+<ng-template #addLabsModal let-modal>
   <div class="modal-body">
     <form
       class="ps-3 pe-3"
-      [formGroup]="addNoteForm"
-      (ngSubmit)="onSubmitAddLabs()"
+      [formGroup]="addLabForm"
+      (ngSubmit)="addLabs()"
     >
       <div class="mb-2">
         <label for="username" class="form-label">Lab Title</label>
@@ -128,7 +128,7 @@
           type="email"
           id="name"
           required
-          formControlName=""
+          formControlName="labTitle"
           placeholder="Add lab title here"
         />
       </div>
@@ -145,7 +145,6 @@
                   [multiple]="false"
                   (change)="onSelectImage($event)"
                   class="dropzone"
-                  accept="image/jpeg,image/jpg,image/png,image/gif"
                 >
                   <ngx-dropzone-label>
                     <i class="h1 text-muted dripicons-cloud-upload"></i>
@@ -161,13 +160,7 @@
                     <div class="card mt-1 mb-0 shadow-none border">
                       <div class="p-2">
                         <div class="row align-items-center">
-                          <div class="col-auto">
-                            <img
-                              class="avatar-sm rounded bg-light"
-                              [alt]="files.name"
-                              [src]="getPreviewUrlImg(files)"
-                            />
-                          </div>
+                      
                           <div class="col ps-0">
                             <a
                               href="javascript:void(0);"
@@ -208,12 +201,12 @@
   </div>
 </ng-template>
 
-<ng-template #addNotes let-modal>
+<ng-template #addNotesModal let-modal>
   <div class="modal-body">
     <form
       class="ps-3 pe-3"
-      [formGroup]="addLabForm"
-      (ngSubmit)="onSubmitAddLabs()"
+      [formGroup]="addNoteForm"
+      (ngSubmit)="addNotes()"
     >
       <div class="mb-2">
         <label for="username" class="form-label">Note Title</label>
@@ -222,7 +215,7 @@
           type="email"
           id="name"
           required
-          formControlName=""
+          formControlName="noteTitle"
           placeholder="Add note title here"
         />
       </div>
@@ -239,7 +232,6 @@
                   [multiple]="false"
                   (change)="onSelectImage($event)"
                   class="dropzone"
-                  accept="image/jpeg,image/jpg,image/png,image/gif"
                 >
                   <ngx-dropzone-label>
                     <i class="h1 text-muted dripicons-cloud-upload"></i>
@@ -255,13 +247,7 @@
                     <div class="card mt-1 mb-0 shadow-none border">
                       <div class="p-2">
                         <div class="row align-items-center">
-                          <div class="col-auto">
-                            <img
-                              class="avatar-sm rounded bg-light"
-                              [alt]="files.name"
-                              [src]="getPreviewUrlImg(files)"
-                            />
-                          </div>
+                      
                           <div class="col ps-0">
                             <a
                               href="javascript:void(0);"
@@ -499,7 +485,7 @@
       <button
         type="button"
         class="btn btn-primary mb-2 me-2"
-        (click)="open(addLabs)"
+        (click)="open(addLabsModal)"
       >
         Add Lab
       </button>
@@ -517,7 +503,7 @@
       <button
         type="button"
         class="btn btn-primary mb-2 me-2"
-        (click)="open(addNotes)"
+        (click)="open(addNotesModal)"
       >
         Add Notes
       </button>

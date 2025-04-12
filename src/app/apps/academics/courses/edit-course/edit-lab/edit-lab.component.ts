@@ -8,6 +8,9 @@ import { UserProfileService } from 'src/app/core/service/user.service';
 import { Admin } from '../../../materials/models/model';
 import { Column } from '../../../materials/advanced-table/advanced-table.component';
 import { SortEvent } from '../../../materials/advanced-table/sortable.directive';
+import { CourseService } from 'src/app/core/service/course.service';
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { ToastUtilService } from 'src/app/apps/toaster/toasterUtilService';
 
 @Component({
   selector: 'app-edit-lab',
@@ -16,13 +19,16 @@ import { SortEvent } from '../../../materials/advanced-table/sortable.directive'
 })
 
 export class EditLabComponent implements OnInit {
+  @Input() courseID: any | null = null;
 
-  pageTitle: BreadcrumbItem[] = [];
+
    records: Admin[] = [];
   columns: Column[] = [];
   pageSizeOptions: number[] = [10, 25, 50, 100];
 
-   adminList: Admin[] = [];
+   labList: any[] = [];
+   modalRef!: NgbModalRef;
+
 
  
   totalCount: number = 0;
@@ -31,30 +37,30 @@ export class EditLabComponent implements OnInit {
   page: number = 1;
   tableName:string="labs";
 
-  constructor(private userService: UserProfileService) {}
+  constructor(
+    private courseService: CourseService,
+    private toaster: ToastUtilService
+
+
+
+  ) {}
   
   ngOnInit(): void {
-    this.pageTitle = [{ label: 'Tables', path: '/' }, { label: 'Advanced Tables', path: '/', active: true }];
-     this._fetchData();
+     this.getCourseById();
     this.initTableCofig();
   }
 
-  /**
-   * fetches table records
-   */
-  _fetchData(): void {
-    // this.records = tableData;
 
+  getCourseById(): void {
 
-    this.userService.getUserList(this.page).subscribe({
+    this.courseService.getCourseById(this.courseID).subscribe({
       next: (response) => 
-        {console.log('response of user list - ',response)
+        {
         if (response.success) {
-          this.adminList = response.data.admin_list;
-          this.records = this.adminList;
+          this.labList = response.data.labs;
+          this.records = this.labList;
           this.totalCount = response.data.total_count;
           this.limit = response.data.limit;
-          console.log('Admins:', this.adminList);
         } else {
           console.error('Failed to fetch data:', response.message);
         }
@@ -63,8 +69,7 @@ export class EditLabComponent implements OnInit {
         console.error('Error fetching admin list:', error);
       },
       complete: () => {
-        // Optionally handle the completion logic here
-        console.log('Admin list fetch completed.');
+        console.log('Lab list fetch completed.');
       }
     });
     
@@ -79,7 +84,7 @@ export class EditLabComponent implements OnInit {
       {
         name: 'labs',
         label: 'Labs',
-        formatter: (record: Admin) => record.name,
+        formatter: (record: any) => record.title,
         width: 1100,
       },
       {
@@ -92,10 +97,7 @@ export class EditLabComponent implements OnInit {
     ];
   }
 
-  openCourses(record: Admin) {
-    console.log('Courses for', record);
-    // Your logic here
-  }
+
 
   // compares two cell values
   compare(v1: string | number, v2: string | number): any {
@@ -108,7 +110,7 @@ export class EditLabComponent implements OnInit {
    */
   onSort(event: SortEvent): void {
     if (event.direction === '') {
-      this.records = this.adminList;
+      this.records = this.labList;
     } else {
       this.records = [...this.records].sort((a, b) => {
         const res = this.compare(a[event.column], b[event.column]);
@@ -136,10 +138,10 @@ export class EditLabComponent implements OnInit {
   */
   searchData(searchTerm: string): void {
     if (searchTerm === '') {
-      this._fetchData();
+      this.getCourseById();
     }
     else {
-      let updatedData = this.adminList;
+      let updatedData = this.labList;
 
       //  filter
       updatedData = updatedData.filter(record => this.matches(record, searchTerm));

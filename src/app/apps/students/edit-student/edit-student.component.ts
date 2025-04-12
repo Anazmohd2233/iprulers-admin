@@ -85,7 +85,7 @@ export class EditStudentComponent implements OnInit {
       },
       complete: () => {
         // Optionally handle the completion logic here
-        console.log("Admin list fetch completed.");
+        console.log("Student list fetch completed.");
       },
     });
   }

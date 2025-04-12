@@ -45,6 +45,11 @@
                   </ngx-dropzone-label>
                 </ngx-dropzone>
 
+                <div *ngIf="selectedCategory" class="text-muted mt-2 small fst-italic">
+                  Leave the image field blank if you do not want to update the category image.
+                </div>
+                
+
                 <!-- Preview -->
                 <div class="dropzone-previews mt-3" id="file-previews">
                   <!-- file preview template -->
@@ -103,6 +108,18 @@
   </div>
 </ng-template>
 
+<ng-template #alertModal let-modal>
+    <div class="modal-body p-4">
+        <div class="text-center">
+            <i class="dripicons-checkmark h1"></i>
+            <h4 class="mt-2">Are you sure you want to delete this category ? </h4>
+            
+            <button type="button" class="btn btn-light my-2 me-3" (click)="modal.close('Close click')">EXIT</button>
+            <button type="button" class="btn btn-light my-2" (click)="deleteCategory()">DELETE</button>
+        </div>
+    </div>
+</ng-template>
+
 <!-- page title -->
 <h4 class="header-title">CATEGORIES</h4>
 
@@ -152,9 +169,11 @@
             >
               <p class="mb-0 text-center">Edit</p>
             </button>
-            <button class="btn w-50 btn-primary" placement="top">
+            <button class="btn w-50 btn-primary" placement="top" (click)="openAlertModal(alertModal,'danger',cat)">
               <p class="mb-0 text-center">Delete</p>
             </button>
+
+            
           </div>
         </div>
       </div>

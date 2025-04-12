@@ -29,7 +29,7 @@
         </li>
         <li [ngbNavItem]="3">
           <a ngbNavLink class="rounded-0">
-            <i class="mdi mdi-cog-outline d-md-none d-block"></i>
+            <i class="mdi mdi-book d-md-none d-block"></i>
             <span class="d-none d-md-block">Notes </span>
           </a>
           <ng-template ngbNavContent>
@@ -53,21 +53,22 @@
   <!-- end card-->
 </div>
 
+
 <ng-template #Tab1>
-<app-edit-course-details></app-edit-course-details>
-</ng-template>
-
-<ng-template #Tab2>
-<app-edit-modules></app-edit-modules>
-</ng-template>
-
-<ng-template #Tab3>
-    <app-edit-notes></app-edit-notes>
-
-</ng-template>
-
-<ng-template #Tab4>
-  <app-edit-lab></app-edit-lab>
-</ng-template>
+  <app-edit-course-details [courseID]="courseID"></app-edit-course-details>
+  </ng-template>
+  
+  <ng-template #Tab2>
+  <app-edit-modules [courseID]="courseID"></app-edit-modules>
+  </ng-template>
+  
+  <ng-template #Tab3>
+      <app-edit-notes [courseID]="courseID"></app-edit-notes>
+  
+  </ng-template>
+  
+  <ng-template #Tab4>
+    <app-edit-lab [courseID]="courseID"></app-edit-lab>
+  </ng-template> 
 
 

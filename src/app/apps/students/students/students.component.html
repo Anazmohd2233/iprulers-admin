@@ -8,7 +8,7 @@
                 <app-advanced-table-student (materialAdded)="getStudent()" [tableData]="records" [columns]="columns" [pagination]="true" [tableName] = "tableName"
                     [pageSizeOptions]="pageSizeOptions" [hasRowSelection]="true" [isSearchable]="true"
                     (search)="searchData($event)" [isSortable]="false" (sort)="onSort($event)"
-                    tableClasses="table-striped">
+                    tableClasses="table-striped" (statusChange)="changeStatus($event)" >
                 </app-advanced-table-student>
             </div> <!-- end card body-->
         </div> <!-- end card -->

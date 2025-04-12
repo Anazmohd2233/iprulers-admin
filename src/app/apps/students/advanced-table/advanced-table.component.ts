@@ -57,7 +57,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   @Output() sort = new EventEmitter<SortEvent>();
   @Output() handleTableLoad = new EventEmitter<void>();
   @Output() materialAdded = new EventEmitter<void>();
-
+  @Output() statusChange = new EventEmitter<any>();
 
   @ViewChildren(NgbSortableHeaderDirective)
   headers!: QueryList<NgbSortableHeaderDirective>;
@@ -66,6 +66,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   addStudentForm!: FormGroup;
   files: File | null = null; // Single file object
   modalRef!: NgbModalRef;
+  selectedRecord: any;
+selectedStatus: any;
 
   constructor(
     private modalService: NgbModal,
@@ -193,13 +195,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   }
 
   editStudent(record: any): void {
-    console.log("Open courses for:", record);
-    localStorage.setItem("userId_course", record.id); // Save URLs only
-
-    //this.router.navigate([`admin/edit_student`]);
     this.router.navigate([`admin/student`, record.id]);
-
-    // Add your logic here to open the Courses page/modal for the selected user.
   }
 
   _fetchData(): void {
@@ -319,5 +315,21 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     return this.sanitizer.bypassSecurityTrustResourceUrl(
       encodeURI(URL.createObjectURL(f))
     );
+  }
+
+  updatePaymentStatus(): void {
+    this.statusChange.emit({
+      status: this.selectedStatus,
+      id: this.selectedRecord.id
+    });
+    this.modalRef.close(); // close the modal after change
+  }
+
+
+  
+  openAlertModal(record: any, status: any,content: TemplateRef<NgbModal>, variant: string): void {
+    this.selectedRecord = record;
+    this.selectedStatus = status;
+    this.modalRef=this.modalService.open(content, { size: 'sm', modalDialogClass: 'modal-filled bg-' + variant });
   }
 }

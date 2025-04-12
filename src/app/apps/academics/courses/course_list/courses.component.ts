@@ -1,32 +1,31 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { BreadcrumbItem } from 'src/app/shared/page-title/page-title.model';
-
+import { Component, OnInit, TemplateRef } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import { BreadcrumbItem } from "src/app/shared/page-title/page-title.model";
 
 // data
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { FormArray, FormBuilder,Validators } from "@angular/forms";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { FormArray, FormBuilder, Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Router } from "@angular/router";
-import { CourseService } from 'src/app/core/service/course/course.service';
-import { Course } from 'src/app/apps/models/course';
-import { CategoryService } from 'src/app/core/service/category/category.service';
+import { CourseService } from "src/app/core/service/course/course.service";
+import { Course } from "src/app/apps/models/course";
+import { CategoryService } from "src/app/core/service/category/category.service";
+import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
 
 @Component({
-  selector: 'app-courses',
-  templateUrl: './courses.component.html',
-  styleUrls: ['./courses.component.scss']
+  selector: "app-courses",
+  templateUrl: "./courses.component.html",
+  styleUrls: ["./courses.component.scss"],
 })
-
-
 export class CoursesComponent implements OnInit {
   addCourseForm!: FormGroup;
 
   courses: Course[] = [];
-  page:number = 1;
+  page: number = 1;
   files: File | null = null; // Single file object
   category: any[] = [];
+  modalRef!: NgbModalRef;
 
   constructor(
     private http: HttpClient,
@@ -35,30 +34,25 @@ export class CoursesComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private router: Router,
     private courseService: CourseService,
-        private categoryService: CategoryService,
-    
+    private categoryService: CategoryService,
+    private toaster: ToastUtilService
   ) {}
 
   ngOnInit(): void {
-
-
     this.getCourse();
 
     this.addCourseForm = this.fb.group({
       course_title: ["", Validators.required],
       card_title: ["", Validators.required],
       category: ["", Validators.required],
-
     });
     this.getCategory();
-
   }
 
   /**
    * fetches order list
    */
   private getCourse(): void {
-
     this.courseService.getCourses(this.page).subscribe({
       next: (response) => {
         if (response.success) {
@@ -70,22 +64,17 @@ export class CoursesComponent implements OnInit {
         }
       },
       error: (error) => {
-          console.error("API error:", error);
+        console.error("API error:", error);
       },
       complete: () => {
-        console.log('Admin list fetch completed.');
-      }
+        console.log("Admin list fetch completed.");
+      },
     });
   }
 
- 
-
   open(content: TemplateRef<NgbModal>): void {
-    this.modalService.open(content, { scrollable: true });
+    this.modalRef = this.modalService.open(content, { scrollable: true });
   }
-
-
-
 
   onSubmitCreateCourse(): void {
     if (this.addCourseForm.valid) {
@@ -96,43 +85,33 @@ export class CoursesComponent implements OnInit {
       formData.append("card_title", this.addCourseForm.value.card_title);
       formData.append("category", this.addCourseForm.value.category);
 
-     
       if (this.files) {
         formData.append("course_img", this.files); // Single file for course image
       }
 
-   
       this.courseService.createCourse(formData).subscribe({
         next: (response) => {
           console.log("response of create course - ", response);
           if (response.success) {
             this.getCourse();
-
-            this.resetForm();
             this.files = null;
-           
+            this.toaster.success("Success", response.message);
+            this.addCourseForm.reset();
+            this.modalRef.close();
           } else {
+            this.toaster.warn("Alert", response.message);
             console.error("Failed to create course:", response.message);
           }
         },
         error: (error) => {
+          this.toaster.error("Error", "Something went wrong.");
           console.error("Error creating course:", error);
         },
         complete: () => {
           console.log("Course created successfully!...");
         },
       });
-
-
     }
-  }
-  resetForm() {
-    this.addCourseForm.reset({
-      course_title: "",
-      card_title: "",
-      category: "",
-    });
-    this.files = null;
   }
 
   onSelectImage(event: any): void {
@@ -141,12 +120,11 @@ export class CoursesComponent implements OnInit {
     }
   }
 
-
   onRemoveFile(event: any) {
     // this.files.splice(this.files.indexOf(event), 1);
     this.files = null; // Clear the file
   }
- 
+
   getSize(f: File) {
     const bytes = f.size;
     if (bytes === 0) {
@@ -169,16 +147,13 @@ export class CoursesComponent implements OnInit {
     );
   }
 
-
-
   goToCourseDetails(course: any): void {
+    this.router.navigate([`admin/courses`, course.id]);
 
-    this.router.navigate([`admin/edit_course`]);
 
   }
 
   private getCategory(): void {
-
     this.categoryService.getCategory(this.page).subscribe({
       next: (response) => {
         if (response.success) {
@@ -190,11 +165,11 @@ export class CoursesComponent implements OnInit {
         }
       },
       error: (error) => {
-          console.error("API error:", error);
+        console.error("API error:", error);
       },
       complete: () => {
-        console.log('Admin list fetch completed.');
-      }
+        console.log("Admin list fetch completed.");
+      },
     });
   }
 }

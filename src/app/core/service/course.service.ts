@@ -1,7 +1,10 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { CourseListResponse, CourseModalResponseById } from "src/app/apps/models/course";
+import {
+  CourseListResponse,
+  CourseModalResponseById,
+} from "src/app/apps/models/course";
 import { environment } from "src/environments/environment";
 
 @Injectable({
@@ -13,7 +16,7 @@ export class CourseService {
 
   constructor(private http: HttpClient) {}
 
-  updateCourse(formdata: any) {
+  updateCourse2(formdata: any) {
     const apiUrl = `${this.baseUrl}/admin/course/update`;
     // console.log('apiurl for listing users', apiUrl)
     this.authorization = localStorage.getItem("Authorization");
@@ -68,21 +71,25 @@ export class CourseService {
     return this.http.get<CourseListResponse>(url, { headers });
   }
 
-  
-
-  // IP RULERS 
-
-
+  // IP RULERS
 
   createCourse(formdata: any) {
     const apiUrl = `${this.baseUrl}/admin/course/create`;
-    // console.log('apiurl for listing users', apiUrl)
-    this.authorization = localStorage.getItem("Authorization");
 
-    const headers = new HttpHeaders({
-      Authorization: this.authorization,
-    });
+    return this.http.post<any>(apiUrl, formdata);
+  }
 
-    return this.http.post<any>(apiUrl, formdata, { headers });
+  updateCourse(formdata: any,id:any) {
+    const apiUrl = `${this.baseUrl}/admin/course/update/${id}`;
+    return this.http.post<any>(apiUrl, formdata);
+  }
+  assignLabOrNotes(formdata: any) {
+    const apiUrl = `${this.baseUrl}/admin/course/addLabOrNotes`;
+    return this.http.post<any>(apiUrl, formdata);
+  }
+
+  getCourseById(id:any) {
+    const apiUrl = `${this.baseUrl}/admin/course/${id}`;
+    return this.http.get<any>(apiUrl);
   }
 }

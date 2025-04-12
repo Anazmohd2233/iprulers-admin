@@ -37,5 +37,6 @@ export class StudentService {
     const apiUrl = `${this.baseUrl}/admin/student/assign`;
     return this.http.post<any>(apiUrl, formdata);
   }
+
   
 }

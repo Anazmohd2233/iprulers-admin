@@ -288,6 +288,17 @@
               Edit
             </button>
           </ng-container>
+         <ng-container *ngIf="column.name === 'status'">
+  <select
+    class="form-control custom-select"
+    [(ngModel)]="record.status"
+    (change)="openAlertModal(record, record.status,alertModal,'danger')"
+  >
+    <option value="0">Inactive</option>
+    <option value="1">Active</option>
+  </select>
+</ng-container>
+
         </td>
       </tr>
     </tbody>
@@ -312,5 +323,21 @@
     
   </div>
 </div>
+
+
+
+
+
+<ng-template #alertModal let-modal>
+  <div class="modal-body p-4">
+      <div class="text-center">
+          <i class="dripicons-checkmark h1"></i>
+          <h4 class="mt-2">Are you sure you want to change status?</h4>
+          
+          <button type="button" class="btn btn-light my-2 me-3" (click)="modalRef.close()">EXIT</button>
+          <button type="button" class="btn btn-light my-2" (click)="updatePaymentStatus()">YES</button>
+      </div>
+  </div>
+</ng-template>
 
 

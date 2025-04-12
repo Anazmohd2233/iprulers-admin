@@ -17,6 +17,16 @@ export class CategoryService {
     return this.http.post<any>(apiUrl, formdata);
   }
 
+  updateCategory(id:any,formdata: any) {
+    const apiUrl = `${this.baseUrl}/admin/category/update/${id}`;
+    return this.http.post<any>(apiUrl, formdata);
+  }
+
+  deleteCategory(id: any) {
+    const apiUrl = `${this.baseUrl}/admin/category/delete/${id}`;
+    return this.http.delete<any>(apiUrl);
+  }
+
   getCategory(page: any): Observable<any> {
     const url = `${this.baseUrl}/admin/category/list/${page}`;
     return this.http.get<any>(url);

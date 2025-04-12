@@ -5,6 +5,7 @@ import { UserProfileService } from 'src/app/core/service/user.service';
 import { Admin } from '../../../materials/models/model';
 import { Column } from '../../../materials/advanced-table/advanced-table.component';
 import { SortEvent } from '../../../materials/advanced-table/sortable.directive';
+import { CourseService } from 'src/app/core/service/course.service';
 
 @Component({
   selector: 'app-edit-notes',
@@ -13,13 +14,14 @@ import { SortEvent } from '../../../materials/advanced-table/sortable.directive'
 })
 
 export class EditNotesComponent implements OnInit {
+  @Input() courseID: any | null = null;
 
   pageTitle: BreadcrumbItem[] = [];
    records: Admin[] = [];
   columns: Column[] = [];
   pageSizeOptions: number[] = [10, 25, 50, 100];
 
-   adminList: Admin[] = [];
+   noteList: any[] = [];
 
  
   totalCount: number = 0;
@@ -28,44 +30,46 @@ export class EditNotesComponent implements OnInit {
   page: number = 1;
   tableName:string="notes";
 
-  constructor(private userService: UserProfileService) {}
+  constructor(private userService: UserProfileService,    private courseService: CourseService,
+  ) {}
   
   ngOnInit(): void {
-    this.pageTitle = [{ label: 'Tables', path: '/' }, { label: 'Advanced Tables', path: '/', active: true }];
-     this._fetchData();
+     this.getCourseById();
     this.initTableCofig();
   }
 
   /**
    * fetches table records
    */
-  _fetchData(): void {
+  getCourseById(): void {
     // this.records = tableData;
 
 
-    this.userService.getUserList(this.page).subscribe({
+    this.courseService.getCourseById(this.courseID).subscribe({
       next: (response) => 
-        {console.log('response of user list - ',response)
+        {
         if (response.success) {
-          this.adminList = response.data.admin_list;
-          this.records = this.adminList;
+          this.noteList = response.data.notes;
+          this.records = this.noteList;
           this.totalCount = response.data.total_count;
           this.limit = response.data.limit;
-          console.log('Admins:', this.adminList);
         } else {
           console.error('Failed to fetch data:', response.message);
         }
       },
       error: (error) => {
-        console.error('Error fetching admin list:', error);
+        console.error('Error fetching notes:', error);
       },
       complete: () => {
         // Optionally handle the completion logic here
-        console.log('Admin list fetch completed.');
+        console.log('Notes fetch completed.');
       }
     });
     
   }
+
+  
+ 
 
   /**
    * initialize advanced table columns
@@ -76,7 +80,7 @@ export class EditNotesComponent implements OnInit {
       {
         name: 'notes',
         label: 'Notes',
-        formatter: (record: Admin) => record.name,
+        formatter: (record: any) => record.title,
         width: 1100,
       },
       {
@@ -105,7 +109,7 @@ export class EditNotesComponent implements OnInit {
    */
   onSort(event: SortEvent): void {
     if (event.direction === '') {
-      this.records = this.adminList;
+      this.records = this.noteList;
     } else {
       this.records = [...this.records].sort((a, b) => {
         const res = this.compare(a[event.column], b[event.column]);
@@ -133,10 +137,10 @@ export class EditNotesComponent implements OnInit {
   */
   searchData(searchTerm: string): void {
     if (searchTerm === '') {
-      this._fetchData();
+      this.getCourseById();
     }
     else {
-      let updatedData = this.adminList;
+      let updatedData = this.noteList;
 
       //  filter
       updatedData = updatedData.filter(record => this.matches(record, searchTerm));

@@ -102,47 +102,79 @@ export class CategoriesComponent implements OnInit {
   }
   
 
+
   createCategory(): void {
     if (this.addCategoryForm.valid) {
       const formData = new FormData();
-
       formData.append("category_title", this.addCategoryForm.value.category_title);
-
-
+  
       if (this.files) {
-        formData.append("category_img", this.files); // Single file for course image
+        formData.append("category_img", this.files);
       }
+  
+      if (this.selectedCategory) {
+        // 📝 Edit Mode
+        console.log('this.selectedCategory.category_id',this.selectedCategory.id)
+        this.categoryService.updateCategory(this.selectedCategory.id, formData).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.toaster.success("Updated", response.message);
+              this.getCategory();
+              this.files = null;
+              this.addCategoryForm.reset();
+              this.modalRef.close();
 
-      this.categoryService.createCategory(formData).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.getCategory();
-            this.files = null;
-            this.addCategoryForm.reset();
-            this.modalRef.close();
-            this.toaster.success("Success", response.message);
-           
-          } else {
-            this.toaster.warn("Alert", response.message);
+            } else {
+              this.toaster.warn("Alert", response.message);
+            }
+          },
+          error: () => this.toaster.error("Error", "Something went wrong."),
+        });
+      } else {
+        // ➕ Add Mode
+        this.categoryService.createCategory(formData).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.toaster.success("Created", response.message);
+              this.getCategory();
+              this.files = null;
+              this.addCategoryForm.reset();
+              this.modalRef.close();
+            } else {
+              this.toaster.warn("Alert", response.message);
+            }
+          },
+          error: () => this.toaster.error("Error", "Something went wrong."),
+        });
+      }
+  
 
-            console.error("Failed to create category:", response.message);
-          }
-        },
-        error: (error) => {
-          this.toaster.error("Failed", "Something went wrong.");
-
-          console.error("Error creating category:", error);
-        },
-        complete: () => {
-          this.getCategory();
-          console.log("category created successfully!...");
-        },
-      });
-
+    }else{
+      this.toaster.warn("Alert", 'Please fill all mandatory fields..!');
 
     }
   }
+  
+  deleteCategory():void{
+    if (this.selectedCategory) {
+      this.categoryService.deleteCategory(this.selectedCategory.id).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.toaster.success("Deleted", response.message);
+            this.getCategory();
+            this.modalRef.close();
+          } else {
+            this.toaster.warn("Alert", response.message);
+          }
+        },
+        error: () => this.toaster.error("Error", "Something went wrong."),
+      });
+    }else{
+      this.toaster.warn("Alert", 'Enexpected error occured , contact admin');
 
+    }
+
+  }
 
   onSelectImage(event: any): void {
     if (event.addedFiles && event.addedFiles.length > 0) {
@@ -178,6 +210,9 @@ export class CategoriesComponent implements OnInit {
     );
   }
 
- 
+  openAlertModal(content: TemplateRef<NgbModal>, variant: string, category: any): void {
+    this.selectedCategory = category;
+    this.modalRef=this.modalService.open(content, { size: 'sm', modalDialogClass: 'modal-filled bg-' + variant });
+  }
 
 }

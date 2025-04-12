@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgbModal, NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -18,6 +18,8 @@ type PersonCard = {
 
 
 export class EditModulesComponent implements OnInit {
+      @Input() courseID: any | null = null;
+  
   addModuleForm!: FormGroup;
   addSessionForm!: FormGroup;
   files: File | null = null; // Single file object

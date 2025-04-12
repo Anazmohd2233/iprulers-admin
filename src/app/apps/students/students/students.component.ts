@@ -18,6 +18,7 @@ import { SortEvent } from "../advanced-table/sortable.directive";
 import { UserProfileService } from "src/app/core/service/user.service";
 import { Admin } from "../models/model";
 import { StudentService } from "src/app/core/service/student/student.service";
+import { ToastUtilService } from "../../toaster/toasterUtilService";
 
 @Component({
   selector: "app-students",
@@ -40,7 +41,9 @@ export class StudentsComponent implements OnInit {
 
   constructor(
     private userService: UserProfileService,
-    private studentService: StudentService
+    private studentService: StudentService,
+        private toaster: ToastUtilService
+    
   ) {}
 
   ngOnInit(): void {
@@ -55,6 +58,30 @@ export class StudentsComponent implements OnInit {
   /**
    * fetches table records
    */
+
+  changeStatus(event: { status: any; id: any }):void{
+
+    const formData = new FormData();
+    formData.append("status", event.status);
+    this.studentService.updateStudent(formData,event.id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.getStudent();
+          this.toaster.success("Success", "Student status changed succesfully..!");
+        } else {
+          this.toaster.warn("Failed", "Student Status Updated Failed.");
+          console.error("Failed to update Student:", response.message);
+        }
+      },
+      error: (error) => {
+        this.toaster.error("Failed", "Something went wrong.");
+
+        console.error("Error updating Student:", error);
+      },
+  
+    });
+
+  }
   getStudent(): void {
     // this.records = tableData;
 
@@ -99,7 +126,8 @@ export class StudentsComponent implements OnInit {
       {
         name: "status",
         label: "Status",
-        formatter: (record: Admin) => record.status==1?'Active':'Inactive',
+        // formatter: (record: Admin) => record.status==1?'Active':'Inactive',
+        formatter: () => '',
         width: 300,
       },
 

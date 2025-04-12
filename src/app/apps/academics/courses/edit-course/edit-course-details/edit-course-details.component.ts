@@ -1,8 +1,8 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Select2Data } from 'ng-select2-component';
+import { ToastUtilService } from 'src/app/apps/toaster/toasterUtilService';
 import { CourseService } from 'src/app/core/service/course.service';
 
 type selectedMember = {
@@ -17,7 +17,9 @@ type selectedMember = {
 })
 export class EditCourseDetailsComponent implements OnInit {
 
-  level: Select2Data = [];
+    @Input() courseID: any | null = null;
+  
+
   selectedMembers: selectedMember[] = [];
 
   projectName: string = '';
@@ -26,6 +28,7 @@ export class EditCourseDetailsComponent implements OnInit {
   projectEndDate: string = '';
   projectBudget: number = 0;
   submitted: boolean = false;
+  courseList:any;
 
   files: File | null = null; // Single file object
 
@@ -39,7 +42,9 @@ export class EditCourseDetailsComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
     private fb: FormBuilder,
-        private courseService: CourseService
+        private courseService: CourseService,
+                private toaster: ToastUtilService
+        
     
 
 
@@ -47,6 +52,8 @@ export class EditCourseDetailsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
+    this.getCourseById();
 
 
     this.addCourseDetailsForm = this.fb.group({
@@ -58,26 +65,20 @@ export class EditCourseDetailsComponent implements OnInit {
       rating: [''],
       overview: [''],
     });
-    
 
-    this.level = [
-      {
-        value: 'beginner',
-        label: 'Beginner',
-      },
-      {
-        value: 'intermediate',
-        label: 'Intermediate',
-      },
-      {
-        value: 'advanced',
-        label: 'Advanced',
-      },
-      
-    ]
   }
 
+ 
 
+  changeCourseStatus(event: Event): void {
+   
+  
+    const formData = new FormData();
+    formData.append('status', 'hhi');
+  
+    this.updateCourse(formData, this.courseID);
+  }
+  
 
   /**
    *  on project form submit
@@ -95,45 +96,79 @@ export class EditCourseDetailsComponent implements OnInit {
       formData.append('rating', this.addCourseDetailsForm.value.rating);
       formData.append('overview', this.addCourseDetailsForm.value.overview);
   
-      // Add image file if available
+
       if (this.files) {
         formData.append('course_img', this.files); // Assuming this.files holds a single File object
       }
   
-      this.courseService.createCourse(formData).subscribe({
-        next: (response) => {
-          console.log('Response from createCourse:', response);
-          if (response.success) {
-            this.resetForm();
-          } else {
-            console.error('Failed to create course:', response.message);
-          }
-        },
-        error: (error) => {
-          console.error('Error creating course:', error);
-        },
-        complete: () => {
-          console.log('Course created successfully!');
-        }
-      });
+      this.updateCourse(formData,this.courseID);
+
     } else {
       console.log('Form is not valid')
       this.addCourseDetailsForm.markAllAsTouched();
     }
   }
-  resetForm() {
-    this.addCourseDetailsForm.reset({
-      title: '',
-      card_title: '',
-      description: '',
-      duration: '',
-      level: '',
-      rating: '',
-      overview: ''
+
+
+  updateCourse(formData:any,id:any):void{
+
+    this.courseService.updateCourse(formData,id).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.getCourseById();
+          this.toaster.success("Success", "Course status changed succesfully..!");
+        } else {
+          this.toaster.warn("Failed", "Course Status Updated Failed.");
+          console.error("Failed to update Student:", response.message);
+        }
+      },
+      error: (error) => {
+        this.toaster.error("Failed", "Something went wrong.");
+
+        console.error("Error updating Student:", error);
+      },
+  
     });
-    this.files = null;
+
   }
   
+
+
+  getCourseById(): void {
+    // this.records = tableData;
+
+
+    this.courseService.getCourseById(this.courseID).subscribe({
+      next: (response) => 
+        {
+        if (response.success) {
+          this.courseList = response.data;
+
+          this.addCourseDetailsForm.patchValue({
+            title: this.courseList.course_title,
+            card_title: this.courseList.card_title,
+            description: this.courseList.description, 
+            duration: this.courseList.duration,
+            level: this.courseList.level,
+            rating: this.courseList.rating,
+            overview: this.courseList.overview,
+          });
+
+        } else {
+          console.error('Failed to fetch data:', response.message);
+        }
+      },
+      error: (error) => {
+        console.error('Error fetching notes:', error);
+      },
+      complete: () => {
+        // Optionally handle the completion logic here
+        console.log('Course fetch completed.');
+      }
+    });
+    
+  }
+
 
   /**
    * returns member id
@@ -183,7 +218,6 @@ export class EditCourseDetailsComponent implements OnInit {
   }
 
       open(content: TemplateRef<NgbModal>): void {
-        console.log('**********')
         this.modalService.open(content, { scrollable: true });
       }
 

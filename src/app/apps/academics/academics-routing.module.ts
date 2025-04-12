@@ -24,7 +24,7 @@ const routes: Routes = [
     component: MaterialsComponent
   },
   {
-    path: 'edit_course',
+    path: 'courses/:id',
     component: EditCourseComponent
   },
 

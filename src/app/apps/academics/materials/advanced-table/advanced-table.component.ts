@@ -24,6 +24,7 @@ import { Select2Data } from "ng-select2-component";
 import { MaterialService } from "src/app/core/service/material/material.service";
 import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
 import { MaterialsComponent } from "../materials.component";
+import { CourseService } from "src/app/core/service/course.service";
 
 export interface Column {
   name: string;
@@ -40,6 +41,7 @@ export interface Column {
   providers: [AdvancedTableServices],
 })
 export class AdvancedTableComponent implements OnInit, AfterViewChecked {
+  @Input() courseID: any | null =null;
   @Input() tableName: string = "";
   @Input() pagination: boolean = false;
   @Input() isSearchable: boolean = false;
@@ -58,6 +60,10 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   @Output() sort = new EventEmitter<SortEvent>();
   @Output() handleTableLoad = new EventEmitter<void>();
   @Output() materialAdded = new EventEmitter<void>();
+  @Output() labAdded = new EventEmitter<void>();
+  @Output() noteAdded = new EventEmitter<void>();
+
+
 
   @ViewChildren(NgbSortableHeaderDirective)
   headers!: QueryList<NgbSortableHeaderDirective>;
@@ -83,6 +89,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     private router: Router,
     private userService: UserProfileService,
         private toaster: ToastUtilService,
+        private courseService: CourseService,
+
   ) {}
 
   ngAfterViewChecked(): void {
@@ -113,13 +121,12 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     });
 
     this.addLabForm = this.fb.group({
-      category_title: ["", Validators.required],  // Lab Title (Matches formControlName)
-      file: [null, Validators.required] // File Upload Validation
+      labTitle: ["", Validators.required],  // Lab Title (Matches formControlName)
+    
     });
 
     this.addNoteForm = this.fb.group({
-      category_title: ["", Validators.required],  // Lab Title (Matches formControlName)
-      file: [null, Validators.required] // File Upload Validation
+      noteTitle: ["", Validators.required],  // Lab Title (Matches formControlName)
     });
 
     this.addMaterialForm.get('type')?.valueChanges.subscribe((type) => {
@@ -337,61 +344,77 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   }
 
   //Add Labs
-  onSubmitAddLabs(): void {
-    if (this.addStudentForm.valid) {
+  addLabs(): void {
+    if (this.addLabForm.valid) {
       const formData = new FormData();
-
-      // Add scalar values
-      formData.append("name", this.addStudentForm.value.name);
-      formData.append("username", this.addStudentForm.value.username);
-      formData.append("email", this.addStudentForm.value.email);
-      formData.append("password", this.addStudentForm.value.pwd);
-
-      formData.append("confirm", this.addStudentForm.value.confirm);
-
-
-     
+      formData.append("labTitle", this.addLabForm.value.labTitle);
+      formData.append("courseId", this.courseID);
       if (this.files) {
-        formData.append("img", this.files); // Single file for course image
+        formData.append("labFile", this.files); // Single file for course image
       }
-
-   
-      this.studentService.createStudent(formData).subscribe({
+      this.courseService.assignLabOrNotes(formData).subscribe({
         next: (response) => {
-          console.log("response of create student - ", response);
+        
           if (response.success) {
-            this.resetForm();
+            this.labAdded.emit();
             this.files = null;
+            this.addLabForm.reset();
+            this.modalRef.close();
+            this.toaster.success("Success", response.message);
            
           } else {
+            this.toaster.warn("Alert", response.message);
+
             console.error("Failed to create student:", response.message);
           }
         },
         error: (error) => {
+          this.toaster.error("Failed", "Something went wrong.");
+
           console.error("Error creating student:", error);
-        },
-        complete: () => {
-          console.log("student created successfully!...");
-        },
+        }
       });
-
-
+    }else{
+      this.toaster.warn("Alert",'Fill All the fields');
     }
   }
 
-  resetForm() {
-    this.addStudentForm.reset({
-      name: "",
-      username: "",
-      email: "",
-      pwd: "",
-      confirm: ""
-    });
-  
-    this.files = null;
-    this.docs = null;
+  addNotes(): void {
+    if (this.addNoteForm.valid) {
+      const formData = new FormData();
+      formData.append("noteTitle", this.addNoteForm.value.noteTitle);
+      formData.append("courseId", this.courseID);
+      if (this.files) {
+        formData.append("noteFile", this.files); // Single file for course image
+      }
+      this.courseService.assignLabOrNotes(formData).subscribe({
+        next: (response) => {
+        
+          if (response.success) {
+            this.noteAdded.emit();
+            this.files = null;
+            this.addNoteForm.reset();
+            this.modalRef.close();
+            this.toaster.success("Success", response.message);
+           
+          } else {
+            this.toaster.warn("Alert", response.message);
 
+            console.error("Failed to add notes:", response.message);
+          }
+        },
+        error: (error) => {
+          this.toaster.error("Failed", "Something went wrong.");
+
+          console.error("Error creating student:", error);
+        }
+      });
+    }else{
+      this.toaster.warn("Alert",'Fill All the fields');
+    }
   }
+
+
   
   onSelectImage(event: any): void {
     if (event.addedFiles && event.addedFiles.length > 0) {
