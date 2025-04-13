@@ -37,6 +37,28 @@ export class StudentService {
     const apiUrl = `${this.baseUrl}/admin/student/assign`;
     return this.http.post<any>(apiUrl, formdata);
   }
+  
+  deleteCourse(payload: any) {
+    const apiUrl = `${this.baseUrl}/admin/student/course/delete`;
+    return this.http.request<any>('DELETE', apiUrl, {
+      body: payload, // JSON body
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+ 
+  deleteMaterial(payload: any) {
+    const apiUrl = `${this.baseUrl}/admin/student/material/delete`;
+    return this.http.request<any>('DELETE', apiUrl, {
+      body: payload, // JSON body
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+  }
+  
+  
 
   
 }

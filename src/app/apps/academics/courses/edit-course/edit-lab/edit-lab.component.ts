@@ -8,9 +8,9 @@ import { UserProfileService } from 'src/app/core/service/user.service';
 import { Admin } from '../../../materials/models/model';
 import { Column } from '../../../materials/advanced-table/advanced-table.component';
 import { SortEvent } from '../../../materials/advanced-table/sortable.directive';
-import { CourseService } from 'src/app/core/service/course.service';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ToastUtilService } from 'src/app/apps/toaster/toasterUtilService';
+import { CourseService } from 'src/app/core/service/course/course.service';
 
 @Component({
   selector: 'app-edit-lab',

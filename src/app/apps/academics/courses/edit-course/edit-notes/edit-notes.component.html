@@ -5,7 +5,7 @@
                 <!-- <h4 class="header-title">Labs</h4> -->
                 <br>
                 <!-- table start -->
-                <app-advanced-table-users (materialAdded)="getCourseById()" [tableData]="records" [columns]="columns" [pagination]="true" [tableName] = "tableName"
+                <app-advanced-table-users (noteAdded)="getCourseById()" [tableData]="records" [columns]="columns" [pagination]="true" [tableName] = "tableName"
                     [pageSizeOptions]="pageSizeOptions" [hasRowSelection]="true" [isSearchable]="true"
                     (search)="searchData($event)" [isSortable]="false" (sort)="onSort($event)"
                     tableClasses="table-striped" [courseID]="courseID" >
@@ -14,3 +14,7 @@
         </div> <!-- end card -->
     </div><!-- end col-->
 </div>
+<div *ngIf="records.length === 0" class="text-center text-muted mt-3">
+    <i class="bi bi-info-circle fs-4 d-block mb-2"></i> 
+    No data available.
+  </div>

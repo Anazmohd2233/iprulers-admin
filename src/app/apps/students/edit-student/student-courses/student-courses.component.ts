@@ -28,6 +28,7 @@ export class StudentCoursesComponent implements OnInit {
   page: number = 1;
 
   studentList: any;
+  selectedCourse: any;
 
   studentCourse: any[] = [];
 
@@ -110,9 +111,8 @@ export class StudentCoursesComponent implements OnInit {
           console.log("response of assign course - ", response);
           if (response.success) {
             this.toaster.success("Success", "Course Assigned Successfully.");
-
-            this.fetchStudentDetails(this.studentID);
             this.assignCourseForm.reset();
+            this.fetchStudentDetails(this.studentID);
             this.modalRef.close(); // ✅ Close the modal here
           } else {
             this.toaster.warn("Alert", response.message);
@@ -154,5 +154,42 @@ export class StudentCoursesComponent implements OnInit {
         console.log("Admin list fetch completed.");
       },
     });
+  }
+  openAlertModal(
+    content: TemplateRef<NgbModal>,
+    variant: string,
+    course: any
+  ): void {
+    this.selectedCourse = course;
+    this.modalRef = this.modalService.open(content, {
+      size: "sm",
+      modalDialogClass: "modal-filled bg-" + variant,
+    });
+  }
+
+  deleteCourse(): void {
+    if (this.selectedCourse) {
+      const formData = new FormData();
+
+      const payload = {
+        course_id: this.selectedCourse.id,
+        student_id: this.studentID,
+      };
+
+      this.studentService.deleteCourse(payload).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.toaster.success("Deleted", response.message);
+            this.fetchStudentDetails(this.studentID);
+            this.modalRef.close();
+          } else {
+            this.toaster.warn("Alert", response.message);
+          }
+        },
+        error: () => this.toaster.error("Error", "Something went wrong."),
+      });
+    } else {
+      this.toaster.warn("Alert", "Enexpected error occured , contact admin");
+    }
   }
 }

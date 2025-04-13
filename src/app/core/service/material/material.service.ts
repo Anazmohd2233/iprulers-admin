@@ -21,4 +21,9 @@ export class MaterialService {
     return this.http.get<any>(url);
   }
 
+  deleteMaterial(formData: FormData): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/admin/material/delete`, formData, {
+      observe: 'body' 
+    });
+  }
 }

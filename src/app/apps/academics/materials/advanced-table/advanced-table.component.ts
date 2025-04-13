@@ -24,7 +24,7 @@ import { Select2Data } from "ng-select2-component";
 import { MaterialService } from "src/app/core/service/material/material.service";
 import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
 import { MaterialsComponent } from "../materials.component";
-import { CourseService } from "src/app/core/service/course.service";
+import { CourseService } from "src/app/core/service/course/course.service";
 
 export interface Column {
   name: string;
@@ -41,7 +41,7 @@ export interface Column {
   providers: [AdvancedTableServices],
 })
 export class AdvancedTableComponent implements OnInit, AfterViewChecked {
-  @Input() courseID: any | null =null;
+  @Input() courseID: any | null = null;
   @Input() tableName: string = "";
   @Input() pagination: boolean = false;
   @Input() isSearchable: boolean = false;
@@ -63,21 +63,20 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   @Output() labAdded = new EventEmitter<void>();
   @Output() noteAdded = new EventEmitter<void>();
 
-
-
   @ViewChildren(NgbSortableHeaderDirective)
   headers!: QueryList<NgbSortableHeaderDirective>;
   @ViewChildren("advancedTable") advancedTable!: any;
 
-    addStudentForm!: FormGroup;
-    addLabForm!: FormGroup;
-    addMaterialForm!: FormGroup;
-    addNoteForm!: FormGroup;
-    modalRef!: NgbModalRef;
-    selectedType: string = '';
-    files: File | null = null; // Single file object
-    docs: File | null = null;
+  addStudentForm!: FormGroup;
+  addLabForm!: FormGroup;
+  addMaterialForm!: FormGroup;
+  addNoteForm!: FormGroup;
+  modalRef!: NgbModalRef;
+  selectedType: string = "";
+  files: File | null = null; // Single file object
+  docs: File | null = null;
 
+  formData02 = new FormData();
 
   constructor(
     private modalService: NgbModal,
@@ -88,9 +87,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     private sanitizer: DomSanitizer,
     private router: Router,
     private userService: UserProfileService,
-        private toaster: ToastUtilService,
-        private courseService: CourseService,
-
+    private toaster: ToastUtilService,
+    private courseService: CourseService
   ) {}
 
   ngAfterViewChecked(): void {
@@ -102,55 +100,43 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       this.isSelected[i] = false;
     }
 
-
     this.addStudentForm = this.fb.group({
       name: ["", Validators.required],
       username: ["", Validators.required],
       email: ["", [Validators.required, Validators.email]], // Email validation
       pwd: ["", Validators.required], // Password field
       confirm: ["", Validators.required], // Confirm password field
-
     });
 
     this.addMaterialForm = this.fb.group({
-      title: ["", Validators.required],  // Material Title (Matches formControlName)
+      title: ["", Validators.required], // Material Title (Matches formControlName)
       type: [null, Validators.required], // File Upload Validation
       link: [""], // File Upload Validation
-
-
     });
 
     this.addLabForm = this.fb.group({
-      labTitle: ["", Validators.required],  // Lab Title (Matches formControlName)
-    
+      labTitle: ["", Validators.required], // Lab Title (Matches formControlName)
     });
 
     this.addNoteForm = this.fb.group({
-      noteTitle: ["", Validators.required],  // Lab Title (Matches formControlName)
+      noteTitle: ["", Validators.required], // Lab Title (Matches formControlName)
     });
 
-    this.addMaterialForm.get('type')?.valueChanges.subscribe((type) => {
-      const linkControl = this.addMaterialForm.get('link');
-    
-      if (type === 'link') {
+    this.addMaterialForm.get("type")?.valueChanges.subscribe((type) => {
+      const linkControl = this.addMaterialForm.get("link");
+
+      if (type === "link") {
         linkControl?.setValidators([Validators.required]);
         linkControl?.updateValueAndValidity();
-    
+
         this.docs = null; // clear uploaded file
-      } else if (type === 'pdf') {
+      } else if (type === "pdf") {
         linkControl?.clearValidators();
         linkControl?.setValue(null);
         linkControl?.updateValueAndValidity();
       }
     });
-    
-    
-
-
-    
   }
-
-  
 
   ngOnChanges(changes: SimpleChanges): void {
     // this.paginate();
@@ -165,7 +151,6 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
    */
   paginate(): void {
     if (this.tableName === "userList") {
-      this.getUserList();
     }
   }
 
@@ -247,55 +232,12 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       this.tableData.length;
   }
 
-  openCourses(record: any): void {
-    console.log("Open courses for:", record);
-    localStorage.setItem("userId_course", record.id); // Save URLs only
-
-    this.router.navigate([`admin/user-courses`]);
-    // Add your logic here to open the Courses page/modal for the selected user.
+  open(content: TemplateRef<NgbModal>): void {
+    this.modalRef = this.modalService.open(content, { scrollable: true });
   }
 
+  onSubmitCreateStudent(): void {}
 
-
-
-
-
-  getUserList(): void {
-    this.userService.getUserList(this.service.page).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.tableData = response.data.admin_list; // Update table data
-          this.service.totalRecords = response.data.total_count; // Set total records
-          this.service.pageSize = response.data.limit; // Ensure pageSize matches API limit
-
-          // Set start and end index
-          this.service.startIndex =
-            this.service.totalRecords > 0
-              ? (this.service.page - 1) * this.service.pageSize + 1
-              : 0;
-
-          this.service.endIndex = Math.min(
-            this.service.startIndex + this.service.pageSize - 1,
-            this.service.totalRecords
-          );
-        } else {
-          console.error("Failed to fetch data:", response.message);
-        }
-      },
-      error: (error) => console.error("Error fetching data:", error),
-    });
-  }
-
-    open(content: TemplateRef<NgbModal>): void {
-      console.log('**********')
-      this.modalRef=this.modalService.open(content, { scrollable: true });
-    }
-
-  onSubmitCreateStudent(): void {
- 
-  }
-
- 
   createMaterial(): void {
     if (this.addMaterialForm.valid) {
       const formData = new FormData();
@@ -337,7 +279,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
         },
       });
     } else {
-      this.toaster.warn("Alert", 'Fill all mandaratory fields!!');
+      this.toaster.warn("Alert", "Fill all mandaratory fields!!");
 
       console.log("material form not validated");
     }
@@ -354,14 +296,12 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       }
       this.courseService.assignLabOrNotes(formData).subscribe({
         next: (response) => {
-        
           if (response.success) {
             this.labAdded.emit();
             this.files = null;
             this.addLabForm.reset();
             this.modalRef.close();
             this.toaster.success("Success", response.message);
-           
           } else {
             this.toaster.warn("Alert", response.message);
 
@@ -372,10 +312,10 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
           this.toaster.error("Failed", "Something went wrong.");
 
           console.error("Error creating student:", error);
-        }
+        },
       });
-    }else{
-      this.toaster.warn("Alert",'Fill All the fields');
+    } else {
+      this.toaster.warn("Alert", "Fill All the fields");
     }
   }
 
@@ -389,14 +329,12 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       }
       this.courseService.assignLabOrNotes(formData).subscribe({
         next: (response) => {
-        
           if (response.success) {
             this.noteAdded.emit();
             this.files = null;
             this.addNoteForm.reset();
             this.modalRef.close();
             this.toaster.success("Success", response.message);
-           
           } else {
             this.toaster.warn("Alert", response.message);
 
@@ -407,27 +345,24 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
           this.toaster.error("Failed", "Something went wrong.");
 
           console.error("Error creating student:", error);
-        }
+        },
       });
-    }else{
-      this.toaster.warn("Alert",'Fill All the fields');
+    } else {
+      this.toaster.warn("Alert", "Fill All the fields");
     }
   }
 
-
-  
   onSelectImage(event: any): void {
     if (event.addedFiles && event.addedFiles.length > 0) {
       this.files = event.addedFiles[0]; // Store only the first selected file
     }
   }
 
-
   onRemoveFile(event: any) {
     // this.files.splice(this.files.indexOf(event), 1);
     this.files = null; // Clear the file
   }
- 
+
   getSize(f: File) {
     const bytes = f.size;
     if (bytes === 0) {
@@ -463,5 +398,59 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       this.docs = event.addedFiles[0]; // Store only the first selected file
     }
   }
- 
+
+  openAlertModal(
+    content: TemplateRef<NgbModal>,
+    variant: string,
+    record: any,
+    tableName:any
+  ): void {
+
+    this.modalRef = this.modalService.open(content, {
+      size: "sm",
+      modalDialogClass: "modal-filled bg-" + variant,
+    });
+
+    if(tableName =='notes' || tableName =='labs'){
+    this.formData02 = new FormData(); 
+    this.formData02.append("type", record.lab ? "lab" : "note");
+    this.formData02.append("id", record.id);
+    this.formData02.append("course_id", this.courseID);
+  }else if(tableName =='material'){
+    this.formData02 = new FormData(); 
+    this.formData02.append("id", record.id);
+  }
+  }
+
+  deleteLabOrNotes(): void {
+    this.courseService.deleteCourse(this.formData02).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.toaster.success("Deleted", response.message);
+          this.modalRef.close();
+          this.labAdded.emit();
+          this.noteAdded.emit();
+        } else {
+          this.toaster.warn("Alert", response.message);
+        }
+      },
+      error: () => this.toaster.error("Error", "Something went wrong."),
+    });
+  }
+  deleteMaterials():void{
+    this.materialService.deleteMaterial(this.formData02).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.toaster.success("Deleted", response.message);
+          this.materialAdded.emit();
+          this.modalRef.close();
+          this.addMaterialForm.reset();
+        } else {
+          this.toaster.warn("Alert", response.message);
+        }
+      },
+      error: () => this.toaster.error("Error", "Something went wrong."),
+    });
+
+  }
 }

@@ -1,186 +1,218 @@
-
-
 <ng-template #changeCourseImage let-modal>
   <div class="modal-body">
-    <form
-      class="ps-3 pe-3"
-      [formGroup]="courseImageForm"
-      (ngSubmit)="onChangeImage()"
-    >
- 
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="header-title m-t-0">Upload New Image</h4>
 
+            <form #fileUpload="ngForm">
+              <ngx-dropzone
+                [multiple]="false"
+                (change)="onSelectImage($event)"
+                class="dropzone"
+                accept="image/jpeg,image/jpg,image/png,image/gif"
+              >
+                <ngx-dropzone-label>
+                  <i class="h1 text-muted dripicons-cloud-upload"></i>
+                  <h3>Drop files here or click to upload.</h3>
+                </ngx-dropzone-label>
+              </ngx-dropzone>
 
-      <div class="row">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="header-title m-t-0">Upload New Image</h4>
-
-              <form #fileUpload="ngForm">
-                <ngx-dropzone
-                  [multiple]="false"
-                  (change)="onSelectImage($event)"
-                  class="dropzone"
-                  accept="image/jpeg,image/jpg,image/png,image/gif"
-                >
-                  <ngx-dropzone-label>
-                    <i class="h1 text-muted dripicons-cloud-upload"></i>
-                    <h3>Drop files here or click to upload.</h3>
-                  </ngx-dropzone-label>
-                </ngx-dropzone>
-
-                <!-- Preview -->
-                <div class="dropzone-previews mt-3" id="file-previews">
-                  <!-- file preview template -->
-                  <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
-                  <div id="uploadPreviewTemplate" *ngIf="files">
-                    <div class="card mt-1 mb-0 shadow-none border">
-                      <div class="p-2">
-                        <div class="row align-items-center">
-                          <div class="col-auto">
-                            <img
-                              class="avatar-sm rounded bg-light"
-                              [alt]="files.name"
-                              [src]="getPreviewUrlImg(files)"
-                            />
-                          </div>
-                          <div class="col ps-0">
-                            <a
-                              href="javascript:void(0);"
-                              class="text-muted fw-bold"
-                              >{{ files.name }}</a
-                            >
-                            <p class="mb-0">{{ getSize(files) }}</p>
-                          </div>
-                          <div class="col-auto">
-                            <!-- Button -->
-                            <a
-                              href="javascript:void(0)"
-                              class="btn btn-link btn-lg text-muted"
-                              (click)="onRemoveFile($event)"
-                            >
-                              <i class="dripicons-cross"></i>
-                            </a>
-                          </div>
+              <!-- Preview -->
+              <div class="dropzone-previews mt-3" id="file-previews">
+                <!-- file preview template -->
+                <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
+                <div id="uploadPreviewTemplate" *ngIf="files">
+                  <div class="card mt-1 mb-0 shadow-none border">
+                    <div class="p-2">
+                      <div class="row align-items-center">
+                        <div class="col-auto">
+                          <img
+                            class="avatar-sm rounded bg-light"
+                            [alt]="files.name"
+                            [src]="getPreviewUrlImg(files)"
+                          />
+                        </div>
+                        <div class="col ps-0">
+                          <a
+                            href="javascript:void(0);"
+                            class="text-muted fw-bold"
+                            >{{ files.name }}</a
+                          >
+                          <p class="mb-0">{{ getSize(files) }}</p>
+                        </div>
+                        <div class="col-auto">
+                          <!-- Button -->
+                          <a
+                            href="javascript:void(0)"
+                            class="btn btn-link btn-lg text-muted"
+                            (click)="onRemoveFile($event)"
+                          >
+                            <i class="dripicons-cross"></i>
+                          </a>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <!-- end file preview template -->
                 </div>
-              </form>
-            </div>
-            <!-- end card-body -->
+                <!-- end file preview template -->
+              </div>
+            </form>
           </div>
-          <!-- end card-->
+          <!-- end card-body -->
         </div>
-        <!-- end col-->
+        <!-- end card-->
       </div>
+      <!-- end col-->
+    </div>
 
-      <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">Add Labs</button>
-      </div>
-    </form>
+    <div class="mb-3 text-center">
+      <button class="btn btn-primary" (click)="onChangeImage()" type="button">
+        Upload
+      </button>
+    </div>
   </div>
 </ng-template>
 
 <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-body">
-          <form [formGroup]="addCourseDetailsForm" (ngSubmit)="onSubmitCourseDetails()">
-            <div class="row">
-              <div class="col-xl-4">
-                <div class="mb-4">
-                  <div class="btn-group mb-2 me-1">
-                    <ng-container
-                      *ngTemplateOutlet="DropdownColored; context: { color: 'primary', text: 'Published' }"
-                    ></ng-container>
-                  </div>
-                </div>
-          
-                <div class="mb-3">
-                  <label class="form-label">Title</label>
-                  <input type="text" class="form-control" formControlName="title" />
-                </div>
-          
-                <div class="mb-3">
-                  <label class="form-label">Card Title</label>
-                  <input type="text" class="form-control" formControlName="card_title" />
-                </div>
-          
-                <div class="mb-3">
-                  <label class="form-label">Description</label>
-                  <textarea class="form-control" rows="3" formControlName="description"></textarea>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body">
+        <form
+          [formGroup]="addCourseDetailsForm"
+          (ngSubmit)="onSubmitCourseDetails()"
+        >
+          <div class="row">
+            <div class="col-xl-4">
+              <div class="mb-4">
+                <div class="btn-group mb-2 me-1">
+                  <ng-container
+                    *ngTemplateOutlet="
+                      DropdownColored;
+                      context: { color: 'primary', text: 'Published' }
+                    "
+                  ></ng-container>
                 </div>
               </div>
-          
-              <!-- Image and Edit -->
-              <div class="col-xl-4 d-flex flex-column align-items-center text-center h-100">
-                <div class="me-15 mb-2">
-                  <img
-                    src="assets/images/users/avatar-6.jpg"
-                    alt="image"
-                    class="img-fluid"
-                    style="width: 150px; height: 150px; object-fit: cover"
-                  />
-                </div>
-          
-                <div class="mb-3">
-                  <button type="button" class="btn btn-danger mb-2" (click)="open(changeCourseImage)">
-                    Edit Image
-                  </button>
-                </div>
+
+              <div class="mb-3">
+                <label class="form-label">Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="title"
+                />
               </div>
-          
-              <div class="col-xl-4">
-                <div class="mb-3">
-                  <label class="form-label">Duration (Hours)</label>
-                  <input type="text" class="form-control" formControlName="duration" />
-                </div>
-          
-                <div class="mb-3">
-                  <label class="form-label">level</label>
-                  <input type="text" class="form-control" formControlName="rating" />
-                </div>
-          
-          
-                <div class="mb-3">
-                  <label class="form-label">Rating</label>
-                  <input type="text" class="form-control" formControlName="rating" />
-                </div>
-          
-                <div class="mb-3">
-                  <label class="form-label">Overview</label>
-                  <textarea class="form-control" rows="3" formControlName="overview"></textarea>
-                </div>
+
+              <div class="mb-3">
+                <label class="form-label">Card Title</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="card_title"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea
+                  class="form-control"
+                  rows="3"
+                  formControlName="description"
+                ></textarea>
               </div>
             </div>
-          
-            <div class="row mt-2">
-              <div class="col">
-                <button class="btn btn-primary" type="submit">Submit Changes</button>
+
+            <!-- Image and Edit -->
+            <div
+              class="col-xl-4 d-flex flex-column align-items-center text-center h-100"
+            >
+              <div class="me-15 mb-2">
+                <img
+                [src]="courseList?.course_img || 'assets/images/users/avatar-6.jpg'"
+                alt="image"
+                  class="img-fluid"
+                  style="width: 150px; height: 150px; object-fit: cover"
+                />
+              </div>
+
+              <div class="mb-3">
+                <button
+                  type="button"
+                  class="btn btn-danger mb-2"
+                  (click)="open(changeCourseImage)"
+                >
+                  Edit Image
+                </button>
               </div>
             </div>
-          </form>
-          
-        </div>
-        <!-- end card-body -->
+
+            <div class="col-xl-4">
+              <div class="mb-3">
+                <label class="form-label">Duration (Hours)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="duration"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label for="projectname" class="form-label">Level</label>
+
+                <select class="form-control" formControlName="level">
+                  <!-- <option value=""  >Select level</option> -->
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advnaced">Advnaced</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Rating</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="rating"
+                />
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Overview</label>
+                <textarea
+                  class="form-control"
+                  rows="3"
+                  formControlName="overview"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col">
+              <button class="btn btn-primary" type="submit">
+                Submit Changes
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-      <!-- end card-->
+      <!-- end card-body -->
     </div>
-    <!-- end col-->
+    <!-- end card-->
   </div>
+  <!-- end col-->
+</div>
 
-
-  <ng-template #DropdownColored let-color="color" let-text="text">
-    <div ngbDropdown>
-      <button class="btn btn-{{ color }}" id="dropdownBasic1" ngbDropdownToggle>
-        {{ text }}
-      </button>
-      <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-        <button ngbDropdownItem>Published</button>
-        <button ngbDropdownItem>Draft</button>
-      </div>
+<ng-template #DropdownColored let-color="color" let-text="text">
+  <div ngbDropdown>
+    <button class="btn btn-{{ color }}" id="dropdownBasic1" ngbDropdownToggle>
+      {{ text }}
+    </button>
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+      <button ngbDropdownItem>Published</button>
+      <button ngbDropdownItem>Draft</button>
     </div>
-  </ng-template>
+  </div>
+</ng-template>

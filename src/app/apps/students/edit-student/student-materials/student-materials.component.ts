@@ -4,7 +4,7 @@ import { BreadcrumbItem } from "src/app/shared/page-title/page-title.model";
 
 // data
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { FormArray, FormBuilder, Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Router } from "@angular/router";
@@ -20,9 +20,9 @@ import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
 })
 export class StudentMaterialsComponent implements OnInit {
   @Input() studentID: any | null = null;
-
   assignMaterialForm!: FormGroup;
-
+  modalRef!: NgbModalRef;
+  selectedMaterial: any;
   materialList: any[] = [];
   studentMaterial: any[] = [];
 
@@ -75,8 +75,8 @@ export class StudentMaterialsComponent implements OnInit {
           console.log("response of assign materials - ", response);
           if (response.success) {
             this.toaster.success("Success", response.message);
-
             this.assignMaterialForm.reset();
+            this.modalRef.close();
             this.fetchStudentDetails(this.studentID);
           } else {
             this.toaster.warn("Alert", response.message);
@@ -137,5 +137,42 @@ export class StudentMaterialsComponent implements OnInit {
         console.log("Admin list fetch completed.");
       },
     });
+  }
+
+  openAlertModal(
+    content: TemplateRef<NgbModal>,
+    variant: string,
+    material: any
+  ): void {
+    this.selectedMaterial = material;
+    this.modalRef = this.modalService.open(content, {
+      size: "sm",
+      modalDialogClass: "modal-filled bg-" + variant,
+    });
+  }
+
+  deleteMaterial(): void {
+    if (this.selectedMaterial) {
+      const payload = {
+        material_id: this.selectedMaterial.id,
+        student_id: this.studentID,
+      };
+
+      this.studentService.deleteMaterial(payload).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.toaster.success("Deleted", response.message);
+            this.fetchStudentDetails(this.studentID);
+
+            this.modalRef.close();
+          } else {
+            this.toaster.warn("Alert", response.message);
+          }
+        },
+        error: () => this.toaster.error("Error", "Something went wrong."),
+      });
+    } else {
+      this.toaster.warn("Alert", "Enexpected error occured , contact admin");
+    }
   }
 }

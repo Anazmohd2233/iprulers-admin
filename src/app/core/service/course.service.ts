@@ -10,7 +10,7 @@ import { environment } from "src/environments/environment";
 @Injectable({
   providedIn: "root",
 })
-export class CourseService {
+export class CourseService02 {
   baseUrl = environment.baseUrl;
   authorization: any;
 
@@ -73,23 +73,5 @@ export class CourseService {
 
   // IP RULERS
 
-  createCourse(formdata: any) {
-    const apiUrl = `${this.baseUrl}/admin/course/create`;
 
-    return this.http.post<any>(apiUrl, formdata);
-  }
-
-  updateCourse(formdata: any,id:any) {
-    const apiUrl = `${this.baseUrl}/admin/course/update/${id}`;
-    return this.http.post<any>(apiUrl, formdata);
-  }
-  assignLabOrNotes(formdata: any) {
-    const apiUrl = `${this.baseUrl}/admin/course/addLabOrNotes`;
-    return this.http.post<any>(apiUrl, formdata);
-  }
-
-  getCourseById(id:any) {
-    const apiUrl = `${this.baseUrl}/admin/course/${id}`;
-    return this.http.get<any>(apiUrl);
-  }
 }

@@ -9,7 +9,6 @@ import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { FormArray, FormBuilder,Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
 import { Router } from "@angular/router";
-import { CourseService } from "src/app/core/service/course.service";
 import { CategoryService } from 'src/app/core/service/category/category.service';
 import { Course } from '../../models/course';
 import { ToastUtilService } from '../../toaster/toasterUtilService';
