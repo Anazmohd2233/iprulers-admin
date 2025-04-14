@@ -57,6 +57,11 @@ export class StudentService {
       }
     });
   }
+  updateExpiry(formdata: any) {
+    const apiUrl = `${this.baseUrl}/admin/student/expiry/update`;
+    return this.http.post<any>(apiUrl, formdata);
+  }
+
   
   
 

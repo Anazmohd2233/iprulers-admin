@@ -5,6 +5,9 @@
       [formGroup]="addMaterialForm"
       (ngSubmit)="createMaterial()"
     >
+      <h4 class="header-title m-t-0 mb-2">
+        {{ selectedCategory ? "Edit Category" : "Add New Category" }}
+      </h4>
       <!-- Material Title -->
       <div class="mb-2">
         <label for="username" class="form-label">Material Title</label>
@@ -58,6 +61,13 @@
                     <h3>Drop files here or click to upload.</h3>
                   </ngx-dropzone-label>
                 </ngx-dropzone>
+                <div
+                  *ngIf="selectedCategory"
+                  class="text-muted mt-2 small fst-italic"
+                >
+                  Leave the image field blank if you do not want to update the
+                  material image.
+                </div>
 
                 <!-- Preview -->
                 <div class="dropzone-previews mt-3" id="file-previews">
@@ -101,7 +111,9 @@
       </div>
 
       <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">Add Material</button>
+        <button class="btn btn-primary" type="submit">
+          {{ selectedCategory ? "Update Material" : "Add Material" }}
+        </button>
       </div>
     </form>
   </div>
@@ -449,9 +461,6 @@
   </div>
 </ng-template>
 
-
-
-
 <div class="row">
   <div class="col-12 col-sm-6" *ngIf="pageSizeOptions.length">
     <!-- <div class="text-center text-sm-start">
@@ -544,7 +553,7 @@
     [class]="tableClasses"
     #advancedTable
   >
-    <thead [class]="theadClasses"  *ngIf="tableData.length > 0">
+    <thead [class]="theadClasses" *ngIf="tableData.length > 0">
       <tr *ngIf="isSortable">
         <!-- <th *ngIf="hasRowSelection" class="row_select">
                     <div class="form-check">
@@ -617,19 +626,34 @@
             *ngIf="column.name === 'action' && tableName == 'material'"
           >
             <button
-              (click)="open(addMaterialModal)"
+              (click)="open(addMaterialModal, record)"
               class="btn btn-sm btn-primary me-2"
             >
               Edit
             </button>
-            <button class="btn btn-sm btn-primary"  (click)="openAlertModal(alertModal,'danger',record,tableName)">Delete</button>
+            <button
+              class="btn btn-sm btn-primary"
+              (click)="openAlertModal(alertModal, 'danger', record, tableName)"
+            >
+              Delete
+            </button>
           </ng-container>
           <ng-container *ngIf="column.name === '' && tableName == 'labs'">
-            <button class="btn btn-sm btn-danger" (click)="openAlertModal(alertModal,'danger',record,tableName)">Delete</button>
+            <button
+              class="btn btn-sm btn-danger"
+              (click)="openAlertModal(alertModal, 'danger', record, tableName)"
+            >
+              Delete
+            </button>
           </ng-container>
 
           <ng-container *ngIf="column.name === '' && tableName == 'notes'">
-            <button class="btn btn-sm btn-danger" (click)="openAlertModal(alertModal,'danger',record,tableName)">Delete</button>
+            <button
+              class="btn btn-sm btn-danger"
+              (click)="openAlertModal(alertModal, 'danger', record, tableName)"
+            >
+              Delete
+            </button>
           </ng-container>
         </td>
       </tr>

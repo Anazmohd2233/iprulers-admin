@@ -26,4 +26,9 @@ export class MaterialService {
       observe: 'body' 
     });
   }
+    
+  updateMaterial(id:any,formdata: any) {
+    const apiUrl = `${this.baseUrl}/admin/material/update/${id}`;
+    return this.http.post<any>(apiUrl, formdata);
+  }
 }

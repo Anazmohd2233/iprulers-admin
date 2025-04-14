@@ -26,6 +26,7 @@ export class StudentCoursesComponent implements OnInit {
   updateDateForm!: FormGroup;
   courses: Course[] = [];
   page: number = 1;
+  courseId:any;
 
   studentList: any;
   selectedCourse: any;
@@ -72,9 +73,7 @@ export class StudentCoursesComponent implements OnInit {
     });
   }
 
-  /**
-   * fetches order list
-   */
+
   private getCourse(): void {
     this.courseService.getCourses(this.page).subscribe({
       next: (response) => {
@@ -93,7 +92,14 @@ export class StudentCoursesComponent implements OnInit {
     });
   }
 
-  open(content: TemplateRef<NgbModal>): void {
+  open(content: TemplateRef<NgbModal>, course?: any): void {
+    if (course) {
+      console.log('course',course)
+      this.courseId=course.id;
+      this.updateDateForm.patchValue({
+        date: course.expiryDate,
+      });
+    }
     this.modalRef = this.modalService.open(content, { scrollable: true });
   }
 
@@ -133,7 +139,30 @@ export class StudentCoursesComponent implements OnInit {
   }
 
   updateDate() {
-    console.log("update expiry date of the course");
+    if (this.updateDateForm.valid) {
+      const formData = new FormData();
+      formData.append("expiry_date", this.updateDateForm.value.date);
+      formData.append("course_id", this.courseId);
+
+      // 📝 Edit Mode
+      this.studentService
+        .updateExpiry(formData)
+        .subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.toaster.success("Success", response.message);
+              this.fetchStudentDetails(this.studentID);
+              this.updateDateForm.reset();
+              this.modalRef.close();
+            } else {
+              this.toaster.warn("Alert", response.message);
+            }
+          },
+          error: () => this.toaster.error("Error", "Something went wrong."),
+        });
+    } else {
+      this.toaster.warn("Alert", "Please fill all mandatory fields..!");
+    }
   }
 
   fetchStudentDetails(id: any): void {

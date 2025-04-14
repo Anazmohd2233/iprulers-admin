@@ -53,8 +53,6 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   @Input() hasRowSelection: boolean = false;
   @Input() columns: Column[] = [];
   collectionSize: number = this.tableData.length;
-  selectAll: boolean = false;
-  isSelected: boolean[] = [];
 
   @Output() search = new EventEmitter<string>();
   @Output() sort = new EventEmitter<SortEvent>();
@@ -77,6 +75,10 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   docs: File | null = null;
 
   formData02 = new FormData();
+
+  selectAll: boolean = false;
+  isSelected: boolean[] = [];
+  selectedCategory: any = null; // null = add mode
 
   constructor(
     private modalService: NgbModal,
@@ -232,7 +234,26 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       this.tableData.length;
   }
 
-  open(content: TemplateRef<NgbModal>): void {
+  open(content: TemplateRef<NgbModal>, category?: any): void {
+    this.selectedCategory = category || null;
+
+    if (this.selectedCategory) {
+      console.log("selected material", this.selectedCategory);
+      this.addMaterialForm.patchValue({
+        title: this.selectedCategory.title || "",
+        type: this.selectedCategory.type || "",
+        link:
+          this.selectedCategory.type === "link"
+            ? this.selectedCategory.link
+            : "",
+      });
+
+      // optionally preload image preview if editing
+    } else {
+      this.addMaterialForm.reset();
+      this.docs = null;
+    }
+
     this.modalRef = this.modalService.open(content, { scrollable: true });
   }
 
@@ -255,29 +276,59 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
         formData.append("material_document", this.docs);
       }
 
-      this.materialService.createMaterial(formData).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.materialAdded.emit();
-            this.docs = null;
-            this.addMaterialForm.reset();
-            this.modalRef.close();
-            this.toaster.success("Success", response.message);
-          } else {
-            this.toaster.warn("Alert", response.message);
+      if (this.selectedCategory) {
 
-            console.error("Failed to create material:", response.message);
-          }
-        },
-        error: (error) => {
-          this.toaster.error("Failed", "Something went wrong.");
+        this.materialService.updateMaterial(this.selectedCategory.id,formData).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.materialAdded.emit();
+              this.docs = null;
+              this.addMaterialForm.reset();
+              this.modalRef.close();
+              this.toaster.success("Success", response.message);
+            } else {
+              this.toaster.warn("Alert", response.message);
+  
+              console.error("Failed to create material:", response.message);
+            }
+          },
+          error: (error) => {
+            this.toaster.error("Failed", "Something went wrong.");
+  
+            console.error("Error creating material:", error);
+          },
+          complete: () => {
+            console.log("material created successfully!...");
+          },
+        });
 
-          console.error("Error creating material:", error);
-        },
-        complete: () => {
-          console.log("material created successfully!...");
-        },
-      });
+      }else{
+        this.materialService.createMaterial(formData).subscribe({
+          next: (response) => {
+            if (response.success) {
+              this.materialAdded.emit();
+              this.docs = null;
+              this.addMaterialForm.reset();
+              this.modalRef.close();
+              this.toaster.success("Success", response.message);
+            } else {
+              this.toaster.warn("Alert", response.message);
+  
+              console.error("Failed to create material:", response.message);
+            }
+          },
+          error: (error) => {
+            this.toaster.error("Failed", "Something went wrong.");
+  
+            console.error("Error creating material:", error);
+          },
+          complete: () => {
+            console.log("material created successfully!...");
+          },
+        });
+      }
+
+   
     } else {
       this.toaster.warn("Alert", "Fill all mandaratory fields!!");
 
@@ -403,23 +454,22 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     content: TemplateRef<NgbModal>,
     variant: string,
     record: any,
-    tableName:any
+    tableName: any
   ): void {
-
     this.modalRef = this.modalService.open(content, {
       size: "sm",
       modalDialogClass: "modal-filled bg-" + variant,
     });
 
-    if(tableName =='notes' || tableName =='labs'){
-    this.formData02 = new FormData(); 
-    this.formData02.append("type", record.lab ? "lab" : "note");
-    this.formData02.append("id", record.id);
-    this.formData02.append("course_id", this.courseID);
-  }else if(tableName =='material'){
-    this.formData02 = new FormData(); 
-    this.formData02.append("id", record.id);
-  }
+    if (tableName == "notes" || tableName == "labs") {
+      this.formData02 = new FormData();
+      this.formData02.append("type", record.lab ? "lab" : "note");
+      this.formData02.append("id", record.id);
+      this.formData02.append("course_id", this.courseID);
+    } else if (tableName == "material") {
+      this.formData02 = new FormData();
+      this.formData02.append("id", record.id);
+    }
   }
 
   deleteLabOrNotes(): void {
@@ -437,7 +487,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       error: () => this.toaster.error("Error", "Something went wrong."),
     });
   }
-  deleteMaterials():void{
+  deleteMaterials(): void {
     this.materialService.deleteMaterial(this.formData02).subscribe({
       next: (response) => {
         if (response.success) {
@@ -451,6 +501,5 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       },
       error: () => this.toaster.error("Error", "Something went wrong."),
     });
-
   }
 }
