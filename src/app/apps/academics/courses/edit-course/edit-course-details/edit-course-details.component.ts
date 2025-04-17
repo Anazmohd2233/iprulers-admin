@@ -48,6 +48,7 @@ export class EditCourseDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
     this.getCourseById();
 
     this.addCourseDetailsForm = this.fb.group({
@@ -61,12 +62,7 @@ export class EditCourseDetailsComponent implements OnInit {
     });
   }
 
-  changeCourseStatus(event: Event): void {
-    const formData = new FormData();
-    formData.append("status", "hhi");
 
-    this.updateCourse(formData, this.courseID);
-  }
   onChangeImage() {
     const formData = new FormData();
     if (this.files) {
@@ -225,4 +221,15 @@ export class EditCourseDetailsComponent implements OnInit {
       encodeURI(URL.createObjectURL(f))
     );
   }
+
+  onDropdownSelect(status: string): void {
+    console.log('Selected status:', status);
+
+    const formData = new FormData();
+      formData.append("course_status", status); // Assuming this.files holds a single File object
+    
+    this.updateCourse(formData, this.courseID);
+
+  }
+
 }

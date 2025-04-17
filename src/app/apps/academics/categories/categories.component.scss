@@ -1,33 +1,6 @@
-.card {
-    min-height: 100px; /* Ensures uniform card height */
-    display: flex;
-    flex-direction: column;
+.image-container {
+    height: 200px; /* or any consistent height you prefer */
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0.375rem; /* Optional rounded corners */
   }
-  
-  .image-container {
-    // width: auto;
-    height: 80px; /* Ensures all images have the same space */
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .image-container img {
-    width: auto;
-   height: 80px;
-  
-   object-fit: fill;
-  }
-  
-  .course-title {
-    min-height: 30px; /* Ensures title alignment */
-    font-size: 16px;
-    font-weight: bold;
-  }
-  
-  
-  .mt-auto {
-    margin-top: auto; /* Ensures the button is always at the bottom */
-  }
-  

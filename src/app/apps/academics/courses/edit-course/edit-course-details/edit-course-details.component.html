@@ -79,6 +79,38 @@
   <div class="col-12">
     <div class="card">
       <div class="card-body">
+        <ng-container
+          *ngTemplateOutlet="
+            DropdownColored;
+            context: {
+              color: courseList?.status == 0 ? 'danger' : 'primary',
+              text: courseList?.status == 0 ?  'Draft' : 'Published',
+              onSelect: onDropdownSelect.bind(this)
+            }
+          "
+        ></ng-container>
+
+        <ng-template
+          #DropdownColored
+          let-color="color"
+          let-text="text"
+          let-onSelect="onSelect"
+        >
+          <div ngbDropdown>
+            <button
+              class="btn btn-{{ color }}"
+              id="dropdownBasic1"
+              ngbDropdownToggle
+            >
+              {{ text }}
+            </button>
+            <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+              <button ngbDropdownItem (click)="onSelect('1')">Published</button>
+              <button ngbDropdownItem (click)="onSelect('0')">Draft</button>
+            </div>
+          </div>
+        </ng-template>
+
         <form
           [formGroup]="addCourseDetailsForm"
           (ngSubmit)="onSubmitCourseDetails()"
@@ -86,14 +118,7 @@
           <div class="row">
             <div class="col-xl-4">
               <div class="mb-4">
-                <div class="btn-group mb-2 me-1">
-                  <ng-container
-                    *ngTemplateOutlet="
-                      DropdownColored;
-                      context: { color: 'primary', text: 'Published' }
-                    "
-                  ></ng-container>
-                </div>
+                <div class="btn-group mb-2 me-1"></div>
               </div>
 
               <div class="mb-3">
@@ -130,8 +155,10 @@
             >
               <div class="me-15 mb-2">
                 <img
-                [src]="courseList?.course_img || 'assets/images/users/avatar-6.jpg'"
-                alt="image"
+                  [src]="
+                    courseList?.course_img || 'assets/images/users/avatar-6.jpg'
+                  "
+                  alt="image"
                   class="img-fluid"
                   style="width: 150px; height: 150px; object-fit: cover"
                 />
@@ -204,15 +231,3 @@
   </div>
   <!-- end col-->
 </div>
-
-<ng-template #DropdownColored let-color="color" let-text="text">
-  <div ngbDropdown>
-    <button class="btn btn-{{ color }}" id="dropdownBasic1" ngbDropdownToggle>
-      {{ text }}
-    </button>
-    <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-      <button ngbDropdownItem>Published</button>
-      <button ngbDropdownItem>Draft</button>
-    </div>
-  </div>
-</ng-template>
