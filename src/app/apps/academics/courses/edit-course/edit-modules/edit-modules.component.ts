@@ -65,6 +65,16 @@ export class EditModulesComponent implements OnInit {
     this.options1 = {
       group: "container2",
       handle: ".dragula-handle",
+      onUpdate: (event: any) => {
+        console.log('eventttttttttttt',event)
+        const moduleIndex = event.from.getAttribute('data-module-index');
+        console.log('moduleIndex',moduleIndex)
+
+        if (moduleIndex !== null) {
+          const updatedModule = this.modules[+moduleIndex];
+          this.onSessionReorder(updatedModule);
+        }
+      }
     };
 
    
@@ -198,12 +208,14 @@ export class EditModulesComponent implements OnInit {
     this.selectedSession = session || null;
     this.selectedModule = module || null;
 
-console.log('sessionnnnnnnnnn',session)
-console.log('moduleeeeeeeeeeeeeeeeenn',module)
-
     if (this.selectedSession) {
       this.addSessionForm.patchValue({
         session_title: this.selectedSession.session_title,
+        duration: {
+          hour: +this.selectedSession.hour,
+          minute: +this.selectedSession.minute,
+          second: +this.selectedSession.seconds,
+        },
       });
     } else {
       this.addSessionForm.reset();
@@ -258,4 +270,22 @@ console.log('moduleeeeeeeeeeeeeeeeenn',module)
       },
     });
   }
+  onSessionReorder(updatedModule:any) {
+
+
+    console.log('new orderrrrrrrrrrrrr',updatedModule)
+
+    this.courseService.updateSessionOrder(updatedModule).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.toaster.success("Success", response.message);
+          this.getModule();
+        } else {
+          this.toaster.warn("Alert", response.message);
+        }
+      },
+      error: () => this.toaster.error("Error", "Something went wrong."),
+    });
+  }
+  
 }

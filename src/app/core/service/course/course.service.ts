@@ -60,4 +60,9 @@ export class CourseService {
     const apiUrl = `${this.baseUrl}/admin/course/fetch_module/${id}`;
     return this.http.get<any>(apiUrl);
   }
+
+  updateSessionOrder(formdata: any) {
+    const apiUrl = `${this.baseUrl}/admin/course/session/update`;
+    return this.http.post<any>(apiUrl, formdata);
+  }
 }
