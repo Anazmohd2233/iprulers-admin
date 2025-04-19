@@ -114,6 +114,8 @@ export class EditModulesComponent implements OnInit {
           error: () => this.toaster.error("Error", "Something went wrong."),
         });
       } else {
+        formData.append("module_id", this.selectedModule.id);
+
         this.courseService.updateModule(formData).subscribe({
           next: (response) => {
             if (response.success) {
@@ -156,6 +158,7 @@ export class EditModulesComponent implements OnInit {
       }
 
       if (!this.selectedSession) {
+
         this.courseService.createSession(formData).subscribe({
           next: (response) => {
             if (response.success) {
@@ -171,6 +174,8 @@ export class EditModulesComponent implements OnInit {
           error: () => this.toaster.error("Error", "Something went wrong."),
         });
       } else {
+        formData.append("session_id", this.selectedSession.id);
+
         this.courseService.updateSession(formData).subscribe({
           next: (response) => {
             if (response.success) {
@@ -270,6 +275,8 @@ export class EditModulesComponent implements OnInit {
       },
     });
   }
+
+
   onSessionReorder(updatedModule:any) {
 
 
@@ -285,6 +292,112 @@ export class EditModulesComponent implements OnInit {
         }
       },
       error: () => this.toaster.error("Error", "Something went wrong."),
+    });
+  }
+
+  
+  openSessionDelete(
+    content: TemplateRef<NgbModal>,
+    variant: string,
+    session: any
+  ): void {
+    this.selectedSession = session;
+    this.modalRef = this.modalService.open(content, {
+      size: "sm",
+      modalDialogClass: "modal-filled bg-" + variant,
+    });
+  }
+
+  openModuleDelete(
+    content: TemplateRef<NgbModal>,
+    variant: string,
+    module: any
+  ): void {
+    this.selectedModule = module;
+    this.modalRef = this.modalService.open(content, {
+      size: "sm",
+      modalDialogClass: "modal-filled bg-" + variant,
+    });
+  }
+
+
+  deleteSession():void{
+
+    if (this.selectedSession) {
+      this.courseService.deleteSession(this.selectedSession.id).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.toaster.success("Deleted", response.message);
+            this.getModule();
+            this.modalRef.close();
+          } else {
+            this.toaster.warn("Alert", response.message);
+          }
+        },
+        error: () => this.toaster.error("Error", "Something went wrong."),
+      });
+    } else {
+      this.toaster.warn("Alert", "Enexpected error occured , contact admin");
+    }
+
+  }
+  deleteModule():void{
+
+    if (this.selectedModule) {
+      this.courseService.deletModule(this.selectedModule.id).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.toaster.success("Deleted", response.message);
+            this.getModule();
+            this.modalRef.close();
+          } else {
+            this.toaster.warn("Alert", response.message);
+          }
+        },
+        error: () => this.toaster.error("Error", "Something went wrong."),
+      });
+    } else {
+      this.toaster.warn("Alert", "Enexpected error occured , contact admin");
+    }
+
+  }
+
+
+
+
+  getSortableOptions(module: any) {
+    return {
+      group: 'container2',
+      handle: '.dragula-handle',
+      onUpdate: (event: any) => {
+        this.onSessionReorder(module);
+      }
+    };
+  }
+
+  onSessionReorder02(module: any) {
+    if (!module || !Array.isArray(module.sessions)) return;
+
+    const reorderedSessions = module.sessions
+      .map((session: any, index: number) => {
+        if (!session || !session.id) return null;
+        return {
+          id: session.id,
+          sort_order: index + 1,
+        };
+      })
+      .filter(Boolean); // Removes any null entries
+
+    console.log('module idddddddd',module.id)
+    console.log('module reorderedSessionsssssssss',reorderedSessions)
+
+  
+    this.courseService.updateSessionOrder({
+      module_id: module.id,
+      order: reorderedSessions,
+    }).subscribe({
+      next: (res) => this.toaster.success("Reordered", "Session order updated"),
+      error: () => this.toaster.error("Error", "Failed to update session order"),
     });
   }
   

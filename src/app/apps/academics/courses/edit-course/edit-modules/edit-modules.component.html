@@ -170,7 +170,7 @@
                   </button>
                   <button
                     class="btn btn-sm btn-danger"
-                    (click)="onDeleteModule(module.id)"
+                    (click)="openModuleDelete(alertModalModule, 'danger', module)"                    
                   >
                     <i class="mdi mdi-delete"></i>
                   </button>
@@ -258,22 +258,72 @@
           </div>
 
           <!-- Edit & Delete buttons -->
-          <div class="ms-2 d-flex align-items-center gap-1">
+          <div class="d-flex align-items-center gap-1">
             <button
-              class="btn btn-sm btn-primary me-2"
+              class="btn btn-sm btn-primary"
               (click)="openSession(addSessionModal, item)"
             >
               <i class="mdi mdi-pencil"></i>
             </button>
-            <button class="btn btn-sm btn-primary">
+            <button class="btn btn-sm btn-primary" (click)="openSessionDelete(alertModalSession, 'danger', item)"
+            >
               <i class="mdi mdi-delete"></i>
             </button>
+            <span class="dragula-handle ms-2" *ngIf="handle"></span>
           </div>
 
           <!-- Optional Drag Handle -->
-          <span class="dragula-handle ms-2" *ngIf="handle"></span>
         </div>
       </div>
     </div>
   </ng-container>
+</ng-template>
+
+
+<ng-template #alertModalSession let-modal>
+  <div class="modal-body p-4">
+    <div class="text-center">
+      <i class="dripicons-checkmark h1"></i>
+      <h4 class="mt-2">Are you sure you want to delete this ?</h4>
+
+      <button
+        type="button"
+        class="btn btn-light my-2 me-3"
+        (click)="modal.close('Close click')"
+      >
+        EXIT
+      </button>
+      <button
+        type="button"
+        class="btn btn-light my-2"
+        (click)="deleteSession()"
+      >
+        DELETE
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #alertModalModule let-modal>
+  <div class="modal-body p-4">
+    <div class="text-center">
+      <i class="dripicons-checkmark h1"></i>
+      <h4 class="mt-2">Are you sure you want to delete this ?</h4>
+
+      <button
+        type="button"
+        class="btn btn-light my-2 me-3"
+        (click)="modal.close('Close click')"
+      >
+        EXIT
+      </button>
+      <button
+        type="button"
+        class="btn btn-light my-2"
+        (click)="deleteModule()"
+      >
+        DELETE
+      </button>
+    </div>
+  </div>
 </ng-template>

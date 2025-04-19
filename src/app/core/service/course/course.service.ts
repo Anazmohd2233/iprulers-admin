@@ -62,7 +62,16 @@ export class CourseService {
   }
 
   updateSessionOrder(formdata: any) {
-    const apiUrl = `${this.baseUrl}/admin/course/session/update`;
+    const apiUrl = `${this.baseUrl}/admin/course/update_order`;
     return this.http.post<any>(apiUrl, formdata);
+  }
+
+  deleteSession(id: any) {
+    const apiUrl = `${this.baseUrl}/admin/course/session/delete/${id}`;
+    return this.http.delete<any>(apiUrl);
+  }
+  deletModule(id: any) {
+    const apiUrl = `${this.baseUrl}/admin/course/module/delete/${id}`;
+    return this.http.delete<any>(apiUrl);
   }
 }
