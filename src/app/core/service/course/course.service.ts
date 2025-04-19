@@ -40,4 +40,24 @@ export class CourseService {
     const apiUrl = `${this.baseUrl}/admin/course/${id}`;
     return this.http.get<any>(apiUrl);
   }
+  createModule(formdata: any) {
+    const apiUrl = `${this.baseUrl}/admin/course/module/create`;
+    return this.http.post<any>(apiUrl, formdata);
+  }
+  updateModule(formdata: any) {
+    const apiUrl = `${this.baseUrl}/admin/course/module/update`;
+    return this.http.post<any>(apiUrl, formdata);
+  }
+  createSession(formdata: any) {
+    const apiUrl = `${this.baseUrl}/admin/course/session/create`;
+    return this.http.post<any>(apiUrl, formdata);
+  }
+  updateSession(formdata: any) {
+    const apiUrl = `${this.baseUrl}/admin/course/session/update`;
+    return this.http.post<any>(apiUrl, formdata);
+  }
+  getModule(id:any) {
+    const apiUrl = `${this.baseUrl}/admin/course/fetch_module/${id}`;
+    return this.http.get<any>(apiUrl);
+  }
 }
