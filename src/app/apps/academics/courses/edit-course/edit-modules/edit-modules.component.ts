@@ -42,7 +42,9 @@ export class EditModulesComponent implements OnInit {
   time!: NgbTimeStruct;
 
   personList1: PersonCard[] = [];
-  options1: SortableOptions = {};
+
+  sortableOptionsMap: { [moduleId: number]: SortableOptions } = {};
+
 
   constructor(
     private fb: FormBuilder,
@@ -52,11 +54,11 @@ export class EditModulesComponent implements OnInit {
     private courseService: CourseService,
   ) {
 
-    this.options = {
-      onUpdate: (event: any) => {
-        this.postChangesToServer(event);
-      }
-    };
+    // this.options = {
+    //   onUpdate: (event: any) => {
+    //     this.postChangesToServer(event);
+    //   }
+    // };
   }
 
 
@@ -80,7 +82,9 @@ export class EditModulesComponent implements OnInit {
     group: "container2",
     handle: ".dragula-handle",
   };
-  postChangesToServer(event:any):void{
+  postChangesToServer(event:any,module:any):void{
+
+    console.log('module',module)
 
     const sessionId = event.item?.getAttribute('data-session-id');
 
@@ -94,15 +98,13 @@ export class EditModulesComponent implements OnInit {
     formData.append("old_index", event.oldIndex.toString());
     formData.append("new_index", event.newIndex.toString());
 
+    formData.append("module_id", module.id.toString());
+
 
     this.courseService.updateSessionOrder(formData).subscribe({
       next: (response) => {
         if (response.success) {
           this.toaster.success("Success", response.message);
-          this.getModule();
-
-          this.addModuleForm.reset();
-          this.modalRef.close();
         } else {
           this.toaster.warn("Alert", response.message);
         }
@@ -309,6 +311,16 @@ export class EditModulesComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.modules = response.data.modules;
+          this.modules.forEach(module => {
+            this.sortableOptionsMap[module.id] = {
+              group: 'sessionGroup',
+              handle: '.dragula-handle',
+              onUpdate: (event: any) => {
+                this.postChangesToServer(event, module);
+              }
+            };
+          });
+          
         } else {
           console.error("Failed to load module:", response.message);
         }

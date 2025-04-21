@@ -217,7 +217,7 @@
                           class="py-2"
                           
                           [sortablejs]="module.sessions"
-                          [sortablejsOptions]="options"
+                          [sortablejsOptions]="sortableOptionsMap[module.id]"
 
                         >
                           <button
