@@ -122,6 +122,8 @@
 
       <div class="mb-3 text-center">
         <button class="btn btn-primary" type="submit">
+          <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+          aria-hidden="true"></span>
           {{ selectedSession ? "Update Session" : "Add Session" }}
         </button>
       </div>
@@ -149,6 +151,55 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #alertModalSession let-modal>
+  <div class="modal-body p-4">
+    <div class="text-center">
+      <i class="dripicons-checkmark h1"></i>
+      <h4 class="mt-2">Are you sure you want to delete this ?</h4>
+
+      <button
+        type="button"
+        class="btn btn-light my-2 me-3"
+        (click)="modal.close('Close click')"
+      >
+        EXIT
+      </button>
+      <button
+        type="button"
+        class="btn btn-light my-2"
+        (click)="deleteSession()"
+      >
+        DELETE
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #alertModalModule let-modal>
+  <div class="modal-body p-4">
+    <div class="text-center">
+      <i class="dripicons-checkmark h1"></i>
+      <h4 class="mt-2">Are you sure you want to delete this ?</h4>
+
+      <button
+        type="button"
+        class="btn btn-light my-2 me-3"
+        (click)="modal.close('Close click')"
+      >
+        EXIT
+      </button>
+      <button
+        type="button"
+        class="btn btn-light my-2"
+        (click)="deleteModule()"
+      >
+        DELETE
+      </button>
     </div>
   </div>
 </ng-template>
@@ -224,6 +275,8 @@
                             class="btn btn-danger rounded-pill"
                             (click)="openSession(addSessionModal,null,module)"
                           >
+                        
+
                             <i class="mdi mdi-plus me-1"></i> Add Session
                           </button>
                           <ng-container *ngFor="let person of module.sessions">
@@ -308,50 +361,3 @@
 </ng-template>
 
 
-<ng-template #alertModalSession let-modal>
-  <div class="modal-body p-4">
-    <div class="text-center">
-      <i class="dripicons-checkmark h1"></i>
-      <h4 class="mt-2">Are you sure you want to delete this ?</h4>
-
-      <button
-        type="button"
-        class="btn btn-light my-2 me-3"
-        (click)="modal.close('Close click')"
-      >
-        EXIT
-      </button>
-      <button
-        type="button"
-        class="btn btn-light my-2"
-        (click)="deleteSession()"
-      >
-        DELETE
-      </button>
-    </div>
-  </div>
-</ng-template>
-
-<ng-template #alertModalModule let-modal>
-  <div class="modal-body p-4">
-    <div class="text-center">
-      <i class="dripicons-checkmark h1"></i>
-      <h4 class="mt-2">Are you sure you want to delete this ?</h4>
-
-      <button
-        type="button"
-        class="btn btn-light my-2 me-3"
-        (click)="modal.close('Close click')"
-      >
-        EXIT
-      </button>
-      <button
-        type="button"
-        class="btn btn-light my-2"
-        (click)="deleteModule()"
-      >
-        DELETE
-      </button>
-    </div>
-  </div>
-</ng-template>

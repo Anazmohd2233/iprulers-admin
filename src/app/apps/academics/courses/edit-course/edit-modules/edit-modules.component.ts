@@ -11,11 +11,6 @@ import { SortableOptions } from "sortablejs";
 import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
 import { CourseService } from "src/app/core/service/course/course.service";
 
-type PersonCard = {
-  name: string;
-  avatar: string;
-  title: string;
-};
 
 @Component({
   selector: "app-edit-modules",
@@ -40,8 +35,8 @@ export class EditModulesComponent implements OnInit {
   multiCollapsed2: boolean = true;
   collapsed4: boolean = true;
   time!: NgbTimeStruct;
+  isSubmitting: boolean = false;
 
-  personList1: PersonCard[] = [];
 
   sortableOptionsMap: { [moduleId: number]: SortableOptions } = {};
 
@@ -128,6 +123,7 @@ export class EditModulesComponent implements OnInit {
   }
   onSubmitAddModule() {
     if (this.addModuleForm.valid) {
+
       const formData = new FormData();
       formData.append("module_title", this.addModuleForm.value.module_title);
       formData.append("course_id", this.courseID);
@@ -172,6 +168,8 @@ export class EditModulesComponent implements OnInit {
 
   onSubmitAddSession() {
     if (this.addSessionForm.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
 
       const data = this.addSessionForm.value;
@@ -186,6 +184,7 @@ export class EditModulesComponent implements OnInit {
         formData.append("seconds", second);
       } else {
         this.toaster.warn("Alert", "Please fill all duration fields..!");
+        this.isSubmitting = false;
         return;
       }
 
@@ -203,6 +202,7 @@ export class EditModulesComponent implements OnInit {
         this.courseService.createSession(formData).subscribe({
           next: (response) => {
             if (response.success) {
+              this.isSubmitting = false;
               this.toaster.success("Success", response.message);
               this.getModule();
 
@@ -210,10 +210,14 @@ export class EditModulesComponent implements OnInit {
               this.modalRef.close();
               this.files = null;
             } else {
+              this.isSubmitting = false;
               this.toaster.warn("Alert", response.message);
             }
           },
-          error: () => this.toaster.error("Error", "Something went wrong."),
+          error: () => {
+            this.toaster.error("Error", "Something went wrong.")
+            this.isSubmitting = false;
+          }
         });
       } else {
         formData.append("session_id", this.selectedSession.id);
@@ -255,6 +259,7 @@ export class EditModulesComponent implements OnInit {
     session?: any,
     module?: any
   ): void {
+    this.files = null;
     this.selectedSession = session || null;
     this.selectedModule = module || null;
 
