@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, TemplateRef } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
+
 import {
   NgbModal,
   NgbModalRef,
@@ -30,6 +31,8 @@ export class EditModulesComponent implements OnInit {
   modalRef!: NgbModalRef;
   selectedModule: any = null; // null = add mode
   selectedSession: any = null; // null = add mode
+  selectedItem: any = null; // null = add mode
+
   modules: any[] = [];
 
   isCollapsed: boolean = true;
@@ -46,8 +49,16 @@ export class EditModulesComponent implements OnInit {
     private modalService: NgbModal,
     private sanitizer: DomSanitizer,
     private toaster: ToastUtilService,
-    private courseService: CourseService
-  ) {}
+    private courseService: CourseService,
+  ) {
+
+    this.options = {
+      onUpdate: (event: any) => {
+        this.postChangesToServer(event);
+      }
+    };
+  }
+
 
   ngOnInit(): void {
     this.getModule();
@@ -62,23 +73,27 @@ export class EditModulesComponent implements OnInit {
       duration: this.fb.control({ hour: 0, minute: 0, second: 0 }),
     });
 
-    this.options1 = {
-      group: "container2",
-      handle: ".dragula-handle",
-      onUpdate: (event: any) => {
-        console.log('eventttttttttttt',event)
-        const moduleIndex = event.from.getAttribute('data-module-index');
-        console.log('moduleIndex',moduleIndex)
 
-        if (moduleIndex !== null) {
-          const updatedModule = this.modules[+moduleIndex];
-          this.onSessionReorder(updatedModule);
-        }
-      }
-    };
-
-   
   }
+
+  options: SortableOptions  = {
+    group: "container2",
+    handle: ".dragula-handle",
+  };
+  postChangesToServer(event:any):void{
+
+    const sessionId = event.item?.getAttribute('data-session-id');
+    console.log('Dragged session ID:', sessionId);
+
+    console.log('event old..........',event.oldIndex)
+
+    console.log('event new..........',event.newIndex)
+
+
+    console.log('postChangesToServer worling ..........')
+
+  }
+
 
   onEditModule(id: number): void {
     console.log("Edit clicked for module", id);
@@ -96,7 +111,6 @@ export class EditModulesComponent implements OnInit {
       const formData = new FormData();
       formData.append("module_title", this.addModuleForm.value.module_title);
       formData.append("course_id", this.courseID);
-
 
       if (!this.selectedModule) {
         this.courseService.createModule(formData).subscribe({
@@ -141,24 +155,31 @@ export class EditModulesComponent implements OnInit {
       const formData = new FormData();
 
       const data = this.addSessionForm.value;
-      const { hour, minute, second } = data.duration;
+      console.log("durastion***", data.duration);
+      if (data.duration) {
+        const hour = data.duration.hour;
+        const minute = data.duration.minute;
+        const second = data.duration.second;
+
+        formData.append("hour", hour);
+        formData.append("minute", minute);
+        formData.append("seconds", second);
+      } else {
+        this.toaster.warn("Alert", "Please fill all duration fields..!");
+        return;
+      }
 
       if (this.selectedModule) {
         formData.append("module_id", this.selectedModule.id);
-
       }
 
       formData.append("session_title", data.session_title);
-      formData.append("hour", hour);
-      formData.append("minute", minute);
-      formData.append("seconds", second);
 
       if (this.files) {
         formData.append("video", this.files);
       }
 
       if (!this.selectedSession) {
-
         this.courseService.createSession(formData).subscribe({
           next: (response) => {
             if (response.success) {
@@ -167,6 +188,7 @@ export class EditModulesComponent implements OnInit {
 
               this.addSessionForm.reset();
               this.modalRef.close();
+              this.files = null;
             } else {
               this.toaster.warn("Alert", response.message);
             }
@@ -198,7 +220,6 @@ export class EditModulesComponent implements OnInit {
   openModule(content: TemplateRef<NgbModal>, module?: any): void {
     this.selectedModule = module || null;
 
-
     if (this.selectedModule) {
       this.addModuleForm.patchValue({
         module_title: this.selectedModule.module_title,
@@ -209,7 +230,11 @@ export class EditModulesComponent implements OnInit {
     this.modalRef = this.modalService.open(content, { scrollable: true });
   }
 
-  openSession(content: TemplateRef<NgbModal>, session?: any,module?:any): void {
+  openSession(
+    content: TemplateRef<NgbModal>,
+    session?: any,
+    module?: any
+  ): void {
     this.selectedSession = session || null;
     this.selectedModule = module || null;
 
@@ -277,25 +302,7 @@ export class EditModulesComponent implements OnInit {
   }
 
 
-  onSessionReorder(updatedModule:any) {
 
-
-    console.log('new orderrrrrrrrrrrrr',updatedModule)
-
-    this.courseService.updateSessionOrder(updatedModule).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.toaster.success("Success", response.message);
-          this.getModule();
-        } else {
-          this.toaster.warn("Alert", response.message);
-        }
-      },
-      error: () => this.toaster.error("Error", "Something went wrong."),
-    });
-  }
-
-  
   openSessionDelete(
     content: TemplateRef<NgbModal>,
     variant: string,
@@ -320,9 +327,7 @@ export class EditModulesComponent implements OnInit {
     });
   }
 
-
-  deleteSession():void{
-
+  deleteSession(): void {
     if (this.selectedSession) {
       this.courseService.deleteSession(this.selectedSession.id).subscribe({
         next: (response) => {
@@ -339,10 +344,8 @@ export class EditModulesComponent implements OnInit {
     } else {
       this.toaster.warn("Alert", "Enexpected error occured , contact admin");
     }
-
   }
-  deleteModule():void{
-
+  deleteModule(): void {
     if (this.selectedModule) {
       this.courseService.deletModule(this.selectedModule.id).subscribe({
         next: (response) => {
@@ -359,21 +362,9 @@ export class EditModulesComponent implements OnInit {
     } else {
       this.toaster.warn("Alert", "Enexpected error occured , contact admin");
     }
-
   }
 
 
-
-
-  getSortableOptions(module: any) {
-    return {
-      group: 'container2',
-      handle: '.dragula-handle',
-      onUpdate: (event: any) => {
-        this.onSessionReorder(module);
-      }
-    };
-  }
 
   onSessionReorder02(module: any) {
     if (!module || !Array.isArray(module.sessions)) return;
@@ -383,22 +374,30 @@ export class EditModulesComponent implements OnInit {
         if (!session || !session.id) return null;
         return {
           id: session.id,
-          sort_order: index + 1,
+          sort_order: index,
         };
       })
       .filter(Boolean); // Removes any null entries
 
-    console.log('module idddddddd',module.id)
-    console.log('module reorderedSessionsssssssss',reorderedSessions)
+    console.log("module idddddddd", module.id);
+    console.log("module reorderedSessionsssssssss", reorderedSessions);
 
-  
-    this.courseService.updateSessionOrder({
-      module_id: module.id,
-      order: reorderedSessions,
-    }).subscribe({
-      next: (res) => this.toaster.success("Reordered", "Session order updated"),
-      error: () => this.toaster.error("Error", "Failed to update session order"),
-    });
+    this.courseService
+      .updateSessionOrder({
+        module_id: module.id,
+        order: reorderedSessions,
+      })
+      .subscribe({
+        next: (res) =>
+          this.toaster.success("Reordered", "Session order updated"),
+        error: () =>
+          this.toaster.error("Error", "Failed to update session order"),
+      });
+  }
+
+  openVideo(content: TemplateRef<any>, item: any): void {
+    this.selectedItem = item || null;
+    this.modalRef = this.modalService.open(content, { scrollable: false });
   }
   
 }
