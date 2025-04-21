@@ -83,14 +83,32 @@ export class EditModulesComponent implements OnInit {
   postChangesToServer(event:any):void{
 
     const sessionId = event.item?.getAttribute('data-session-id');
+
     console.log('Dragged session ID:', sessionId);
-
     console.log('event old..........',event.oldIndex)
-
     console.log('event new..........',event.newIndex)
-
-
     console.log('postChangesToServer worling ..........')
+
+    const formData = new FormData();
+    formData.append("session_id", sessionId);
+    formData.append("old_index", event.oldIndex.toString());
+    formData.append("new_index", event.newIndex.toString());
+
+
+    this.courseService.updateSessionOrder(formData).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.toaster.success("Success", response.message);
+          this.getModule();
+
+          this.addModuleForm.reset();
+          this.modalRef.close();
+        } else {
+          this.toaster.warn("Alert", response.message);
+        }
+      },
+      error: () => this.toaster.error("Error", "Something went wrong."),
+    });
 
   }
 
