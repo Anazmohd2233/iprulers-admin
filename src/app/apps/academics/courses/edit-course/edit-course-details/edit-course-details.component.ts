@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { FormBuilder, FormGroup, NgForm, Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
 import { CourseService } from "src/app/core/service/course/course.service";
 
@@ -34,7 +34,7 @@ export class EditCourseDetailsComponent implements OnInit {
   submitted: boolean = false;
   courseList: any;
   isSubmitting: boolean = false;
-
+  modalRef!: NgbModalRef;
 
   files: File | null = null; // Single file object
 
@@ -50,7 +50,6 @@ export class EditCourseDetailsComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
     this.getCourseById();
 
     this.addCourseDetailsForm = this.fb.group({
@@ -63,7 +62,6 @@ export class EditCourseDetailsComponent implements OnInit {
       overview: [""],
     });
   }
-
 
   onChangeImage() {
     this.isSubmitting = true;
@@ -108,16 +106,14 @@ export class EditCourseDetailsComponent implements OnInit {
       next: (response) => {
         if (response.success) {
           this.isSubmitting = false;
-
+          this.modalRef.close();
+          this.files = null;
           this.getCourseById();
-          this.toaster.success(
-            "Success",
-            response.message
-          );
+          this.toaster.success("Success", response.message);
         } else {
           this.isSubmitting = false;
 
-          this.toaster.warn("Failed",response.message);
+          this.toaster.warn("Failed", response.message);
           console.error("Failed to update Student:", response.message);
         }
       },
@@ -211,7 +207,9 @@ export class EditCourseDetailsComponent implements OnInit {
   }
 
   open(content: TemplateRef<NgbModal>): void {
-    this.modalService.open(content, { scrollable: true });
+    this.files = null;
+
+    this.modalRef = this.modalService.open(content, { scrollable: true });
   }
 
   onSelectImage(event: any): void {
@@ -235,13 +233,11 @@ export class EditCourseDetailsComponent implements OnInit {
   }
 
   onDropdownSelect(status: string): void {
-    console.log('Selected status:', status);
+    console.log("Selected status:", status);
 
     const formData = new FormData();
-      formData.append("course_status", status); // Assuming this.files holds a single File object
-    
+    formData.append("course_status", status); // Assuming this.files holds a single File object
+
     this.updateCourse(formData, this.courseID);
-
   }
-
 }
