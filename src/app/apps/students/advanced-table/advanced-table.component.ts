@@ -67,7 +67,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   files: File | null = null; // Single file object
   modalRef!: NgbModalRef;
   selectedRecord: any;
-selectedStatus: any;
+  selectedStatus: any;
+  isSubmitting: boolean = false;
 
   constructor(
     private modalService: NgbModal,
@@ -238,12 +239,16 @@ selectedStatus: any;
       this.addStudentForm.markAllAsTouched();
       return;
     }
+    this.isSubmitting = true;
+
 
     const password = this.addStudentForm.value.pwd;
     const confirmPassword = this.addStudentForm.value.confirm;
 
     if (password !== confirmPassword) {
       console.error("Passwords do not match");
+      this.isSubmitting = false;
+
       return;
     }
 
@@ -261,6 +266,8 @@ selectedStatus: any;
       next: (response) => {
         console.log("response of create student - ", response);
         if (response.success) {
+          this.isSubmitting = false;
+
           this.files = null;
           this.addStudentForm.reset();
           this.modalRef.close();
@@ -268,12 +275,16 @@ selectedStatus: any;
           this.materialAdded.emit();
           // Optional: show a success toast or close modal
         } else {
+          this.isSubmitting = false;
+
           this.toaster.warn("Alert", response.message);
 
           console.error("Failed to create student:", response.message);
         }
       },
       error: (error) => {
+        this.isSubmitting = false;
+
         this.toaster.error("Failed", "Something went wrong.");
 
         console.error("Error creating student:", error);
@@ -320,16 +331,22 @@ selectedStatus: any;
   updatePaymentStatus(): void {
     this.statusChange.emit({
       status: this.selectedStatus,
-      id: this.selectedRecord.id
+      id: this.selectedRecord.id,
     });
     this.modalRef.close(); // close the modal after change
   }
 
-
-  
-  openAlertModal(record: any, status: any,content: TemplateRef<NgbModal>, variant: string): void {
+  openAlertModal(
+    record: any,
+    status: any,
+    content: TemplateRef<NgbModal>,
+    variant: string
+  ): void {
     this.selectedRecord = record;
     this.selectedStatus = status;
-    this.modalRef=this.modalService.open(content, { size: 'sm', modalDialogClass: 'modal-filled bg-' + variant });
+    this.modalRef = this.modalService.open(content, {
+      size: "sm",
+      modalDialogClass: "modal-filled bg-" + variant,
+    });
   }
 }

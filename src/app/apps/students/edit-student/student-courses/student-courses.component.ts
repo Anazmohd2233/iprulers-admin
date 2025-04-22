@@ -27,6 +27,7 @@ export class StudentCoursesComponent implements OnInit {
   courses: Course[] = [];
   page: number = 1;
   courseId:any;
+  isSubmitting: boolean = false;
 
   studentList: any;
   selectedCourse: any;
@@ -105,6 +106,8 @@ export class StudentCoursesComponent implements OnInit {
 
   assignCourse(): void {
     if (this.assignCourseForm.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
 
       // Add scalar values
@@ -116,17 +119,23 @@ export class StudentCoursesComponent implements OnInit {
         next: (response) => {
           console.log("response of assign course - ", response);
           if (response.success) {
+            this.isSubmitting = false;
+
             this.toaster.success("Success", "Course Assigned Successfully.");
             this.assignCourseForm.reset();
             this.fetchStudentDetails(this.studentID);
             this.modalRef.close(); // ✅ Close the modal here
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Alert", response.message);
 
             console.error("Failed to assign course:", response.message);
           }
         },
         error: (error) => {
+          this.isSubmitting = false;
+
           this.toaster.error("Failed", "Something went wrong.");
 
           console.error("Error assign course:", error);
@@ -140,6 +149,8 @@ export class StudentCoursesComponent implements OnInit {
 
   updateDate() {
     if (this.updateDateForm.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
       formData.append("expiry_date", this.updateDateForm.value.date);
       formData.append("course_id", this.courseId);
@@ -150,15 +161,22 @@ export class StudentCoursesComponent implements OnInit {
         .subscribe({
           next: (response) => {
             if (response.success) {
+              this.isSubmitting = false;
+
               this.toaster.success("Success", response.message);
               this.fetchStudentDetails(this.studentID);
               this.updateDateForm.reset();
               this.modalRef.close();
             } else {
+              this.isSubmitting = false;
+
               this.toaster.warn("Alert", response.message);
             }
           },
-          error: () => this.toaster.error("Error", "Something went wrong."),
+          error: () => {this.toaster.error("Error", "Something went wrong.");
+            this.isSubmitting = false;
+
+          }
         });
     } else {
       this.toaster.warn("Alert", "Please fill all mandatory fields..!");
@@ -198,6 +216,8 @@ export class StudentCoursesComponent implements OnInit {
 
   deleteCourse(): void {
     if (this.selectedCourse) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
 
       const payload = {
@@ -208,14 +228,21 @@ export class StudentCoursesComponent implements OnInit {
       this.studentService.deleteCourse(payload).subscribe({
         next: (response) => {
           if (response.success) {
+            this.isSubmitting = false;
+
             this.toaster.success("Deleted", response.message);
             this.fetchStudentDetails(this.studentID);
             this.modalRef.close();
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Alert", response.message);
           }
         },
-        error: () => this.toaster.error("Error", "Something went wrong."),
+        error: () =>{ this.toaster.error("Error", "Something went wrong.");
+          this.isSubmitting = false;
+
+        }
       });
     } else {
       this.toaster.warn("Alert", "Enexpected error occured , contact admin");

@@ -68,7 +68,9 @@
     </div>
 
     <div class="mb-3 text-center">
-      <button class="btn btn-primary" (click)="onChangeImage()" type="button">
+      <button class="btn btn-primary" (click)="onChangeImage()" type="button"  [disabled]="isSubmitting">
+        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+        aria-hidden="true"></span>
         Upload
       </button>
     </div>
@@ -218,7 +220,9 @@
 
           <div class="row mt-2">
             <div class="col">
-              <button class="btn btn-primary" type="submit">
+              <button class="btn btn-primary" type="submit"  [disabled]="isSubmitting">
+                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+                aria-hidden="true"></span>
                 Submit Changes
               </button>
             </div>

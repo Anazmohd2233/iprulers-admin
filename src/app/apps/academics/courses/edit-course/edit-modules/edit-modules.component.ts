@@ -27,6 +27,7 @@ export class EditModulesComponent implements OnInit {
   selectedModule: any = null; // null = add mode
   selectedSession: any = null; // null = add mode
   selectedItem: any = null; // null = add mode
+  
 
   modules: any[] = [];
 
@@ -109,20 +110,9 @@ export class EditModulesComponent implements OnInit {
 
   }
 
-
-  onEditModule(id: number): void {
-    console.log("Edit clicked for module", id);
-    // Add your modal trigger or logic here
-  }
-
-  onDeleteModule(id: number): void {
-    if (confirm("Are you sure you want to delete this module?")) {
-      console.log("Deleted module", id);
-      // Perform delete logic here
-    }
-  }
   onSubmitAddModule() {
     if (this.addModuleForm.valid) {
+      this.isSubmitting = true;
 
       const formData = new FormData();
       formData.append("module_title", this.addModuleForm.value.module_title);
@@ -132,16 +122,23 @@ export class EditModulesComponent implements OnInit {
         this.courseService.createModule(formData).subscribe({
           next: (response) => {
             if (response.success) {
+              this.isSubmitting = false;
+
               this.toaster.success("Success", response.message);
               this.getModule();
 
               this.addModuleForm.reset();
               this.modalRef.close();
             } else {
+              this.isSubmitting = false;
+
               this.toaster.warn("Alert", response.message);
             }
           },
-          error: () => this.toaster.error("Error", "Something went wrong."),
+          error: () => {this.toaster.error("Error", "Something went wrong.")
+            this.isSubmitting = false;
+
+          }
         });
       } else {
         formData.append("module_id", this.selectedModule.id);
@@ -151,14 +148,20 @@ export class EditModulesComponent implements OnInit {
             if (response.success) {
               this.toaster.success("Success", response.message);
               this.getModule();
+              this.isSubmitting = false;
 
               this.addModuleForm.reset();
               this.modalRef.close();
             } else {
+              this.isSubmitting = false;
+
               this.toaster.warn("Alert", response.message);
             }
           },
-          error: () => this.toaster.error("Error", "Something went wrong."),
+          error: () => {this.toaster.error("Error", "Something went wrong.")
+            this.isSubmitting = false;
+
+          }
         });
       }
     } else {
@@ -225,15 +228,22 @@ export class EditModulesComponent implements OnInit {
         this.courseService.updateSession(formData).subscribe({
           next: (response) => {
             if (response.success) {
+              this.isSubmitting = false;
+
               this.toaster.success("Success", response.message);
               this.getModule();
               this.addSessionForm.reset();
               this.modalRef.close();
             } else {
+              this.isSubmitting = false;
+
               this.toaster.warn("Alert", response.message);
             }
           },
-          error: () => this.toaster.error("Error", "Something went wrong."),
+          error: () => {this.toaster.error("Error", "Something went wrong.")
+            this.isSubmitting = false;
+
+          }
         });
       }
     } else {
@@ -364,17 +374,26 @@ export class EditModulesComponent implements OnInit {
 
   deleteSession(): void {
     if (this.selectedSession) {
+      this.isSubmitting = true;
+
       this.courseService.deleteSession(this.selectedSession.id).subscribe({
         next: (response) => {
           if (response.success) {
+            this.isSubmitting = false;
+
             this.toaster.success("Deleted", response.message);
             this.getModule();
             this.modalRef.close();
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Alert", response.message);
           }
         },
-        error: () => this.toaster.error("Error", "Something went wrong."),
+        error: () => {this.toaster.error("Error", "Something went wrong.");
+          this.isSubmitting = false;
+
+        }
       });
     } else {
       this.toaster.warn("Alert", "Enexpected error occured , contact admin");
@@ -382,17 +401,26 @@ export class EditModulesComponent implements OnInit {
   }
   deleteModule(): void {
     if (this.selectedModule) {
+      this.isSubmitting = true;
+
       this.courseService.deletModule(this.selectedModule.id).subscribe({
         next: (response) => {
           if (response.success) {
+            this.isSubmitting = false;
+
             this.toaster.success("Deleted", response.message);
             this.getModule();
             this.modalRef.close();
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Alert", response.message);
           }
         },
-        error: () => this.toaster.error("Error", "Something went wrong."),
+        error: () => {this.toaster.error("Error", "Something went wrong.")
+          this.isSubmitting = false;
+
+        }
       });
     } else {
       this.toaster.warn("Alert", "Enexpected error occured , contact admin");

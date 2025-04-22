@@ -26,6 +26,8 @@ export class CoursesComponent implements OnInit {
   files: File | null = null; // Single file object
   category: any[] = [];
   modalRef!: NgbModalRef;
+  isSubmitting: boolean = false;
+
 
   constructor(
     private http: HttpClient,
@@ -78,6 +80,8 @@ export class CoursesComponent implements OnInit {
 
   onSubmitCreateCourse(): void {
     if (this.addCourseForm.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
 
       // Add scalar values
@@ -93,23 +97,26 @@ export class CoursesComponent implements OnInit {
         next: (response) => {
           console.log("response of create course - ", response);
           if (response.success) {
+            this.isSubmitting = false;
+
             this.getCourse();
             this.files = null;
             this.toaster.success("Success", response.message);
             this.addCourseForm.reset();
             this.modalRef.close();
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Alert", response.message);
             console.error("Failed to create course:", response.message);
           }
         },
         error: (error) => {
+          this.isSubmitting = false;
+
           this.toaster.error("Error", "Something went wrong.");
           console.error("Error creating course:", error);
-        },
-        complete: () => {
-          console.log("Course created successfully!...");
-        },
+        }
       });
     }
   }

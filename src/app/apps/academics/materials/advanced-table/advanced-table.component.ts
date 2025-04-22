@@ -73,6 +73,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   selectedType: string = "";
   files: File | null = null; // Single file object
   docs: File | null = null;
+  isSubmitting: boolean = false;
 
   formData02 = new FormData();
 
@@ -261,6 +262,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
 
   createMaterial(): void {
     if (this.addMaterialForm.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
 
       const { title, type, link } = this.addMaterialForm.value;
@@ -277,49 +280,61 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       }
 
       if (this.selectedCategory) {
+        this.materialService
+          .updateMaterial(this.selectedCategory.id, formData)
+          .subscribe({
+            next: (response) => {
+              if (response.success) {
+                this.isSubmitting = false;
 
-        this.materialService.updateMaterial(this.selectedCategory.id,formData).subscribe({
-          next: (response) => {
-            if (response.success) {
-              this.materialAdded.emit();
-              this.docs = null;
-              this.addMaterialForm.reset();
-              this.modalRef.close();
-              this.toaster.success("Success", response.message);
-            } else {
-              this.toaster.warn("Alert", response.message);
-  
-              console.error("Failed to create material:", response.message);
-            }
-          },
-          error: (error) => {
-            this.toaster.error("Failed", "Something went wrong.");
-  
-            console.error("Error creating material:", error);
-          },
-          complete: () => {
-            console.log("material created successfully!...");
-          },
-        });
+                this.materialAdded.emit();
+                this.docs = null;
+                this.addMaterialForm.reset();
+                this.modalRef.close();
+                this.toaster.success("Success", response.message);
+              } else {
+                this.isSubmitting = false;
 
-      }else{
+                this.toaster.warn("Alert", response.message);
+
+                console.error("Failed to create material:", response.message);
+              }
+            },
+            error: (error) => {
+              this.isSubmitting = false;
+
+              this.toaster.error("Failed", "Something went wrong.");
+
+              console.error("Error creating material:", error);
+            },
+            complete: () => {
+              console.log("material created successfully!...");
+            },
+          });
+      } else {
         this.materialService.createMaterial(formData).subscribe({
           next: (response) => {
             if (response.success) {
+              this.isSubmitting = false;
+
               this.materialAdded.emit();
               this.docs = null;
               this.addMaterialForm.reset();
               this.modalRef.close();
               this.toaster.success("Success", response.message);
             } else {
+              this.isSubmitting = false;
+
               this.toaster.warn("Alert", response.message);
-  
+
               console.error("Failed to create material:", response.message);
             }
           },
           error: (error) => {
+            this.isSubmitting = false;
+
             this.toaster.error("Failed", "Something went wrong.");
-  
+
             console.error("Error creating material:", error);
           },
           complete: () => {
@@ -327,8 +342,6 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
           },
         });
       }
-
-   
     } else {
       this.toaster.warn("Alert", "Fill all mandaratory fields!!");
 
@@ -339,6 +352,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   //Add Labs
   addLabs(): void {
     if (this.addLabForm.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
       formData.append("labTitle", this.addLabForm.value.labTitle);
       formData.append("courseId", this.courseID);
@@ -348,18 +363,24 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       this.courseService.assignLabOrNotes(formData).subscribe({
         next: (response) => {
           if (response.success) {
+            this.isSubmitting = false;
+
             this.labAdded.emit();
             this.files = null;
             this.addLabForm.reset();
             this.modalRef.close();
             this.toaster.success("Success", response.message);
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Alert", response.message);
 
             console.error("Failed to create student:", response.message);
           }
         },
         error: (error) => {
+          this.isSubmitting = false;
+
           this.toaster.error("Failed", "Something went wrong.");
 
           console.error("Error creating student:", error);
@@ -372,6 +393,8 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
 
   addNotes(): void {
     if (this.addNoteForm.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
       formData.append("noteTitle", this.addNoteForm.value.noteTitle);
       formData.append("courseId", this.courseID);
@@ -381,12 +404,16 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
       this.courseService.assignLabOrNotes(formData).subscribe({
         next: (response) => {
           if (response.success) {
+            this.isSubmitting = false;
+
             this.noteAdded.emit();
             this.files = null;
             this.addNoteForm.reset();
             this.modalRef.close();
             this.toaster.success("Success", response.message);
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Alert", response.message);
 
             console.error("Failed to add notes:", response.message);
@@ -394,6 +421,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
         },
         error: (error) => {
           this.toaster.error("Failed", "Something went wrong.");
+          this.isSubmitting = false;
 
           console.error("Error creating student:", error);
         },
@@ -473,33 +501,51 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
   }
 
   deleteLabOrNotes(): void {
+    this.isSubmitting = true;
+
     this.courseService.deleteCourse(this.formData02).subscribe({
       next: (response) => {
         if (response.success) {
+          this.isSubmitting = false;
+
           this.toaster.success("Deleted", response.message);
           this.modalRef.close();
           this.labAdded.emit();
           this.noteAdded.emit();
         } else {
+          this.isSubmitting = false;
+
           this.toaster.warn("Alert", response.message);
         }
       },
-      error: () => this.toaster.error("Error", "Something went wrong."),
+      error: () => {
+        this.toaster.error("Error", "Something went wrong.");
+        this.isSubmitting = false;
+      },
     });
   }
   deleteMaterials(): void {
+    this.isSubmitting = true;
+
     this.materialService.deleteMaterial(this.formData02).subscribe({
       next: (response) => {
         if (response.success) {
+          this.isSubmitting = false;
+
           this.toaster.success("Deleted", response.message);
           this.materialAdded.emit();
           this.modalRef.close();
           this.addMaterialForm.reset();
         } else {
+          this.isSubmitting = false;
+
           this.toaster.warn("Alert", response.message);
         }
       },
-      error: () => this.toaster.error("Error", "Something went wrong."),
+      error: () => {
+        this.toaster.error("Error", "Something went wrong");
+        this.isSubmitting = false;
+      },
     });
   }
 }

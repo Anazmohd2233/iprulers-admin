@@ -14,6 +14,8 @@ export class UserboxComponent implements OnInit {
   @Input() student: any | null = null;
   @Input() studentID: any | null = null;
   modalRef!: NgbModalRef;
+  isSubmitting: boolean = false;
+
 
   changePasswordForm!: FormGroup;
   get form1() {
@@ -41,6 +43,8 @@ export class UserboxComponent implements OnInit {
 
   onChangePassword() {
     if (this.changePasswordForm.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
 
       const { pwd, confirm } = this.changePasswordForm.value;
@@ -51,17 +55,23 @@ export class UserboxComponent implements OnInit {
       this.studentService.updateStudent(formData, this.studentID).subscribe({
         next: (response) => {
           if (response.success) {
+            this.isSubmitting = false;
+
             this.toaster.success("Success", response.message);
 
             this.changePasswordForm.reset();
             this.modalRef.close(); // ✅ Close the modal here
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Alert", response.message);
 
             console.error("Failed to update password:", response.message);
           }
         },
         error: (error) => {
+          this.isSubmitting = false;
+
           this.toaster.error("Failed", "Something went wrong.");
 
           console.error("Error updating password:", error);

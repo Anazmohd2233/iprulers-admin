@@ -25,6 +25,7 @@ export class CategoriesComponent implements OnInit {
   docs: File | null = null;
   modalRef!: NgbModalRef;
   selectedCategory: any = null; // null = add mode
+  isSubmitting: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -92,6 +93,8 @@ export class CategoriesComponent implements OnInit {
 
   createCategory(): void {
     if (this.addCategoryForm.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
       formData.append(
         "category_title",
@@ -114,27 +117,40 @@ export class CategoriesComponent implements OnInit {
                 this.files = null;
                 this.addCategoryForm.reset();
                 this.modalRef.close();
+                this.isSubmitting = false;
               } else {
+                this.isSubmitting = false;
+
                 this.toaster.warn("Alert", response.message);
               }
             },
-            error: () => this.toaster.error("Error", "Something went wrong."),
+            error: () => {
+              this.toaster.error("Error", "Something went wrong.");
+              this.isSubmitting = false;
+            },
           });
       } else {
         // ➕ Add Mode
         this.categoryService.createCategory(formData).subscribe({
           next: (response) => {
             if (response.success) {
+              this.isSubmitting = false;
+
               this.toaster.success("Created", response.message);
               this.getCategory();
               this.files = null;
               this.addCategoryForm.reset();
               this.modalRef.close();
             } else {
+              this.isSubmitting = false;
+
               this.toaster.warn("Alert", response.message);
             }
           },
-          error: () => this.toaster.error("Error", "Something went wrong."),
+          error: () => {
+            this.toaster.error("Error", "Something went wrong.");
+            this.isSubmitting = false;
+          },
         });
       }
     } else {
@@ -143,18 +159,27 @@ export class CategoriesComponent implements OnInit {
   }
 
   deleteCategory(): void {
+    this.isSubmitting = true;
+
     if (this.selectedCategory) {
       this.categoryService.deleteCategory(this.selectedCategory.id).subscribe({
         next: (response) => {
           if (response.success) {
+            this.isSubmitting = false;
+
             this.toaster.success("Deleted", response.message);
             this.getCategory();
             this.modalRef.close();
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Alert", response.message);
           }
         },
-        error: () => this.toaster.error("Error", "Something went wrong."),
+        error: () => {this.toaster.error("Error", "Something went wrong.");
+          this.isSubmitting = false;
+
+        }
       });
     } else {
       this.toaster.warn("Alert", "Enexpected error occured , contact admin");

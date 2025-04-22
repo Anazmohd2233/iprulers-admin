@@ -31,6 +31,7 @@ export class EditStudentDetailsComponent implements OnInit {
   selectedMembers: selectedMember[] = [];
   files: File | null = null; // Single file object
   editStudentDetails!: FormGroup;
+  isSubmitting: boolean = false;
 
   studentList: any;
 
@@ -77,6 +78,8 @@ export class EditStudentDetailsComponent implements OnInit {
    */
   onSubmit(): void {
     if (this.editStudentDetails.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
 
       const { name, email, username, status } = this.editStudentDetails.value;
@@ -89,14 +92,20 @@ export class EditStudentDetailsComponent implements OnInit {
       this.studentService.updateStudent(formData, this.studentID).subscribe({
         next: (response) => {
           if (response.success) {
+            this.isSubmitting = false;
+
             this.toaster.success("Success", "Student Details Updated.");
             this.fetchStudentDetails(this.studentID);
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Failed", "Student Details Updated Failed.");
             console.error("Failed to update Student:", response.message);
           }
         },
         error: (error) => {
+          this.isSubmitting = false;
+
           this.toaster.error("Failed", "Something went wrong.");
 
           console.error("Error updating Student:", error);

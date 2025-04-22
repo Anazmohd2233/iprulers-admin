@@ -21,7 +21,9 @@
       </div>
 
       <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">
+        <button class="btn btn-primary" type="submit"  [disabled]="isSubmitting">
+          <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+          aria-hidden="true"></span>
           {{ selectedModule ? "Update Module" : "Add Module" }}
         </button>
       </div>
@@ -121,7 +123,7 @@
       </div>
 
       <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">
+        <button class="btn btn-primary" type="submit"  [disabled]="isSubmitting">
           <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
           aria-hidden="true"></span>
           {{ selectedSession ? "Update Session" : "Add Session" }}
@@ -173,7 +175,10 @@
         type="button"
         class="btn btn-light my-2"
         (click)="deleteSession()"
+        [disabled]="isSubmitting"
       >
+      <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+      aria-hidden="true"></span>
         DELETE
       </button>
     </div>
@@ -197,7 +202,10 @@
         type="button"
         class="btn btn-light my-2"
         (click)="deleteModule()"
+        [disabled]="isSubmitting"
       >
+      <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+      aria-hidden="true"></span>
         DELETE
       </button>
     </div>

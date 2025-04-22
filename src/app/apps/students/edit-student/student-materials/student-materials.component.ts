@@ -25,6 +25,8 @@ export class StudentMaterialsComponent implements OnInit {
   selectedMaterial: any;
   materialList: any[] = [];
   studentMaterial: any[] = [];
+  isSubmitting: boolean = false;
+
 
   page: number = 1;
 
@@ -64,6 +66,8 @@ export class StudentMaterialsComponent implements OnInit {
 
   assignMaterial(): void {
     if (this.assignMaterialForm.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
 
       // Add scalar values
@@ -74,24 +78,30 @@ export class StudentMaterialsComponent implements OnInit {
         next: (response) => {
           console.log("response of assign materials - ", response);
           if (response.success) {
+            this.isSubmitting = false;
+
+            this.fetchStudentDetails(this.studentID);
+
             this.toaster.success("Success", response.message);
             this.assignMaterialForm.reset();
             this.modalRef.close();
             this.fetchStudentDetails(this.studentID);
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Alert", response.message);
 
             console.error("Failed to assign materials:", response.message);
           }
         },
         error: (error) => {
+          this.isSubmitting = false;
+
           this.toaster.error("Failed", "Something went wrong.");
 
           console.error("Error assign materials:", error);
         },
-        complete: () => {
-          console.log("material assign successfully!...");
-        },
+
       });
     } else {
       console.log("material adding form not validated");
@@ -153,6 +163,8 @@ export class StudentMaterialsComponent implements OnInit {
 
   deleteMaterial(): void {
     if (this.selectedMaterial) {
+      this.isSubmitting = true;
+
       const payload = {
         material_id: this.selectedMaterial.id,
         student_id: this.studentID,
@@ -161,15 +173,22 @@ export class StudentMaterialsComponent implements OnInit {
       this.studentService.deleteMaterial(payload).subscribe({
         next: (response) => {
           if (response.success) {
+            this.isSubmitting = false;
+
             this.toaster.success("Deleted", response.message);
             this.fetchStudentDetails(this.studentID);
 
             this.modalRef.close();
           } else {
+            this.isSubmitting = false;
+
             this.toaster.warn("Alert", response.message);
           }
         },
-        error: () => this.toaster.error("Error", "Something went wrong."),
+        error: () => {this.toaster.error("Error", "Something went wrong.");
+          this.isSubmitting = false;
+
+        },
       });
     } else {
       this.toaster.warn("Alert", "Enexpected error occured , contact admin");

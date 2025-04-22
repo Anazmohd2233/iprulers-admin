@@ -33,6 +33,8 @@ export class EditCourseDetailsComponent implements OnInit {
   projectBudget: number = 0;
   submitted: boolean = false;
   courseList: any;
+  isSubmitting: boolean = false;
+
 
   files: File | null = null; // Single file object
 
@@ -64,6 +66,8 @@ export class EditCourseDetailsComponent implements OnInit {
 
 
   onChangeImage() {
+    this.isSubmitting = true;
+
     const formData = new FormData();
     if (this.files) {
       formData.append("course_img", this.files); // Assuming this.files holds a single File object
@@ -76,6 +80,8 @@ export class EditCourseDetailsComponent implements OnInit {
    */
   onSubmitCourseDetails(): void {
     if (this.addCourseDetailsForm.valid) {
+      this.isSubmitting = true;
+
       const formData = new FormData();
 
       // Append form values
@@ -101,17 +107,23 @@ export class EditCourseDetailsComponent implements OnInit {
     this.courseService.updateCourse(formData, id).subscribe({
       next: (response) => {
         if (response.success) {
+          this.isSubmitting = false;
+
           this.getCourseById();
           this.toaster.success(
             "Success",
             response.message
           );
         } else {
+          this.isSubmitting = false;
+
           this.toaster.warn("Failed",response.message);
           console.error("Failed to update Student:", response.message);
         }
       },
       error: (error) => {
+        this.isSubmitting = false;
+
         this.toaster.error("Failed", "Something went wrong.");
 
         console.error("Error updating Student:", error);

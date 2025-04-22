@@ -111,7 +111,13 @@
       </div>
 
       <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">
+        <button class="btn btn-primary" type="submit" [disabled]="isSubmitting">
+          <span
+            *ngIf="isSubmitting"
+            class="spinner-border spinner-border-sm me-1"
+            role="status"
+            aria-hidden="true"
+          ></span>
           {{ selectedCategory ? "Update Material" : "Add Material" }}
         </button>
       </div>
@@ -195,7 +201,15 @@
       </div>
 
       <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">Add Labs</button>
+        <button class="btn btn-primary" type="submit" [disabled]="isSubmitting">
+          <span
+            *ngIf="isSubmitting"
+            class="spinner-border spinner-border-sm me-1"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Add Labs
+        </button>
       </div>
     </form>
   </div>
@@ -277,7 +291,15 @@
       </div>
 
       <div class="mb-3 text-center">
-        <button class="btn btn-primary" type="submit">Add Notes</button>
+        <button class="btn btn-primary" type="submit" [disabled]="isSubmitting">
+          <span
+            *ngIf="isSubmitting"
+            class="spinner-border spinner-border-sm me-1"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Add Notes
+        </button>
       </div>
     </form>
   </div>
@@ -443,7 +465,14 @@
         type="button"
         class="btn btn-light my-2"
         (click)="deleteMaterials()"
+        [disabled]="isSubmitting"
       >
+        <span
+          *ngIf="isSubmitting"
+          class="spinner-border spinner-border-sm me-1"
+          role="status"
+          aria-hidden="true"
+        ></span>
         DELETE
       </button>
 
@@ -453,7 +482,14 @@
           type="button"
           class="btn btn-light my-2"
           (click)="deleteLabOrNotes()"
+          [disabled]="isSubmitting"
         >
+          <span
+            *ngIf="isSubmitting"
+            class="spinner-border spinner-border-sm me-1"
+            role="status"
+            aria-hidden="true"
+          ></span>
           DELETE
         </button>
       </ng-template>

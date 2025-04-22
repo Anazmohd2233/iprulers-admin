@@ -61,7 +61,10 @@
 
               <div class="row mt-1">
                 <div class="col d-flex justify-content-center">
-                  <button class="btn btn-primary" type="submit">
+                  <button class="btn btn-primary" type="submit"  [disabled]="isSubmitting">
+                    <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+                    aria-hidden="true"></span>
+                    
                     Submit Changes
                   </button>
                 </div>
