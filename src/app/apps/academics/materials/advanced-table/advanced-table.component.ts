@@ -337,9 +337,7 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
 
             console.error("Error creating material:", error);
           },
-          complete: () => {
-            console.log("material created successfully!...");
-          },
+        
         });
       }
     } else {

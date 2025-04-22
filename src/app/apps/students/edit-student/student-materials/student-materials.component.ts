@@ -26,7 +26,9 @@ export class StudentMaterialsComponent implements OnInit {
   materialList: any[] = [];
   studentMaterial: any[] = [];
   isSubmitting: boolean = false;
-
+  selectedCategory: any = null; // null = add mode
+  addMaterialForm!: FormGroup;
+  docs: File | null = null;
 
   page: number = 1;
 
@@ -62,26 +64,29 @@ export class StudentMaterialsComponent implements OnInit {
       this.fetchStudentDetails(this.studentID);
       this.getMaterials();
     }
+
+    this.addMaterialForm = this.fb.group({
+      title: ["", Validators.required], // Material Title (Matches formControlName)
+      type: [null, Validators.required], // File Upload Validation
+      link: [""], // File Upload Validation
+    });
   }
 
-  assignMaterial(): void {
-    if (this.assignMaterialForm.valid) {
+  assignMaterial(material_id:any): void {
+    if (material_id) {
       this.isSubmitting = true;
 
       const formData = new FormData();
 
       // Add scalar values
-      formData.append("material", this.assignMaterialForm.value.material);
+      formData.append("material", material_id);
       formData.append("id", this.studentID);
 
       this.studentService.assignCourseOrMaterials(formData).subscribe({
         next: (response) => {
-          console.log("response of assign materials - ", response);
           if (response.success) {
             this.isSubmitting = false;
-
             this.fetchStudentDetails(this.studentID);
-
             this.toaster.success("Success", response.message);
             this.assignMaterialForm.reset();
             this.modalRef.close();
@@ -101,10 +106,9 @@ export class StudentMaterialsComponent implements OnInit {
 
           console.error("Error assign materials:", error);
         },
-
       });
     } else {
-      console.log("material adding form not validated");
+      this.toaster.warn("Alert", 'Something went wrong...!');
     }
   }
 
@@ -185,13 +189,100 @@ export class StudentMaterialsComponent implements OnInit {
             this.toaster.warn("Alert", response.message);
           }
         },
-        error: () => {this.toaster.error("Error", "Something went wrong.");
+        error: () => {
+          this.toaster.error("Error", "Something went wrong.");
           this.isSubmitting = false;
-
         },
       });
     } else {
       this.toaster.warn("Alert", "Enexpected error occured , contact admin");
+    }
+  }
+
+  open(content: TemplateRef<NgbModal>): void {
+    this.addMaterialForm.reset();
+    this.docs = null;
+
+    this.modalRef = this.modalService.open(content, { scrollable: true });
+  }
+
+  getSize(f: File) {
+    const bytes = f.size;
+    if (bytes === 0) {
+      return "0 Bytes";
+    }
+    const k = 1024;
+    const dm = 2;
+    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
+  }
+
+  getPreviewUrlDoc(f: File) {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      encodeURI(URL.createObjectURL(f))
+    );
+  }
+  onRemoveDoc(event: any) {
+    this.docs = null;
+  }
+
+  onSelectDoc(event: any) {
+    if (event.addedFiles && event.addedFiles.length > 0) {
+      this.docs = event.addedFiles[0]; // Store only the first selected file
+    }
+  }
+
+  createMaterial(): void {
+    if (this.addMaterialForm.valid) {
+      this.isSubmitting = true;
+
+      const formData = new FormData();
+
+      const { title, type, link } = this.addMaterialForm.value;
+
+      formData.append("title", title);
+      formData.append("type", type);
+      formData.append("id", this.studentID);
+
+
+      if (type === "link") {
+        formData.append("link", link);
+      }
+
+      if (type === "pdf" && this.docs) {
+        formData.append("material_document", this.docs);
+      }
+
+      this.materialService.createMaterial(formData).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.assignMaterial(response.data.id);
+            this.isSubmitting = false;
+            this.docs = null;
+            this.addMaterialForm.reset();
+            this.modalRef.close();
+            // this.toaster.success("Success", response.message);
+          } else {
+            this.isSubmitting = false;
+
+            this.toaster.warn("Alert", response.message);
+
+          }
+        },
+        error: (error) => {
+          this.isSubmitting = false;
+
+          this.toaster.error("Failed", "Something went wrong.");
+
+        },
+      
+      });
+    } else {
+      this.toaster.warn("Alert", "Fill all mandaratory fields!!");
+
+      console.log("material form not validated");
     }
   }
 }
