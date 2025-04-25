@@ -1,0 +1,249 @@
+<ng-template #addVideoModal let-modal>
+    <div class="modal-body">
+      <form
+        class="ps-3 pe-3 needs-validation"
+        [formGroup]="addVideoForm"
+        (ngSubmit)="uploadVideo()"
+        #validate1="ngForm"
+      >
+        <h4 class="header-title m-t-0 mb-2">
+          {{ selectedVideo ? "Edit Video" : "Add New Video" }}
+        </h4>
+  
+        <div class="mb-3">
+          <label class="form-label" for="validationCustom01"
+            >Video Title</label
+          >
+          <input
+            type="text"
+            class="form-control"
+            id="validationCustom01"
+            placeholder="Video Title"
+            required
+            formControlName="name"
+            [ngClass]="{
+              'is-valid': validate1.submitted && form1.name.valid,
+              'is-invalid': validate1.submitted && form1.name.invalid
+            }"
+          />
+          <div
+            *ngIf="validate1.submitted && form1.name.valid"
+            class="valid-feedback"
+          >
+            Looks good!
+          </div>
+  
+          <div
+            *ngIf="validate1.submitted && form1.name.invalid"
+            class="invalid-feedback"
+          >
+            Please enter video name.
+          </div>
+        </div>
+
+
+        <div class="mb-3">
+            <label class="form-label" for="validationCustom01"
+              >Description</label
+            >
+            <input
+              type="text"
+              class="form-control"
+              id="validationCustom01"
+              placeholder="Description"
+              required
+              formControlName="description"
+              [ngClass]="{
+                'is-valid': validate1.submitted && form1.description.valid,
+                'is-invalid': validate1.submitted && form1.description.invalid
+              }"
+            />
+            <div
+              *ngIf="validate1.submitted && form1.description.valid"
+              class="valid-feedback"
+            >
+              Looks good!
+            </div>
+    
+            <div
+              *ngIf="validate1.submitted && form1.description.invalid"
+              class="invalid-feedback"
+            >
+              Please enter description.
+            </div>
+          </div>
+  
+        <br />
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="header-title m-t-0">Upload Video</h4>
+  
+                <form #fileUpload="ngForm">
+                  <ngx-dropzone
+                    [multiple]="false"
+                    (change)="onSelectImage($event)"
+                    class="dropzone"
+                  >
+                    <ngx-dropzone-label>
+                      <i class="h1 text-muted dripicons-cloud-upload"></i>
+                      <h3>Drop files here or click to upload.</h3>
+                    </ngx-dropzone-label>
+                  </ngx-dropzone>
+  
+                  <div
+                    *ngIf="selectedVideo"
+                    class="text-muted mt-2 small fst-italic"
+                  >
+                    Leave the video field blank if you do not want to update the
+                    video.
+                  </div>
+  
+                  <!-- Preview -->
+                  <div class="dropzone-previews mt-3" id="file-previews">
+                    <!-- file preview template -->
+                    <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
+                    <div id="uploadPreviewTemplate" *ngIf="files">
+                      <div class="card mt-1 mb-0 shadow-none border">
+                        <div class="p-2">
+                          <div class="row align-items-center">
+                       
+                            <div class="col ps-0">
+                              <a
+                                href="javascript:void(0);"
+                                class="text-muted fw-bold"
+                                >{{ files.name }}</a
+                              >
+                              <p class="mb-0">{{ getSize(files) }}</p>
+                            </div>
+                            <div class="col-auto">
+                              <!-- Button -->
+                              <a
+                                href="javascript:void(0)"
+                                class="btn btn-link btn-lg text-muted"
+                                (click)="onRemoveFile($event)"
+                              >
+                                <i class="dripicons-cross"></i>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- end file preview template -->
+                  </div>
+                </form>
+              </div>
+              <!-- end card-body -->
+            </div>
+            <!-- end card-->
+          </div>
+          <!-- end col-->
+        </div>
+  
+        <div class="mb-3 text-center">
+          <button class="btn btn-primary" type="submit"  [disabled]="isSubmitting">
+            <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+            aria-hidden="true"></span>
+            {{ selectedVideo ? "Update Video" : "Add Video" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+
+
+  <ng-template #sessionVideoModal let-modal>
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="card">
+          <div class="card-body">
+            <h4 class="header-title mb-2">{{ selectedItem?.name }}</h4>
+  
+            <div class="ratio ratio-16x9" *ngIf="embedUrl">
+              <iframe
+                [src]="embedUrl"
+                frameborder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  
+
+<!-- page title -->
+<h4 class="header-title">VIDEOS</h4>
+
+
+<!-- end page title -->
+<div class="col-xl-12">
+    <div class="text-xl-end mt-xl-0 mt-2">
+      <button
+        type="button"
+        class="btn btn-primary mb-2 me-2"
+        (click)="open(addVideoModal)"
+      >
+        Add New Video
+      </button>
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col-md-6 col-xxl-3 mb-3" *ngFor="let video of videos">
+      <div class="card h-100 d-flex flex-column border border-dark mb-1">
+        <div class="card-body d-flex flex-column">
+          <div class="text-center">
+            <!-- Image Container -->
+  
+            <!-- Image Container -->
+            <div
+              class="avatar-md bg-success rounded mx-auto d-flex align-items-center justify-content-center"
+              (click)="openVideo(sessionVideoModal, video)"
+            >
+              <span class="avatar-title bg-success rounded">
+                video
+              </span>
+            </div>
+  
+            <!-- Course Name (Fixed Height) -->
+            <h4 class="course-title mt-2 my-1">{{ video.name }}</h4>
+  
+            <!-- <hr class="bg-dark-lighten my-3" /> -->
+
+            <div class="mt-auto d-flex gap-2">
+                <!-- <button
+                  class="btn w-50 btn-primary"
+                  placement="top"
+                  (click)="open(addVideoModal, video)"
+                > -->
+
+                 <button
+                  class="btn w-50 btn-primary"
+                  placement="top"
+                >
+                  <p class="mb-0 text-center">Edit</p>
+                </button>
+                <button
+                  class="btn w-50 btn-danger"
+                  placement="top"
+                >
+                  <p class="mb-0 text-center">Delete</p>
+                </button>
+              </div>
+  
+        
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="videos.length === 0" class="text-center text-muted mt-3">
+    <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
+    No videos found.
+  </div>

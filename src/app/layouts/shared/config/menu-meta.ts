@@ -15,6 +15,8 @@ export const MENU: MenuItem[] = [
         ]
     },
     { key: 'students', label: 'Students', isTitle: false, icon: 'uil-briefcase', link: 'admin/students' },
+    { key: 'videos', label: 'Videos', isTitle: false, icon: 'uil-briefcase', link: 'admin/videos' },
+
 
 
 

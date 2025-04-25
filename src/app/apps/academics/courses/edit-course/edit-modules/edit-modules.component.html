@@ -63,65 +63,18 @@
         ></ngb-timepicker>
       </div>
 
-      <div class="row" *ngIf="!selectedSession">
-        <div class="col-12">
-          <div class="card">
-            <div class="card-body">
-              <h4 class="header-title m-t-0">Upload Video</h4>
 
-              <form #fileUpload="ngForm">
-                <ngx-dropzone
-                  [multiple]="false"
-                  (change)="onSelectImage($event)"
-                  class="dropzone"
-                >
-                  <ngx-dropzone-label>
-                    <i class="h1 text-muted dripicons-cloud-upload"></i>
-                    <h3>Drop files here or click to upload.</h3>
-                  </ngx-dropzone-label>
-                </ngx-dropzone>
+      <div class="mb-3">
+        <label class="form-label">Video</label>
 
-                <!-- Preview -->
-                <div class="dropzone-previews mt-3" id="file-previews">
-                  <!-- file preview template -->
-                  <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
-                  <div id="uploadPreviewTemplate" *ngIf="files">
-                    <div class="card mt-1 mb-0 shadow-none border">
-                      <div class="p-2">
-                        <div class="row align-items-center">
-                          <div class="col ps-0">
-                            <a
-                              href="javascript:void(0);"
-                              class="text-muted fw-bold"
-                              >{{ files.name }}</a
-                            >
-                            <p class="mb-0">{{ getSize(files) }}</p>
-                          </div>
-                          <div class="col-auto">
-                            <!-- Button -->
-                            <a
-                              href="javascript:void(0)"
-                              class="btn btn-link btn-lg text-muted"
-                              (click)="onRemoveFile($event)"
-                            >
-                              <i class="dripicons-cross"></i>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- end file preview template -->
-                </div>
-              </form>
-            </div>
-            <!-- end card-body -->
-          </div>
-          <!-- end card-->
-        </div>
-        <!-- end col-->
+        <select class="form-control" formControlName="video">
+          <option value="" disabled selected>Select Video</option>
+          <option *ngFor="let video of videos" [value]="video.id">
+            {{ video.name }}
+          </option>
+        </select>
       </div>
-
+ 
       <div class="mb-3 text-center">
         <button class="btn btn-primary" type="submit"  [disabled]="isSubmitting">
           <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
@@ -133,7 +86,6 @@
   </div>
 </ng-template>
 
-
 <ng-template #sessionVideoModal let-modal>
   <div class="row">
     <div class="col-xl-12">
@@ -141,22 +93,19 @@
         <div class="card-body">
           <h4 class="header-title mb-2">{{ selectedItem?.session_title }}</h4>
 
-          <div class="ratio ratio-16x9">
-            <video
-              width="100%"
-              height="100%"
-              controls
-              *ngIf="selectedItem?.url">
-              <source [src]="selectedItem.url" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+          <div class="ratio ratio-16x9" *ngIf="embedUrl">
+            <iframe
+              [src]="embedUrl"
+              frameborder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowfullscreen>
+            </iframe>
           </div>
         </div>
       </div>
     </div>
   </div>
 </ng-template>
-
 
 <ng-template #alertModalSession let-modal>
   <div class="modal-body p-4">

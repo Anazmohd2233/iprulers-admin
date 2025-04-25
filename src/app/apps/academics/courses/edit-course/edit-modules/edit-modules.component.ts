@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, TemplateRef } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { DomSanitizer } from "@angular/platform-browser";
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 import {
   NgbModal,
@@ -10,6 +10,7 @@ import {
 import { SortableOptions } from "sortablejs";
 import { ToastUtilService } from "src/app/apps/toaster/toasterUtilService";
 import { CourseService } from "src/app/core/service/course/course.service";
+import { VideosService } from "src/app/core/service/videos/videos.service";
 
 
 @Component({
@@ -37,6 +38,10 @@ export class EditModulesComponent implements OnInit {
   collapsed4: boolean = true;
   time!: NgbTimeStruct;
   isSubmitting: boolean = false;
+  videos: any[] = [];
+  page:number = 1;
+
+
 
 
   sortableOptionsMap: { [moduleId: number]: SortableOptions } = {};
@@ -48,6 +53,9 @@ export class EditModulesComponent implements OnInit {
     private sanitizer: DomSanitizer,
     private toaster: ToastUtilService,
     private courseService: CourseService,
+    private videoService: VideosService,
+
+    
   ) {
 
     // this.options = {
@@ -60,6 +68,8 @@ export class EditModulesComponent implements OnInit {
 
   ngOnInit(): void {
     this.getModule();
+    this.getVideos();
+
     this.time = { hour: 0, minute: 0, second: 0 };
 
     this.addModuleForm = this.fb.group({
@@ -69,6 +79,8 @@ export class EditModulesComponent implements OnInit {
     this.addSessionForm = this.fb.group({
       session_title: ["", Validators.required],
       duration: this.fb.control({ hour: 0, minute: 0, second: 0 }),
+      video: ["", Validators.required],
+
     });
 
 
@@ -78,6 +90,25 @@ export class EditModulesComponent implements OnInit {
     group: "container2",
     handle: ".dragula-handle",
   };
+
+
+  
+  private getVideos(): void {
+    this.videoService.getVideos(this.page).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.videos = response.data.video;
+
+        } else {
+          console.error("Failed to load videos:", response.message);
+        }
+      },
+      error: (error) => {
+        console.error("API error:", error);
+      },
+  
+    });
+  }
   postChangesToServer(event:any,module:any):void{
 
     console.log('module',module)
@@ -176,7 +207,6 @@ export class EditModulesComponent implements OnInit {
       const formData = new FormData();
 
       const data = this.addSessionForm.value;
-      console.log("durastion***", data.duration);
       if (data.duration) {
         const hour = data.duration.hour;
         const minute = data.duration.minute;
@@ -196,10 +226,9 @@ export class EditModulesComponent implements OnInit {
       }
 
       formData.append("session_title", data.session_title);
+      formData.append("video", data.video);
 
-      if (this.files) {
-        formData.append("video", this.files);
-      }
+
 
       if (!this.selectedSession) {
         this.courseService.createSession(formData).subscribe({
@@ -281,6 +310,8 @@ export class EditModulesComponent implements OnInit {
           minute: +this.selectedSession.minute,
           second: +this.selectedSession.seconds,
         },
+        video: this.selectedSession.videos.id,
+
       });
     } else {
       this.addSessionForm.reset();
@@ -288,39 +319,7 @@ export class EditModulesComponent implements OnInit {
     this.modalRef = this.modalService.open(content, { scrollable: true });
   }
 
-  onSelectImage(event: any): void {
-    if (event.addedFiles && event.addedFiles.length > 0) {
-      this.files = event.addedFiles[0]; // Store only the first selected file
-    }
-  }
-
-  onRemoveFile(event: any) {
-    // this.files.splice(this.files.indexOf(event), 1);
-    this.files = null; // Clear the file
-  }
-
-  getSize(f: File) {
-    const bytes = f.size;
-    if (bytes === 0) {
-      return "0 Bytes";
-    }
-    const k = 1024;
-    const dm = 2;
-    const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i];
-  }
-
-  /**
-   * returns preview url of uploaded file
-   */
-  getPreviewUrlImg(f: File) {
-    return this.sanitizer.bypassSecurityTrustResourceUrl(
-      encodeURI(URL.createObjectURL(f))
-    );
-  }
-
+ 
   private getModule(): void {
     this.courseService.getModule(this.courseID).subscribe({
       next: (response) => {
@@ -462,5 +461,11 @@ export class EditModulesComponent implements OnInit {
     this.selectedItem = item || null;
     this.modalRef = this.modalService.open(content, { scrollable: false });
   }
-  
+  get embedUrl(): SafeResourceUrl | null {
+    if (!this.selectedItem?.videos?.vimeo_url) return null;
+
+    const videoId = this.selectedItem?.videos?.vimeo_url.split('/').pop();
+    const embedLink = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(embedLink);
+  }
 }
