@@ -1,10 +1,11 @@
-import { Component, OnInit, TemplateRef } from "@angular/core";
+import { Component, OnInit, SimpleChanges, TemplateRef } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
 import { ToastUtilService } from "../../toaster/toasterUtilService";
 import { CategoryService } from "src/app/core/service/category/category.service";
 import { VideosService } from "src/app/core/service/videos/videos.service";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import { AdvancedTableServices } from "./advanced-table-service.service";
 
 @Component({
   selector: "app-video-upload",
@@ -19,6 +20,8 @@ export class VideoUploadComponent implements OnInit {
   page: number = 1;
   videos: any[] = [];
   selectedItem: any = null; // null = add mode
+pagination: boolean = true;
+  
 
 
   addVideoForm!: FormGroup;
@@ -28,7 +31,9 @@ export class VideoUploadComponent implements OnInit {
     private toaster: ToastUtilService,
     private videoService: VideosService,
     private sanitizer: DomSanitizer,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+        public service: AdvancedTableServices,
+    
   ) {}
 
   ngOnInit(): void {
@@ -41,9 +46,32 @@ export class VideoUploadComponent implements OnInit {
     });
   }
 
+    ngOnChanges(changes: SimpleChanges): void {
+      // this.paginate();
+  
+      if (changes["selectedVideo"] || changes["service.page"]) {
+        this.paginate();
+      }
+    }
+
   get form1() {
     return this.addVideoForm.controls;
   }
+
+  paginate(): void {
+      this.getVideos();
+  }
+
+  searchData(searchTerm: string): void {
+    console.log("searchTerm - " + searchTerm);
+    if (searchTerm === "") {
+      this.getVideos();
+      console.log("no search terms");
+    } else {
+      this.getVideos(searchTerm);
+    }  }
+
+
 
   open(content: TemplateRef<NgbModal>, category?: any): void {
     this.selectedVideo = category || null;
@@ -130,11 +158,26 @@ export class VideoUploadComponent implements OnInit {
     }
   }
 
-  private getVideos(): void {
-    this.videoService.getVideos(this.page).subscribe({
+  private getVideos(search?:any): void {
+    this.videoService.getVideos(this.service.page,search).subscribe({
       next: (response) => {
         if (response.success) {
           this.videos = response.data.video;
+
+
+          this.service.totalRecords = response.data.total_count; // Set total records
+          this.service.pageSize = response.data.limit; // Ensure pageSize matches API limit
+
+          // Set start and end index
+          this.service.startIndex =
+            this.service.totalRecords > 0
+              ? (this.service.page - 1) * this.service.pageSize + 1
+              : 0;
+
+          this.service.endIndex = Math.min(
+            this.service.startIndex + this.service.pageSize - 1,
+            this.service.totalRecords
+          );
 
         } else {
           console.error("Failed to load videos:", response.message);

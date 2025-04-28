@@ -112,8 +112,9 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
    * sets pagination configurations
    */
   paginate(): void {
+    console.log('this.service.searchTerm',this.service.searchTerm)
     if (this.tableName === "students") {
-      this._fetchData();
+      this._fetchData(this.service.searchTerm);
     }
   }
 
@@ -199,12 +200,12 @@ export class AdvancedTableComponent implements OnInit, AfterViewChecked {
     this.router.navigate([`admin/student`, record.id]);
   }
 
-  _fetchData(): void {
+  _fetchData(search?:any): void {
     // this.records = tableData;
 
-    this.studentService.getStudent(this.service.page).subscribe({
+    this.studentService.getStudent(this.service.page,search).subscribe({
       next: (response) => {
-        console.log("response of student list - ", response);
+        console.log("response of student list from table component - ", response);
         if (response.success) {
           this.tableData = response.data.students;
           this.service.totalRecords = response.data.total_count; // Set total records

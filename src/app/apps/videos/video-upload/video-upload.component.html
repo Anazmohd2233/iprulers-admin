@@ -72,6 +72,76 @@
               Please enter description.
             </div>
           </div>
+
+
+          <br />
+          <div class="row" *ngIf="!selectedVideo">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="header-title m-t-0">Upload Video</h4>
+    
+                  <form #fileUpload="ngForm">
+                    <ngx-dropzone
+                      [multiple]="false"
+                      (change)="onSelectImage($event)"
+                      class="dropzone"
+                    >
+                      <ngx-dropzone-label>
+                        <i class="h1 text-muted dripicons-cloud-upload"></i>
+                        <h3>Drop files here or click to upload.</h3>
+                      </ngx-dropzone-label>
+                    </ngx-dropzone>
+    
+                    <div
+                      *ngIf="selectedVideo"
+                      class="text-muted mt-2 small fst-italic"
+                    >
+                      Leave the video field blank if you do not want to update the
+                      video.
+                    </div>
+    
+                    <!-- Preview -->
+                    <div class="dropzone-previews mt-3" id="file-previews">
+                      <!-- file preview template -->
+                      <!-- <div id="uploadPreviewTemplate" *ngFor="let f of files"> -->
+                      <div id="uploadPreviewTemplate" *ngIf="files">
+                        <div class="card mt-1 mb-0 shadow-none border">
+                          <div class="p-2">
+                            <div class="row align-items-center">
+                         
+                              <div class="col ps-0">
+                                <a
+                                  href="javascript:void(0);"
+                                  class="text-muted fw-bold"
+                                  >{{ files.name }}</a
+                                >
+                                <p class="mb-0">{{ getSize(files) }}</p>
+                              </div>
+                              <div class="col-auto">
+                                <!-- Button -->
+                                <a
+                                  href="javascript:void(0)"
+                                  class="btn btn-link btn-lg text-muted"
+                                  (click)="onRemoveFile($event)"
+                                >
+                                  <i class="dripicons-cross"></i>
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- end file preview template -->
+                    </div>
+                  </form>
+                </div>
+                <!-- end card-body -->
+              </div>
+              <!-- end card-->
+            </div>
+            <!-- end col-->
+          </div>
   
 
   
@@ -140,6 +210,20 @@
 <!-- page title -->
 <h4 class="header-title">VIDEOS</h4>
 
+<div class="text-center text-sm-start">
+  <label class="d-inline"
+    >Search:
+    <input
+      type="text"
+      name="searchTerm"
+      class="form-control form-control-sm d-inline w-auto ms-1"
+      aria-controls="advanced-table"
+      [(ngModel)]="service.searchTerm"
+      (ngModelChange)="searchData(this.service.searchTerm)"
+    />
+  </label>
+
+</div>
 
 <!-- end page title -->
 <div class="col-xl-12">
@@ -211,4 +295,23 @@
   <div *ngIf="videos.length === 0" class="text-center text-muted mt-3">
     <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
     No videos found.
+  </div>
+
+  <div class="d-flex flex-wrap justify-content-between p-2" *ngIf="pagination">
+    <div>
+      Showing {{ service.startIndex }} to {{ service.endIndex }} of
+      {{ service.totalRecords }} entries
+    </div>
+    <ngb-pagination
+      class="pagination-rounded"
+      [collectionSize]="service.totalRecords"
+      [(page)]="service.page"
+      [maxSize]="3"
+      [rotate]="true"
+      [pageSize]="service.pageSize"
+      (pageChange)="paginate()"
+    >
+    </ngb-pagination>
+
+    
   </div>

@@ -20,9 +20,14 @@ export class StudentService {
     return this.http.post<any>(apiUrl, formdata);
   }
 
-  getStudent(page: any): Observable<any> {
+  getStudent(page: any,search?:any): Observable<any> {
+    let params: any = {};
+
+    if (search) {
+      params.search = search;
+    }
     const url = `${this.baseUrl}/admin/student/list/${page}`;
-    return this.http.get<any>(url);
+    return this.http.get<any>(url, { params: params });
   }
 
   getStudentById(id: any): Observable<any> {

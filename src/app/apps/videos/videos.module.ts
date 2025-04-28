@@ -4,6 +4,7 @@ import { VideoUploadComponent } from './video-upload/video-upload.component';
 import { VideoRoutingModule } from './video-routing.module';
 import { NgxDropzoneModule } from 'ngx-dropzone';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -16,7 +17,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     VideoRoutingModule,
         NgxDropzoneModule,
           FormsModule,
-          ReactiveFormsModule
+          ReactiveFormsModule,
+              NgbPaginationModule,
+          
 
         
     

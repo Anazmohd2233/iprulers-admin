@@ -22,9 +22,14 @@ export class VideosService {
     return this.http.post<any>(apiUrl, formdata);
   }
 
-  getVideos(page: any): Observable<any> {
+  getVideos(page: any,search?:string): Observable<any> {
+    let params: any = {};
+
+    if (search) {
+      params.search = search;
+    }
     const url = `${this.baseUrl}/admin/vimeo/list/${page}`;
-    return this.http.get<any>(url);
+    return this.http.get<any>(url, { params: params });
   }
 
   deleteVideo(id: any) {

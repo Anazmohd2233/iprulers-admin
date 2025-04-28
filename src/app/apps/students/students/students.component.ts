@@ -42,8 +42,7 @@ export class StudentsComponent implements OnInit {
   constructor(
     private userService: UserProfileService,
     private studentService: StudentService,
-        private toaster: ToastUtilService
-    
+    private toaster: ToastUtilService
   ) {}
 
   ngOnInit(): void {
@@ -59,15 +58,17 @@ export class StudentsComponent implements OnInit {
    * fetches table records
    */
 
-  changeStatus(event: { status: any; id: any }):void{
-
+  changeStatus(event: { status: any; id: any }): void {
     const formData = new FormData();
     formData.append("status", event.status);
-    this.studentService.updateStudent(formData,event.id).subscribe({
+    this.studentService.updateStudent(formData, event.id).subscribe({
       next: (response) => {
         if (response.success) {
           this.getStudent();
-          this.toaster.success("Success", "Student status changed succesfully..!");
+          this.toaster.success(
+            "Success",
+            "Student status changed succesfully..!"
+          );
         } else {
           this.toaster.warn("Failed", "Student Status Updated Failed.");
           console.error("Failed to update Student:", response.message);
@@ -78,16 +79,16 @@ export class StudentsComponent implements OnInit {
 
         console.error("Error updating Student:", error);
       },
-  
     });
-
   }
-  getStudent(): void {
+  getStudent(search?: any): void {
     // this.records = tableData;
-
-    this.studentService.getStudent(this.page).subscribe({
+    this.studentService.getStudent(this.page, search).subscribe({
       next: (response) => {
+        console.log("response of student list from student component - ", response);
+
         if (response.success) {
+
           this.studentList = response.data.students;
           this.records = this.studentList;
           this.totalCount = response.data.total_count;
@@ -101,7 +102,7 @@ export class StudentsComponent implements OnInit {
       },
       complete: () => {
         // Optionally handle the completion logic here
-        console.log("Admin list fetch completed.");
+        console.log("Student list fetch completed.");
       },
     });
   }
@@ -127,7 +128,7 @@ export class StudentsComponent implements OnInit {
         name: "status",
         label: "Status",
         // formatter: (record: Admin) => record.status==1?'Active':'Inactive',
-        formatter: () => '',
+        formatter: () => "",
         width: 300,
       },
 
@@ -170,12 +171,12 @@ export class StudentsComponent implements OnInit {
    * @param tables Table field value fetch
    * @param term Search the value
    */
-  matches(tables: Admin, term: string) {
+  matches(tables: any, term: string) {
     return (
       tables.name.toLowerCase().includes(term) ||
-      tables.phone.toLowerCase().includes(term) ||
-      tables.email.toLowerCase().includes(term) ||
-      String(tables.gender).includes(term)
+      // tables.phone.toLowerCase().includes(term) ||
+      tables.email.toLowerCase().includes(term)
+      // String(tables.gender).includes(term)
     );
     // || tables.date.toLowerCase().includes(term)
     // || tables.salary.toLowerCase().includes(term);
@@ -185,16 +186,19 @@ export class StudentsComponent implements OnInit {
    * Search Method
    */
   searchData(searchTerm: string): void {
+    console.log("searchTerm - " + searchTerm);
     if (searchTerm === "") {
       this.getStudent();
+      console.log("no search terms");
     } else {
-      let updatedData = this.studentList;
+      this.getStudent(searchTerm);
 
+      //let updatedData = this.studentList;
       //  filter
-      updatedData = updatedData.filter((record) =>
-        this.matches(record, searchTerm)
-      );
-      this.records = updatedData;
+      // updatedData = updatedData.filter((record) =>
+      //   this.matches(record, searchTerm)
+      // );
+      // this.records = updatedData;
     }
   }
 }
