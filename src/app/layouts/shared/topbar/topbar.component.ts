@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 
 // services
@@ -16,6 +16,7 @@ import { SearchResultItem, SearchUserItem } from '../../shared/models/search.mod
 
 // layout constants
 import { LayoutType, SideBarWidth } from '../models/layout.model';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-topbar',
@@ -38,6 +39,10 @@ export class TopbarComponent implements OnInit {
   searchUsers: SearchUserItem[] = [];
   loggedInUser: User | null = null;
   topnavCollapsed: boolean = false;
+    modalRef!: NgbModalRef;
+    isSubmitting: boolean = false;
+
+  
 
   // output events
   @Output() settingsButtonClicked = new EventEmitter<boolean>();
@@ -45,7 +50,9 @@ export class TopbarComponent implements OnInit {
   constructor (
     private authService: AuthenticationService,
     private eventService: EventService,
-    public router: Router
+    public router: Router,
+    private modalService: NgbModal,
+
   ) { }
 
   ngOnInit(): void {
@@ -327,5 +334,25 @@ export class TopbarComponent implements OnInit {
 
 
   }
+
+    openAlertModal(
+      content: TemplateRef<NgbModal>,
+      variant: string
+    ): void {
+      this.modalRef = this.modalService.open(content, {
+        size: "sm",
+        modalDialogClass: "modal-filled bg-" + variant,
+      });
+    }
+
+    logout() {
+      this.isSubmitting = true;
+      this.authService.logout(); 
+      this.isSubmitting = false;
+      this.modalRef.close();
+      this.router.navigate(['/account/login']);
+
+    }
+    
 
 }

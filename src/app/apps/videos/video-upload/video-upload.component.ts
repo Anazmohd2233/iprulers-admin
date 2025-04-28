@@ -193,4 +193,43 @@ export class VideoUploadComponent implements OnInit {
     const embedLink = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedLink);
   }
+
+  deleteVideo(): void {
+    this.isSubmitting = true;
+
+    if (this.selectedVideo) {
+      this.videoService.deleteVideo(this.selectedVideo.id).subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.isSubmitting = false;
+
+            this.toaster.success("Deleted", response.message);
+            this.getVideos();
+            this.modalRef.close();
+          } else {
+            this.isSubmitting = false;
+
+            this.toaster.warn("Alert", response.message);
+          }
+        },
+        error: () => {this.toaster.error("Error", "Something went wrong.");
+          this.isSubmitting = false;
+
+        }
+      });
+    } else {
+      this.toaster.warn("Alert", "Enexpected error occured , contact admin");
+    }
+  }
+  openAlertModal(
+    content: TemplateRef<NgbModal>,
+    variant: string,
+    category: any
+  ): void {
+    this.selectedVideo = category;
+    this.modalRef = this.modalService.open(content, {
+      size: "sm",
+      modalDialogClass: "modal-filled bg-" + variant,
+    });
+  }
 }

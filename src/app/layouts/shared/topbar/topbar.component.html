@@ -1,3 +1,31 @@
+<ng-template #alertModal let-modal>
+    <div class="modal-body p-4">
+      <div class="text-center">
+        <i class="dripicons-checkmark h1"></i>
+        <h4 class="mt-2">Are you sure you want Logout ?</h4>
+  
+        <button
+          type="button"
+          class="btn btn-light my-2 me-3"
+          (click)="modal.close('Close click')"
+        >
+          EXIT
+        </button>
+        <button
+          type="button"
+          class="btn btn-light my-2"
+          [disabled]="isSubmitting"
+          (click)="logout()"
+
+        >
+        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-1" role="status"
+        aria-hidden="true"></span>
+          LOGOUT
+        </button>
+      </div>
+    </div>
+  </ng-template>
+  
 <!-- Topbar Start -->
 <div class="navbar-custom" [class]="cssClasses">
     <div [class]="hideLogo ? '' : 'container-fluid'">
@@ -35,7 +63,7 @@
                 </div>
             </li>
 
-            <li class="dropdown notification-list topbar-dropdown"
+            <!-- <li class="dropdown notification-list topbar-dropdown"
                 [class]="layoutType!=='vertical' ? 'd-none d-lg-block' : ''" ngbDropdown placement="bottom-end">
                 <a ngbDropdownToggle class="nav-link arrow-none" id="languageDropdown" href="javascript: void(0);"
                     aria-expanded="false">
@@ -52,9 +80,9 @@
                         <span class="align-middle">{{language.name }}</span>
                     </a>
                 </div>
-            </li>
+            </li> -->
 
-            <li class="dropdown notification-list" ngbDropdown placement="bottom-end">
+            <!-- <li class="dropdown notification-list" ngbDropdown placement="bottom-end">
                 <a ngbDropdownToggle class="nav-link arrow-none" id="notificationDropdown" href="javascript: void(0);"
                     aria-expanded="false">
                     <i class="dripicons-bell noti-icon"></i>
@@ -62,7 +90,7 @@
                 </a>
                 <div ngbDropdownMenu aria-labelledby="notificationDropdown"
                     class="dropdown-menu-end dropdown-menu-animated dropdown-lg">
-                    <!-- item -->
+        
                     <div ngbDropdownItem class="noti-title px-3">
                         <h5 class="m-0">
                             <span class="float-end">
@@ -76,7 +104,7 @@
                     <ngx-simplebar style="max-height: 300px;" class="px-3">
                         <ng-container *ngFor="let item of notificationList">
                             <h5 class="text-muted font-13 fw-normal mt-0">{{item.day}}</h5>
-                            <!-- item -->
+    
                             <a href="javascript:void(0)" class=" p-0 notify-item card shadow-none mb-2" ngbDropdownItem
                                 *ngFor="let notification of item.messages"
                                 [class]="notification.isRead ? 'read-noti' : 'unread-noti'">
@@ -108,14 +136,14 @@
                             <i class="mdi mdi-dots-circle mdi-spin text-muted h3 mt-0"></i>
                         </div>
                     </ngx-simplebar>
-                    <!-- item -->
+                
                     <a ngbDropdownItem href="javascript:void(0);"
                         class="text-center text-primary notify-item border-top border-light py-2">
                         View All
                     </a>
                 </div>
-            </li>
-            <li class="dropdown notification-list d-none d-sm-inline-block" ngbDropdown>
+            </li> -->
+            <!-- <li class="dropdown notification-list d-none d-sm-inline-block" ngbDropdown>
                 <a ngbDropdownToggle class="nav-link arrow-none" id="brandDropdown" href="javascript:void(0)"
                     aria-expanded="false">
                     <i class="dripicons-view-apps noti-icon"></i>
@@ -124,7 +152,6 @@
                     class="dropdown-menu-end dropdown-menu-animated dropdown-lg p-0">
                     <div class="p-2">
                         <div class="row g-0 row-cols-3">
-                            <!-- item -->
                             <div *ngFor="let app of apps" class="col">
                                 <a ngbDropdownItem class="dropdown-icon-item" href="javascript:void(0);">
                                     <img [src]="app.logo" alt="app">
@@ -134,13 +161,14 @@
                         </div>
                     </div>
                 </div>
-            </li>
+            </li> -->
             <li class="notification-list">
-                <a class="nav-link end-bar-toggle" href="javascript:void(0);" (click)="toggleRightSidebar()">
-                    <i class="dripicons-gear noti-icon"></i>
+                <a class="nav-link end-bar-toggle" href="javascript:void(0);" (click)="openAlertModal(alertModal, 'danger')"
+                >
+                    <i class="dripicons-exit noti-icon"></i>
                 </a>
             </li>
-            <li class="dropdown notification-list" ngbDropdown>
+            <!-- <li class="dropdown notification-list" ngbDropdown>
                 <a ngbDropdownToggle class="nav-link nav-user arrow-none me-0" id="profileMenuDropdown"
                     href="javascript:void(0)" aria-expanded="false" *ngIf="loggedInUser">
                     <span class="account-user-avatar">
@@ -153,31 +181,29 @@
                 </a>
                 <div ngbDropdownMenu aria-labelledby="profileMenuDropdown"
                     class="dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
-                    <!-- item -->
                     <div ngbDropdownItem class="dropdown-header noti-title">
                         <h6 class="text-overflow m-0">Welcome !</h6>
                     </div>
-                    <!-- item -->
                     <a *ngFor="let option of profileOptions;" class="notify-item" ngbDropdownItem
                         href="javascript:void(0)" (click)="onOptionClick($event,option.redirectTo)">
                         <i class="{{option.icon}} me-1"></i>
                         <span style="cursor: pointer;">{{option.label}}</span>
                     </a>
                 </div>
-            </li>
+            </li> -->
         </ul>
 
-
+<!-- 
         <button class="button-menu-mobile open-left d-none d-md-block" (click)="toggleSidebarWidth()"
             *ngIf="layoutType==='vertical' || layoutType==='full'">
             <i class="mdi mdi-menu open-left-icon"></i>
-        </button>
+        </button> -->
 
         <!-- mobile menu toggle -->
-        <button class="button-menu-mobile open-left disable-btn d-md-none" (click)="toggleMobileMenu($event)"
+        <!-- <button class="button-menu-mobile open-left disable-btn d-md-none" (click)="toggleMobileMenu($event)"
             *ngIf="layoutType==='vertical' || layoutType==='full'">
             <i class="mdi mdi-menu open-left-icon"></i>
-        </button>
+        </button> -->
 
 
         <a class="navbar-toggle open-left" [ngClass]="{'open': topnavCollapsed}" (click)="toggleMobileMenu($event)"

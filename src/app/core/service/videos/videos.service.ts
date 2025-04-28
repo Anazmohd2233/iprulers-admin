@@ -26,4 +26,9 @@ export class VideosService {
     const url = `${this.baseUrl}/admin/vimeo/list/${page}`;
     return this.http.get<any>(url);
   }
+
+  deleteVideo(id: any) {
+    const apiUrl = `${this.baseUrl}/admin/vimeo/delete/${id}`;
+    return this.http.delete<any>(apiUrl);
+  }
 }
