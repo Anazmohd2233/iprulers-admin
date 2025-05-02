@@ -94,7 +94,7 @@ export class EditModulesComponent implements OnInit {
 
   
   private getVideos(): void {
-    this.videoService.getVideos(this.page).subscribe({
+    this.videoService.getVideos('all').subscribe({
       next: (response) => {
         if (response.success) {
           this.videos = response.data.video;
