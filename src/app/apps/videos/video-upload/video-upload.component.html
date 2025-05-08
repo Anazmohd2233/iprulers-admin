@@ -73,6 +73,22 @@
             </div>
           </div>
 
+          <div class="mb-3">
+            <button type="button" class="btn btn-primary" (click)="showExtraInput = !showExtraInput">
+              {{ showExtraInput ? 'Hide Link' : 'Add Link' }}
+            </button>
+          </div>
+          
+          <div class="mb-3" *ngIf="showExtraInput">
+            <label class="form-label">Video Link</label>
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Enter Link Here"
+              formControlName="link"
+            />
+          </div>
+
 
           <br />
           <div class="row" *ngIf="!selectedVideo">
@@ -143,7 +159,10 @@
             <!-- end col-->
           </div>
   
+          <!-- <p>
+            <ngb-progressbar *ngIf="uploadProgress > 0"  [showValue]="true" type="success" [value]="uploadProgress"></ngb-progressbar>
 
+        </p> -->
   
         <div class="mb-3 text-center">
           <button class="btn btn-primary" type="submit"  [disabled]="isSubmitting">

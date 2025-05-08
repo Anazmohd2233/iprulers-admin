@@ -20,9 +20,8 @@ export class VideoUploadComponent implements OnInit {
   page: number = 1;
   videos: any[] = [];
   selectedItem: any = null; // null = add mode
-pagination: boolean = true;
-  
-
+  pagination: boolean = true;
+  showExtraInput = false;
 
   addVideoForm!: FormGroup;
 
@@ -32,34 +31,33 @@ pagination: boolean = true;
     private videoService: VideosService,
     private sanitizer: DomSanitizer,
     private fb: FormBuilder,
-        public service: AdvancedTableServices,
-    
+    public service: AdvancedTableServices
   ) {}
 
   ngOnInit(): void {
-
     this.getVideos();
 
     this.addVideoForm = this.fb.group({
       name: ["", Validators.required],
       description: ["", Validators.required],
+      link: [""],
     });
   }
 
-    ngOnChanges(changes: SimpleChanges): void {
-      // this.paginate();
-  
-      if (changes["selectedVideo"] || changes["service.page"]) {
-        this.paginate();
-      }
+  ngOnChanges(changes: SimpleChanges): void {
+    // this.paginate();
+
+    if (changes["selectedVideo"] || changes["service.page"]) {
+      this.paginate();
     }
+  }
 
   get form1() {
     return this.addVideoForm.controls;
   }
 
   paginate(): void {
-      this.getVideos();
+    this.getVideos();
   }
 
   searchData(searchTerm: string): void {
@@ -69,9 +67,8 @@ pagination: boolean = true;
       console.log("no search terms");
     } else {
       this.getVideos(searchTerm);
-    }  }
-
-
+    }
+  }
 
   open(content: TemplateRef<NgbModal>, category?: any): void {
     this.selectedVideo = category || null;
@@ -80,7 +77,7 @@ pagination: boolean = true;
       this.addVideoForm.patchValue({
         name: this.selectedVideo.name,
         description: this.selectedVideo.description,
-
+        link: this.selectedVideo.vimeo_url,
       });
 
       // optionally preload image preview if editing
@@ -100,6 +97,9 @@ pagination: boolean = true;
       formData.append("name", this.addVideoForm.value.name);
 
       formData.append("description", this.addVideoForm.value.description);
+      if (this.addVideoForm.value.link) {
+        formData.append("link", this.addVideoForm.value.link);
+      }
 
       if (this.files) {
         formData.append("file", this.files);
@@ -118,6 +118,7 @@ pagination: boolean = true;
                 this.addVideoForm.reset();
                 this.modalRef.close();
                 this.isSubmitting = false;
+                this.showExtraInput = false;
               } else {
                 this.isSubmitting = false;
 
@@ -139,6 +140,8 @@ pagination: boolean = true;
               this.toaster.success("Created", response.message);
               this.getVideos();
               this.files = null;
+              this.showExtraInput = false;
+
               this.addVideoForm.reset();
               this.modalRef.close();
             } else {
@@ -158,12 +161,11 @@ pagination: boolean = true;
     }
   }
 
-  private getVideos(search?:any): void {
-    this.videoService.getVideos(this.service.page,search).subscribe({
+  private getVideos(search?: any): void {
+    this.videoService.getVideos(this.service.page, search).subscribe({
       next: (response) => {
         if (response.success) {
           this.videos = response.data.video;
-
 
           this.service.totalRecords = response.data.total_count; // Set total records
           this.service.pageSize = response.data.limit; // Ensure pageSize matches API limit
@@ -178,7 +180,6 @@ pagination: boolean = true;
             this.service.startIndex + this.service.pageSize - 1,
             this.service.totalRecords
           );
-
         } else {
           console.error("Failed to load videos:", response.message);
         }
@@ -186,7 +187,6 @@ pagination: boolean = true;
       error: (error) => {
         console.error("API error:", error);
       },
-  
     });
   }
 
@@ -223,7 +223,6 @@ pagination: boolean = true;
     );
   }
 
-  
   openVideo(content: TemplateRef<any>, item: any): void {
     this.selectedItem = item || null;
     this.modalRef = this.modalService.open(content, { scrollable: false });
@@ -232,7 +231,7 @@ pagination: boolean = true;
   get embedUrl(): SafeResourceUrl | null {
     if (!this.selectedItem?.vimeo_url) return null;
 
-    const videoId = this.selectedItem.vimeo_url.split('/').pop();
+    const videoId = this.selectedItem.vimeo_url.split("/").pop();
     const embedLink = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedLink);
   }
@@ -255,10 +254,10 @@ pagination: boolean = true;
             this.toaster.warn("Alert", response.message);
           }
         },
-        error: () => {this.toaster.error("Error", "Something went wrong.");
+        error: () => {
+          this.toaster.error("Error", "Something went wrong.");
           this.isSubmitting = false;
-
-        }
+        },
       });
     } else {
       this.toaster.warn("Alert", "Enexpected error occured , contact admin");
