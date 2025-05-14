@@ -72,8 +72,9 @@
               Please enter description.
             </div>
           </div>
-
           <div class="mb-3">
+
+          <div class="mb-3" *ngIf="!selectedVideo">
             <button type="button" class="btn btn-primary" (click)="showExtraInput = !showExtraInput">
               {{ showExtraInput ? 'Hide Link' : 'Add Link' }}
             </button>
@@ -87,6 +88,7 @@
               placeholder="Enter Link Here"
               formControlName="link"
             />
+          </div>
           </div>
 
 

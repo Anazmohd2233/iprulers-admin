@@ -97,6 +97,7 @@ export class VideoUploadComponent implements OnInit {
       formData.append("name", this.addVideoForm.value.name);
 
       formData.append("description", this.addVideoForm.value.description);
+
       if (this.addVideoForm.value.link) {
         formData.append("link", this.addVideoForm.value.link);
       }
@@ -107,6 +108,7 @@ export class VideoUploadComponent implements OnInit {
 
       if (this.selectedVideo) {
         // 📝 Edit Mode
+
         this.videoService
           .updateVideos(this.selectedVideo.id, formData)
           .subscribe({
@@ -132,33 +134,92 @@ export class VideoUploadComponent implements OnInit {
           });
       } else {
         formData.append("folderId", "videos");
-        this.videoService.createVideos(formData).subscribe({
-          next: (response) => {
-            if (response.success) {
-              this.isSubmitting = false;
-
-              this.toaster.success("Created", response.message);
-              this.getVideos();
-              this.files = null;
-              this.showExtraInput = false;
-
-              this.addVideoForm.reset();
-              this.modalRef.close();
-            } else {
-              this.isSubmitting = false;
-
-              this.toaster.warn("Alert", response.message);
-            }
-          },
-          error: () => {
-            this.toaster.error("Error", "Something went wrong.");
-            this.isSubmitting = false;
-          },
-        });
+        if (this.files) {
+          this.uploadToVimeo(this.files, formData);
+        } else {
+          this.uploadVimeoWithLink(formData);
+        }
       }
     } else {
       this.toaster.warn("Alert", "Please fill all mandatory fields..!");
     }
+  }
+
+  async uploadToVimeo(file: File, formData: FormData): Promise<void> {
+    const accessToken = "8f9039fdab0632a7b282ab905f63bb99"; // ⚠️ Store this securely
+
+    const createRes = await fetch("https://api.vimeo.com/me/videos", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+        Accept: "application/vnd.vimeo.*+json;version=3.4",
+      },
+      body: JSON.stringify({
+        upload: {
+          approach: "tus",
+          size: file.size,
+        },
+        name: this.addVideoForm.value.name,
+        description: this.addVideoForm.value.description,
+      }),
+    });
+
+    if (!createRes.ok) throw new Error("Failed to create Vimeo upload session");
+    const data = await createRes.json();
+    const uploadLink = data.upload.upload_link;
+    const videoUri = data.uri;
+    const fullLink = data.link;
+
+    const arrayBuffer = await file.arrayBuffer();
+
+    const patchRes = await fetch(uploadLink, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/offset+octet-stream",
+        "Upload-Offset": "0",
+        "Tus-Resumable": "1.0.0",
+      },
+      body: arrayBuffer,
+    });
+
+    if (!patchRes.ok) throw new Error("Failed to upload file to Vimeo");
+
+    const videoId = videoUri.split("/").pop();
+    const videoUrl = `https://vimeo.com/${videoId}`;
+
+    // console.log("videoUrl *****", videoUrl);
+    // console.log("fullLink *****", fullLink);
+
+    formData.append("link", fullLink);
+
+    this.uploadVimeoWithLink(formData);
+  }
+
+  private uploadVimeoWithLink(formData: FormData): void {
+    this.videoService.createVideos(formData).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.isSubmitting = false;
+
+          this.toaster.success("Created", response.message);
+          this.getVideos();
+          this.files = null;
+          this.showExtraInput = false;
+
+          this.addVideoForm.reset();
+          this.modalRef.close();
+        } else {
+          this.isSubmitting = false;
+
+          this.toaster.warn("Alert", response.message);
+        }
+      },
+      error: () => {
+        this.toaster.error("Error", "Something went wrong.");
+        this.isSubmitting = false;
+      },
+    });
   }
 
   private getVideos(search?: any): void {
@@ -228,11 +289,22 @@ export class VideoUploadComponent implements OnInit {
     this.modalRef = this.modalService.open(content, { scrollable: false });
   }
 
+  // get embedUrl(): SafeResourceUrl | null {
+  //   if (!this.selectedItem?.vimeo_url) return null;
+
+  //   const videoId = this.selectedItem.vimeo_url.split("/").pop();
+  //   const embedLink = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+
+  //   return this.sanitizer.bypassSecurityTrustResourceUrl(embedLink);
+  // }
   get embedUrl(): SafeResourceUrl | null {
     if (!this.selectedItem?.vimeo_url) return null;
 
-    const videoId = this.selectedItem.vimeo_url.split("/").pop();
-    const embedLink = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+    const parts = this.selectedItem.vimeo_url.split("/");
+    const videoId = parts[3]; // e.g., 1084348300
+    const privacyHash = parts[4]; // e.g., 48af14dca4
+
+    const embedLink = `https://player.vimeo.com/video/${videoId}?h=${privacyHash}&autoplay=1`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedLink);
   }
 

@@ -461,11 +461,23 @@ export class EditModulesComponent implements OnInit {
     this.selectedItem = item || null;
     this.modalRef = this.modalService.open(content, { scrollable: false });
   }
-  get embedUrl(): SafeResourceUrl | null {
+  // get embedUrl(): SafeResourceUrl | null {
+  //   if (!this.selectedItem?.videos?.vimeo_url) return null;
+
+  //   const videoId = this.selectedItem?.videos?.vimeo_url.split('/').pop();
+  //   const embedLink = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+  //   return this.sanitizer.bypassSecurityTrustResourceUrl(embedLink);
+  // }
+
+    get embedUrl(): SafeResourceUrl | null {
     if (!this.selectedItem?.videos?.vimeo_url) return null;
 
-    const videoId = this.selectedItem?.videos?.vimeo_url.split('/').pop();
-    const embedLink = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+    const parts = this.selectedItem.videos.vimeo_url.split("/");
+    const videoId = parts[3]; // e.g., 1084348300
+    const privacyHash = parts[4]; // e.g., 48af14dca4
+
+    const embedLink = `https://player.vimeo.com/video/${videoId}?h=${privacyHash}&autoplay=1`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedLink);
   }
+
 }
