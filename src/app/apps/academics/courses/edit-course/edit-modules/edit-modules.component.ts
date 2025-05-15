@@ -473,8 +473,8 @@ export class EditModulesComponent implements OnInit {
     if (!this.selectedItem?.videos?.vimeo_url) return null;
 
     const parts = this.selectedItem.videos.vimeo_url.split("/");
-    const videoId = parts[3]; // e.g., 1084348300
-    const privacyHash = parts[4]; // e.g., 48af14dca4
+    const videoId = parts[3]; // e.g., url code
+    const privacyHash = parts[4]; // e.g., encoded
 
     const embedLink = `https://player.vimeo.com/video/${videoId}?h=${privacyHash}&autoplay=1`;
     return this.sanitizer.bypassSecurityTrustResourceUrl(embedLink);
