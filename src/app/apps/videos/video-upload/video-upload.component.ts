@@ -192,6 +192,7 @@ export class VideoUploadComponent implements OnInit {
     // console.log("fullLink *****", fullLink);
 
     formData.append("link", fullLink);
+    formData.delete("file");
 
     this.uploadVimeoWithLink(formData);
   }
