@@ -6,7 +6,7 @@ export const environment = {
   production: false,
   demo: 'saas', // other possible options are creative and modern
   GOOGLE_MAPS_API_KEY: 'AIzaSyDpgQMpcfx1QU-8SM-ljcgjG4xrYtIYby4',
-  baseUrl: 'https://iprulers.zaap.life', 
+   baseUrl:'https://iprulerslive.com',
   // baseUrl: 'http://localhost:5000', 
 
 };
